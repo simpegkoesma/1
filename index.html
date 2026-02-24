@@ -386,7 +386,7 @@
     <script>
         // CONFIGURATION
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw6dOG2OHt3ioevOsrUSLJOhLJw1EyWn_t1RBnDNiBXKcSfxdUy8i_hklvOAT2Y1RgTEA/exec';
-        let STATE = { user: null, profile: null, allPegawai: [] };
+        let STATE = { user: null, profile: null, allPegawai: [], myAntrian: [] };
 
         // ==========================================
         // 1. INITIALIZATION & UI LOGIC
@@ -563,33 +563,29 @@
                 STATE.profile = res.data;
                 
                 if(STATE.profile) {
+                    // Panggil data antrian milik user ini terlebih dahulu agar status verifikasi dapat dicek
+                    await fetchMyAntrian();
+
                     document.getElementById('user-info-name').innerText = STATE.profile.Nama_Lengkap;
                     document.getElementById('p-nama').innerText = (STATE.profile.Gelar_Depan?STATE.profile.Gelar_Depan+' ':'') + STATE.profile.Nama_Lengkap + (STATE.profile.Gelar_Belakang?', '+STATE.profile.Gelar_Belakang:'');
                     document.getElementById('p-nip').innerText = "NIP: " + STATE.profile.NIP;
                     document.getElementById('p-unit').innerText = STATE.profile.Unit_Kerja || '-';
-                    document.getElementById('p-tempatlahir').innerText = STATE.profile.Tempat_Lahir || '-';
-                    document.getElementById('p-tgllahir').innerText = STATE.profile.Tgl_Lahir ? new Date(STATE.profile.Tgl_Lahir).toLocaleDateString('id-ID') : '-';
-                    document.getElementById('p-jk').innerText = STATE.profile.Jenis_Kelamin || '-';
-                    document.getElementById('p-agama').innerText = STATE.profile.Agama || '-';
-                    document.getElementById('p-alamat').innerText = STATE.profile.Alamat_Domisili || '-';
-                    document.getElementById('p-hp').innerText = STATE.profile.No_HP || '-';
-                    document.getElementById('p-jasn').innerText = STATE.profile.Jenis_ASN || '-';
-                    document.getElementById('p-pangkat').innerText = STATE.profile.Pangkat_Golongan || '-';
-                    document.getElementById('p-jabatan').innerText = STATE.profile.Jabatan_Terakhir || '-';
-                    document.getElementById('p-pendidikan').innerText = STATE.profile.Jenjang_Pendidikan || '-';
-                    document.getElementById('p-status').innerText = STATE.profile.Status_Pegawai || 'AKTIF';
                     
+                    document.getElementById('p-status').innerText = STATE.profile.Status_Pegawai || 'AKTIF';
                     if(STATE.profile.URL_Foto_Profil) {
                         document.getElementById('profile-img').src = STATE.profile.URL_Foto_Profil;
                     }
 
-                    // Render Riwayat Pendidikan (Menyesuaikan response backend terbaru Anda)
+                    // Render Data Utama dengan tanda verifikasi
+                    updateProfileUI();
+
+                    // Render Riwayat Pendidikan
                     const tbodyPend = document.getElementById('tbody-pendidikan');
                     tbodyPend.innerHTML = '';
                     if (res.riwayat_pendidikan && res.riwayat_pendidikan.length > 0) {
                         res.riwayat_pendidikan.forEach(p => {
                             let fileBtn = p.File_Ijazah ? `<a href="${p.File_Ijazah}" target="_blank" class="text-blue-500 underline text-xs"><i class="fas fa-file-pdf"></i> Lihat</a>` : '-';
-                            tbodyPend.innerHTML += `<tr class="border-b"><td class="p-2">${p.Jenjang||'-'}</td><td class="p-2">${p.Instansi||'-'}</td><td class="p-2">${p.Jurusan||'-'} <br/> ${fileBtn}</td><td class="p-2">${p.Thn_Lulus||'-'}</td></tr>`;
+                            tbodyPend.innerHTML += `<tr class="border-b"><td class="p-2">${p.Jenjang||'-'} <i class="fas fa-check-circle text-green-500 ml-1" title="Disetujui"></i></td><td class="p-2">${p.Instansi||'-'}</td><td class="p-2">${p.Jurusan||'-'} <br/> ${fileBtn}</td><td class="p-2">${p.Thn_Lulus||'-'}</td></tr>`;
                         });
                     } else {
                         tbodyPend.innerHTML = `<tr><td colspan="4" class="text-center p-4 text-gray-500">Belum ada data pendidikan.</td></tr>`;
@@ -600,14 +596,11 @@
                     tbodyPangkat.innerHTML = '';
                     if (res.riwayat_pangkat && res.riwayat_pangkat.length > 0) {
                         res.riwayat_pangkat.forEach(p => {
-                            tbodyPangkat.innerHTML += `<tr class="border-b"><td class="p-2">${p.Pangkat_Gol||'-'}</td><td class="p-2">${p.TMT||'-'}</td><td class="p-2">${p.No_SK||'-'}</td><td class="p-2">${p.Masa_Kerja_Thn||'0'} Thn</td></tr>`;
+                            tbodyPangkat.innerHTML += `<tr class="border-b"><td class="p-2">${p.Pangkat_Gol||'-'} <i class="fas fa-check-circle text-green-500 ml-1" title="Disetujui"></i></td><td class="p-2">${p.TMT||'-'}</td><td class="p-2">${p.No_SK||'-'}</td><td class="p-2">${p.Masa_Kerja_Thn||'0'} Thn</td></tr>`;
                         });
                     } else {
                         tbodyPangkat.innerHTML = `<tr><td colspan="4" class="text-center p-4 text-gray-500">Belum ada data pangkat.</td></tr>`;
                     }
-
-                    // Panggil data antrian milik user ini
-                    await fetchMyAntrian();
                 }
             } catch (err) {
                 console.error(err);
@@ -615,9 +608,40 @@
             }
         }
 
+        function getFieldHTML(kolom, currentValue) {
+            // Jika tidak ada antrian sama sekali, kembalikan data dengan centang hijau
+            if (!STATE.myAntrian) return `${currentValue || '-'} <i class="fas fa-check-circle text-green-500 ml-1" title="Sudah Disetujui / Aktif"></i>`;
+
+            // Cari apakah ada antrian berstatus 'Pending' untuk kolom ini
+            const pendingReq = STATE.myAntrian.find(a => a.Kolom_Tujuan === kolom && a.Status === 'Pending');
+
+            if (pendingReq) {
+                // Tampilkan data yang sedang diajukan dengan badge kuning
+                return `<span class="text-yellow-600 font-bold" title="Sedang diajukan: ${pendingReq.Nilai_Baru}">${pendingReq.Nilai_Baru} <i class="fas fa-clock text-yellow-500 ml-1"></i><span class="text-xs ml-1 bg-yellow-100 text-yellow-700 px-1 py-0.5 rounded">Menunggu verifikasi</span></span>`;
+            }
+
+            // Jika tidak ada antrian tertunda, berarti data sudah official (Disetujui)
+            return `${currentValue || '-'} <i class="fas fa-check-circle text-green-500 ml-1" title="Sudah Disetujui / Aktif"></i>`;
+        }
+
+        function updateProfileUI() {
+            document.getElementById('p-tempatlahir').innerHTML = getFieldHTML('Tempat_Lahir', STATE.profile.Tempat_Lahir);
+            document.getElementById('p-tgllahir').innerHTML = getFieldHTML('Tgl_Lahir', STATE.profile.Tgl_Lahir ? new Date(STATE.profile.Tgl_Lahir).toLocaleDateString('id-ID') : '');
+            document.getElementById('p-jk').innerHTML = getFieldHTML('Jenis_Kelamin', STATE.profile.Jenis_Kelamin);
+            document.getElementById('p-agama').innerHTML = getFieldHTML('Agama', STATE.profile.Agama);
+            document.getElementById('p-alamat').innerHTML = getFieldHTML('Alamat_Domisili', STATE.profile.Alamat_Domisili);
+            document.getElementById('p-hp').innerHTML = getFieldHTML('No_HP', STATE.profile.No_HP);
+            document.getElementById('p-jasn').innerHTML = getFieldHTML('Jenis_ASN', STATE.profile.Jenis_ASN);
+            document.getElementById('p-pangkat').innerHTML = getFieldHTML('Pangkat_Golongan', STATE.profile.Pangkat_Golongan);
+            document.getElementById('p-jabatan').innerHTML = getFieldHTML('Jabatan_Terakhir', STATE.profile.Jabatan_Terakhir);
+            document.getElementById('p-pendidikan').innerHTML = getFieldHTML('Jenjang_Pendidikan', STATE.profile.Jenjang_Pendidikan);
+        }
+
         async function fetchMyAntrian() {
             try {
                 const res = await apiCall({ action: 'getUserAntrian', nip: STATE.user.nip });
+                STATE.myAntrian = res.data || [];
+                
                 const tbody = document.getElementById('tbody-my-antrian');
                 tbody.innerHTML = '';
                 
@@ -789,7 +813,8 @@
                     if(['admin','superadmin'].includes(STATE.user.role)) {
                         fetchProfile(); // Refresh seketika jika admin (bypass antrian)
                     } else {
-                        fetchMyAntrian(); // Refresh tabel riwayat pengajuan user
+                        await fetchMyAntrian(); // Ambil ulang data antrian
+                        updateProfileUI(); // Segarkan UI profil agar muncul tanda kuning "Menunggu Verifikasi"
                     }
                 } catch(e) {
                     Swal.fire('Gagal', e.message, 'error');
