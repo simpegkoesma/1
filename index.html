@@ -83,10 +83,21 @@
                 <button onclick="toggleSidebar()" class="md:hidden"><i class="fas fa-times"></i></button>
             </div>
             <nav class="flex-1 overflow-y-auto p-2">
-                <div class="sidebar-item p-3 rounded mb-1 flex items-center" onclick="showPage('dashboard')"><i class="fas fa-user mr-3"></i> Profil Saya</div>
-                <div id="menu-data-pegawai" class="sidebar-item p-3 rounded mb-1 flex items-center hidden" onclick="showPage('data-pegawai')"><i class="fas fa-users mr-3"></i> Data Pegawai</div>
-                <div id="menu-antrian" class="sidebar-item p-3 rounded mb-1 flex items-center hidden" onclick="showPage('antrian')"><i class="fas fa-tasks mr-3"></i> Antrian Update</div>
-                <div id="menu-pengaturan" class="sidebar-item p-3 rounded mb-1 flex items-center hidden" onclick="showPage('pengaturan')"><i class="fas fa-cog mr-3"></i> Pengaturan</div>
+                <div class="text-xs uppercase opacity-50 px-3 mt-2 mb-1">Data Pegawai</div>
+                <div id="nav-tab-profil" class="sidebar-item nav-tab-item p-3 rounded mb-1 flex items-center bg-gray-700 bg-opacity-50" onclick="showPage('dashboard'); switchUserTab('profil')"><i class="fas fa-id-card mr-3 w-5"></i> Profil Utama</div>
+                <div id="nav-tab-pendidikan" class="sidebar-item nav-tab-item p-3 rounded mb-1 flex items-center" onclick="showPage('dashboard'); switchUserTab('pendidikan')"><i class="fas fa-graduation-cap mr-3 w-5"></i> Pendidikan</div>
+                <div id="nav-tab-pangkat" class="sidebar-item nav-tab-item p-3 rounded mb-1 flex items-center" onclick="showPage('dashboard'); switchUserTab('pangkat')"><i class="fas fa-medal mr-3 w-5"></i> Pangkat / Gol</div>
+                <div id="nav-tab-jabatan" class="sidebar-item nav-tab-item p-3 rounded mb-1 flex items-center" onclick="showPage('dashboard'); switchUserTab('jabatan')"><i class="fas fa-briefcase mr-3 w-5"></i> Jabatan</div>
+                <div id="nav-tab-kgb" class="sidebar-item nav-tab-item p-3 rounded mb-1 flex items-center" onclick="showPage('dashboard'); switchUserTab('kgb')"><i class="fas fa-money-bill-wave mr-3 w-5"></i> KGB</div>
+                <div id="nav-tab-keluarga" class="sidebar-item nav-tab-item p-3 rounded mb-1 flex items-center" onclick="showPage('dashboard'); switchUserTab('keluarga')"><i class="fas fa-users mr-3 w-5"></i> Data Keluarga</div>
+                <div id="nav-tab-identitas" class="sidebar-item nav-tab-item p-3 rounded mb-1 flex items-center" onclick="showPage('dashboard'); switchUserTab('identitas')"><i class="fas fa-fingerprint mr-3 w-5"></i> Identitas Lain</div>
+                
+                <div id="admin-menu-section" class="hidden">
+                    <div class="text-xs uppercase opacity-50 px-3 mt-4 mb-1">Administrator</div>
+                    <div id="menu-data-pegawai" class="sidebar-item p-3 rounded mb-1 flex items-center" onclick="showPage('data-pegawai'); updateNavActive(this)"><i class="fas fa-users-cog mr-3 w-5"></i> Semua Pegawai</div>
+                    <div id="menu-antrian" class="sidebar-item p-3 rounded mb-1 flex items-center" onclick="showPage('antrian'); updateNavActive(this)"><i class="fas fa-tasks mr-3 w-5"></i> Antrian Update</div>
+                    <div id="menu-pengaturan" class="sidebar-item p-3 rounded mb-1 flex items-center" onclick="showPage('pengaturan'); updateNavActive(this)"><i class="fas fa-cog mr-3 w-5"></i> Pengaturan</div>
+                </div>
             </nav>
             <div class="p-4 border-t border-gray-600 text-sm">
                 <div id="user-info-name" class="font-bold mb-1">Nama Pegawai</div>
@@ -99,8 +110,10 @@
         <main class="flex-1 flex flex-col h-screen overflow-hidden">
             <!-- Header -->
             <header class="card shadow p-4 flex justify-between items-center z-10">
-                <button onclick="toggleSidebar()" class="md:hidden text-xl"><i class="fas fa-bars"></i></button>
-                <h2 id="page-title" class="font-bold text-xl ml-4 md:ml-0">Profil Saya</h2>
+                <div class="flex items-center">
+                    <button onclick="toggleSidebar()" class="md:hidden text-xl mr-4"><i class="fas fa-bars"></i></button>
+                    <h2 id="page-title" class="font-bold text-xl">Profil Saya</h2>
+                </div>
                 <div class="flex items-center">
                     <button onclick="exportMyData()" id="btn-export-pdf" class="btn-primary px-3 py-1 text-sm rounded mr-2"><i class="fas fa-file-pdf mr-1"></i> Cetak CV</button>
                 </div>
@@ -109,32 +122,25 @@
             <!-- Pages -->
             <div class="p-4 md:p-6 flex-1 overflow-y-auto" id="main-scroll-area">
                 
-                <!-- Page: Dashboard (Profil) -->
+                <!-- Page: Dashboard (Tab Container) -->
                 <div id="page-dashboard" class="page-content">
                     <div class="card rounded-lg shadow-md p-6 mb-6 flex flex-col md:flex-row items-center">
-                        <div class="w-32 h-32 rounded-full overflow-hidden bg-gray-300 mb-4 md:mb-0 md:mr-6 relative group">
+                        <div class="w-32 h-32 rounded-full overflow-hidden bg-gray-300 mb-4 md:mb-0 md:mr-6 relative group flex-shrink-0">
                             <img id="profile-img" src="https://via.placeholder.com/150" alt="Foto Profil" class="w-full h-full object-cover">
                             <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer" onclick="document.getElementById('file-upload').click()">
                                 <span class="text-white text-xs text-center">Ubah Foto</span>
                             </div>
                             <input type="file" id="file-upload" class="hidden" accept="image/*" onchange="uploadFoto(this)">
                         </div>
-                        <div class="flex-1">
-                            <h3 id="p-nama" class="text-2xl font-bold">Memuat...</h3>
+                        <div class="flex-1 w-full text-center md:text-left overflow-hidden">
+                            <h3 id="p-nama" class="text-2xl font-bold truncate">Memuat...</h3>
                             <p id="p-nip" class="opacity-75 mb-2">NIP: -</p>
                             <span id="p-status" class="px-2 py-1 bg-green-100 text-green-800 rounded text-xs font-bold">AKTIF</span>
                         </div>
-                        <div class="mt-4 md:mt-0 text-right">
+                        <div class="mt-4 md:mt-0 md:text-right text-center w-full md:w-auto">
                             <p class="text-sm opacity-75">Unit Kerja</p>
                             <p id="p-unit" class="font-bold">RSUD dr. R. KOESMA</p>
                         </div>
-                    </div>
-                    
-                    <!-- Tabs Navigation Baru -->
-                    <div class="flex space-x-4 border-b border-gray-300 mb-6 overflow-x-auto whitespace-nowrap px-2">
-                        <button id="btn-tab-profil" class="user-tab-btn pb-2 border-b-2 border-blue-600 font-bold text-blue-600" onclick="switchUserTab('profil')">Data Utama</button>
-                        <button id="btn-tab-pendidikan" class="user-tab-btn pb-2 border-b-2 border-transparent text-gray-500 hover:text-blue-500" onclick="switchUserTab('pendidikan')">Riwayat Pendidikan</button>
-                        <button id="btn-tab-pangkat" class="user-tab-btn pb-2 border-b-2 border-transparent text-gray-500 hover:text-blue-500" onclick="switchUserTab('pangkat')">Riwayat Pangkat</button>
                     </div>
 
                     <!-- Tab Content: Profil Utama -->
@@ -142,11 +148,44 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="card rounded-lg shadow-md p-6">
                                 <div class="flex justify-between items-center mb-4 border-b pb-2 border-gray-200">
-                                    <h4 class="font-bold text-lg"><i class="fas fa-id-card mr-2"></i> Data Personal</h4>
+                                    <h4 class="font-bold text-lg"><i class="fas fa-id-card mr-2 text-blue-500"></i> Data Personal</h4>
                                 </div>
                                 <table class="w-full text-sm">
+                                    <tr class="border-b border-gray-100"><td class="py-2 opacity-75 w-1/3">Tempat Lahir</td><td id="p-tempatlahir" class="font-medium">-</td><td class="text-right w-8"><button onclick="editField('PROFIL', 'Tempat_Lahir')" class="text-blue-500 hover:text-blue-700"><i class="fas fa-edit"></i></button></td></tr>
+                                    <tr class="border-b border-gray-100"><td class="py-2 opacity-75 w-1/3">Tanggal Lahir</td><td id="p-tgllahir" class="font-medium">-</td><td class="text-right"><button onclick="editField('PROFIL', 'Tgl_Lahir')" class="text-blue-500 hover:text-blue-700"><i class="fas fa-edit"></i></button></td></tr>
+                                    <tr class="border-b border-gray-100"><td class="py-2 opacity-75">Jenis Kelamin</td><td id="p-jk" class="font-medium">-</td><td class="text-right"><button onclick="editField('PROFIL', 'Jenis_Kelamin')" class="text-blue-500 hover:text-blue-700"><i class="fas fa-edit"></i></button></td></tr>
+                                    <tr class="border-b border-gray-100"><td class="py-2 opacity-75">Agama</td><td id="p-agama" class="font-medium">-</td><td class="text-right"><button onclick="editField('PROFIL', 'Agama')" class="text-blue-500 hover:text-blue-700"><i class="fas fa-edit"></i></button></td></tr>
+                                    <tr class="border-b border-gray-100"><td class="py-2 opacity-75">Alamat</td><td id="p-alamat" class="font-medium">-</td><td class="text-right"><button onclick="editField('PROFIL', 'Alamat_Domisili')" class="text-blue-500 hover:text-blue-700"><i class="fas fa-edit"></i></button></td></tr>
+                                    <tr><td class="py-2 opacity-75">No HP</td><td id="p-hp" class="font-medium">-</td><td class="text-right"><button onclick="editField('PROFIL', 'No_HP')" class="text-blue-500 hover:text-blue-700"><i class="fas fa-edit"></i></button></td></tr>
+                                </table>
+                            </div>
+                            <div class="card rounded-lg shadow-md p-6">
+                                <h4 class="font-bold text-lg mb-4 border-b pb-2 border-gray-200"><i class="fas fa-briefcase mr-2 text-blue-500"></i> Karir & Ringkasan</h4>
+                                <table class="w-full text-sm">
+                                    <tr class="border-b border-gray-100"><td class="py-2 opacity-75 w-1/3">Jenis ASN</td><td id="p-jasn" class="font-medium">-</td><td class="text-right w-8"><button onclick="editField('PROFIL', 'Jenis_ASN')" class="text-blue-500 hover:text-blue-700"><i class="fas fa-edit"></i></button></td></tr>
+                                    <tr class="border-b border-gray-100"><td class="py-2 opacity-75">Pangkat/Gol</td><td id="p-pangkat" class="font-medium">-</td><td class="text-right"><button onclick="editField('PROFIL', 'Pangkat_Golongan')" class="text-blue-500 hover:text-blue-700"><i class="fas fa-edit"></i></button></td></tr>
                                     <tr class="border-b border-gray-100"><td class="py-2 opacity-75">Jabatan Terakhir</td><td id="p-jabatan" class="font-medium">-</td><td class="text-right"><button onclick="editField('PROFIL', 'Jabatan_Terakhir')" class="text-blue-500 hover:text-blue-700"><i class="fas fa-edit"></i></button></td></tr>
                                     <tr><td class="py-2 opacity-75">Pendidikan</td><td id="p-pendidikan" class="font-medium">-</td><td class="text-right"><button onclick="editField('PROFIL', 'Jenjang_Pendidikan')" class="text-blue-500 hover:text-blue-700"><i class="fas fa-edit"></i></button></td></tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Riwayat Antrian User -->
+                        <div class="card rounded-lg shadow-md p-6 mt-6">
+                            <h4 class="font-bold text-lg mb-4 border-b pb-2 border-gray-200"><i class="fas fa-history mr-2 text-blue-500"></i> Riwayat Pengajuan Perubahan Data</h4>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-sm">
+                                    <thead class="bg-gray-200 text-black">
+                                        <tr>
+                                            <th class="p-2">Tgl Ajuan</th>
+                                            <th class="p-2">Data/Kolom Target</th>
+                                            <th class="p-2">Nilai Diajukan</th>
+                                            <th class="p-2">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbody-my-antrian">
+                                        <tr><td colspan="4" class="text-center p-4">Sedang memuat data...</td></tr>
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -156,16 +195,16 @@
                     <div id="tab-pendidikan" class="user-tab-content hidden">
                         <div class="card rounded-lg shadow-md p-6">
                             <div class="flex justify-between items-center mb-4 border-b pb-2">
-                                <h4 class="font-bold text-lg"><i class="fas fa-graduation-cap mr-2"></i> Riwayat Pendidikan</h4>
-                                <button onclick="ajukanRiwayat('RIWAYAT_PENDIDIKAN')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm shadow"><i class="fas fa-plus mr-1"></i> Ajukan Data Baru</button>
+                                <h4 class="font-bold text-lg"><i class="fas fa-graduation-cap mr-2 text-blue-500"></i> Riwayat Pendidikan</h4>
+                                <button onclick="ajukanRiwayat('RIWAYAT_PENDIDIKAN')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm shadow"><i class="fas fa-plus mr-1"></i> Tambah Data & Ijazah</button>
                             </div>
                             <div class="overflow-x-auto">
                                 <table class="w-full text-left text-sm">
                                     <thead class="bg-gray-100 text-black">
-                                        <tr><th class="p-2">Jenjang</th><th class="p-2">Instansi</th><th class="p-2">Jurusan</th><th class="p-2">Tahun Lulus</th></tr>
+                                        <tr><th class="p-2">Jenjang</th><th class="p-2">Instansi</th><th class="p-2">Jurusan</th><th class="p-2">Thn Lulus</th></tr>
                                     </thead>
                                     <tbody id="tbody-pendidikan">
-                                        <tr><td colspan="4" class="text-center p-4 text-gray-500">Data belum tersedia secara otomatis. Silakan ajukan penambahan/perubahan.</td></tr>
+                                        <tr><td colspan="4" class="text-center p-4 text-gray-500">Data belum tersedia. Silakan ajukan penambahan.</td></tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -176,7 +215,7 @@
                     <div id="tab-pangkat" class="user-tab-content hidden">
                         <div class="card rounded-lg shadow-md p-6">
                             <div class="flex justify-between items-center mb-4 border-b pb-2">
-                                <h4 class="font-bold text-lg"><i class="fas fa-medal mr-2"></i> Riwayat Pangkat</h4>
+                                <h4 class="font-bold text-lg"><i class="fas fa-medal mr-2 text-blue-500"></i> Riwayat Pangkat</h4>
                                 <button onclick="ajukanRiwayat('RIWAYAT_PANGKAT')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm shadow"><i class="fas fa-plus mr-1"></i> Ajukan Data Baru</button>
                             </div>
                             <div class="overflow-x-auto">
@@ -185,39 +224,100 @@
                                         <tr><th class="p-2">Pangkat/Gol</th><th class="p-2">TMT</th><th class="p-2">No SK</th><th class="p-2">Masa Kerja</th></tr>
                                     </thead>
                                     <tbody id="tbody-pangkat">
-                                        <tr><td colspan="4" class="text-center p-4 text-gray-500">Data belum tersedia secara otomatis. Silakan ajukan penambahan/perubahan.</td></tr>
+                                        <tr><td colspan="4" class="text-center p-4 text-gray-500">Data belum tersedia. Silakan ajukan penambahan.</td></tr>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Riwayat Antrian User -->
-                    <div class="card rounded-lg shadow-md p-6 mt-6">
-                        <h4 class="font-bold text-lg mb-4 border-b pb-2 border-gray-200"><i class="fas fa-history mr-2"></i> Riwayat Pengajuan Perubahan Data</h4>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-sm">
-                                <thead class="bg-gray-200 text-black">
-                                    <tr>
-                                        <th class="p-2">Tgl Ajuan</th>
-                                        <th class="p-2">Kolom Diubah</th>
-                                        <th class="p-2">Nilai Baru</th>
-                                        <th class="p-2">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tbody-my-antrian">
-                                    <tr><td colspan="4" class="text-center p-4">Sedang memuat data...</td></tr>
-                                </tbody>
-                            </table>
+                    <!-- Tab Content: Jabatan -->
+                    <div id="tab-jabatan" class="user-tab-content hidden">
+                        <div class="card rounded-lg shadow-md p-6">
+                            <div class="flex justify-between items-center mb-4 border-b pb-2">
+                                <h4 class="font-bold text-lg"><i class="fas fa-briefcase mr-2 text-blue-500"></i> Riwayat Jabatan</h4>
+                                <button onclick="ajukanRiwayat('RIWAYAT_JABATAN')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm shadow"><i class="fas fa-plus mr-1"></i> Ajukan Data Baru</button>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-sm">
+                                    <thead class="bg-gray-100 text-black">
+                                        <tr><th class="p-2">Jabatan</th><th class="p-2">Eselon</th><th class="p-2">TMT</th><th class="p-2">Unit Kerja</th></tr>
+                                    </thead>
+                                    <tbody id="tbody-jabatan">
+                                        <tr><td colspan="4" class="text-center p-4 text-gray-500">Data belum tersedia. Silakan ajukan penambahan.</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- Tab Content: KGB -->
+                    <div id="tab-kgb" class="user-tab-content hidden">
+                        <div class="card rounded-lg shadow-md p-6">
+                            <div class="flex justify-between items-center mb-4 border-b pb-2">
+                                <h4 class="font-bold text-lg"><i class="fas fa-money-bill-wave mr-2 text-blue-500"></i> Riwayat KGB</h4>
+                                <button onclick="ajukanRiwayat('RIWAYAT_KGB')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm shadow"><i class="fas fa-plus mr-1"></i> Ajukan Data Baru</button>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-sm">
+                                    <thead class="bg-gray-100 text-black">
+                                        <tr><th class="p-2">Golongan</th><th class="p-2">Gaji Baru</th><th class="p-2">TMT</th><th class="p-2">No SK Dasar</th></tr>
+                                    </thead>
+                                    <tbody id="tbody-kgb">
+                                        <tr><td colspan="4" class="text-center p-4 text-gray-500">Data belum tersedia. Silakan ajukan penambahan.</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab Content: Keluarga -->
+                    <div id="tab-keluarga" class="user-tab-content hidden">
+                        <div class="card rounded-lg shadow-md p-6">
+                            <div class="flex justify-between items-center mb-4 border-b pb-2">
+                                <h4 class="font-bold text-lg"><i class="fas fa-users mr-2 text-blue-500"></i> Data Keluarga</h4>
+                                <button onclick="ajukanRiwayat('DATA_KELUARGA')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm shadow"><i class="fas fa-plus mr-1"></i> Tambah Anggota</button>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-sm">
+                                    <thead class="bg-gray-100 text-black">
+                                        <tr><th class="p-2">Nama</th><th class="p-2">Status</th><th class="p-2">L/P</th><th class="p-2">Tunjangan</th></tr>
+                                    </thead>
+                                    <tbody id="tbody-keluarga">
+                                        <tr><td colspan="4" class="text-center p-4 text-gray-500">Data belum tersedia. Silakan ajukan penambahan.</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab Content: Identitas Lain -->
+                    <div id="tab-identitas" class="user-tab-content hidden">
+                        <div class="card rounded-lg shadow-md p-6">
+                            <div class="flex justify-between items-center mb-4 border-b pb-2">
+                                <h4 class="font-bold text-lg"><i class="fas fa-fingerprint mr-2 text-blue-500"></i> Identitas Lain</h4>
+                                <button onclick="ajukanRiwayat('IDENTITAS_LAIN')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm shadow"><i class="fas fa-plus mr-1"></i> Perbarui Identitas</button>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-sm">
+                                    <thead class="bg-gray-100 text-black">
+                                        <tr><th class="p-2">No KTP</th><th class="p-2">NPWP</th><th class="p-2">BPJS</th><th class="p-2">TASPEN</th></tr>
+                                    </thead>
+                                    <tbody id="tbody-identitas">
+                                        <tr><td colspan="4" class="text-center p-4 text-gray-500">Data belum tersedia. Silakan ajukan pembaruan.</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
                 <!-- Page: Data Pegawai (Admin) -->
                 <div id="page-data-pegawai" class="page-content hidden">
                     <div class="card rounded-lg shadow-md p-6">
-                        <div class="flex justify-between mb-4">
-                            <input type="text" id="search-pegawai" placeholder="Cari Nama/NIP..." class="border p-2 rounded w-64 text-black" onkeyup="filterTablePegawai()">
+                        <div class="flex justify-between mb-4 flex-col md:flex-row gap-2">
+                            <input type="text" id="search-pegawai" placeholder="Cari Nama/NIP..." class="border p-2 rounded w-full md:w-64 text-black" onkeyup="filterTablePegawai()">
                             <button onclick="exportToExcel()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"><i class="fas fa-file-excel mr-2"></i> Export Excel</button>
                         </div>
                         <div class="overflow-x-auto">
@@ -244,7 +344,6 @@
                     <div class="card rounded-lg shadow-md p-6">
                         <div class="flex justify-between mb-4">
                             <h3 class="font-bold text-lg">Daftar Pengajuan Perubahan Data</h3>
-                            <button onclick="bulkApprove()" class="bg-blue-600 text-white px-3 py-1 rounded text-sm hidden"><i class="fas fa-check-double mr-1"></i> Setujui Semua</button>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left text-sm">
@@ -253,7 +352,7 @@
                                         <th class="p-2">Tgl Ajuan</th>
                                         <th class="p-2">NIP Pengaju</th>
                                         <th class="p-2">Target Data</th>
-                                        <th class="p-2">Nilai Baru</th>
+                                        <th class="p-2 max-w-xs">Nilai Baru</th>
                                         <th class="p-2">Aksi</th>
                                     </tr>
                                 </thead>
@@ -319,7 +418,7 @@
             document.getElementById('page-' + pageId).classList.remove('hidden');
             
             const titles = { 'dashboard':'Profil Saya', 'data-pegawai':'Data Pegawai', 'antrian':'Antrian Update', 'pengaturan':'Pengaturan' };
-            document.getElementById('page-title').innerText = titles[pageId];
+            document.getElementById('page-title').innerText = titles[pageId] || 'Profil Saya';
 
             if(window.innerWidth < 768) toggleSidebar(); // auto close mobile
             
@@ -329,6 +428,24 @@
             // Render logic based on page
             if(pageId === 'data-pegawai') fetchAllPegawai();
             if(pageId === 'antrian') fetchAllAntrian(); // Panggil data saat menu antrian dibuka
+        }
+
+        function updateNavActive(element) {
+            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('bg-gray-700', 'bg-opacity-50'));
+            if(element) element.classList.add('bg-gray-700', 'bg-opacity-50');
+        }
+
+        function switchUserTab(tabName) {
+            // Sembunyikan semua konten tab user
+            document.querySelectorAll('.user-tab-content').forEach(el => el.classList.add('hidden'));
+            const targetTab = document.getElementById('tab-' + tabName);
+            if(targetTab) targetTab.classList.remove('hidden');
+            
+            // Highlight active navbar item di sidebar
+            document.querySelectorAll('.nav-tab-item').forEach(el => el.classList.remove('bg-gray-700', 'bg-opacity-50'));
+            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('bg-gray-700', 'bg-opacity-50')); // reset admin menu styles too
+            const activeNav = document.getElementById('nav-tab-' + tabName);
+            if(activeNav) activeNav.classList.add('bg-gray-700', 'bg-opacity-50');
         }
 
         function loadTheme() {
@@ -406,6 +523,7 @@
 
         function logout() {
             localStorage.removeItem('simpeg_user');
+            sessionStorage.removeItem('simpeg_active_page');
             STATE.user = null;
             document.getElementById('app-container').style.display = 'none';
             document.getElementById('login-page').style.display = 'flex';
@@ -421,9 +539,7 @@
 
             // RBAC UI Render
             if (['admin', 'superadmin'].includes(STATE.user.role)) {
-                document.getElementById('menu-data-pegawai').classList.remove('hidden');
-                document.getElementById('menu-antrian').classList.remove('hidden');
-                document.getElementById('menu-pengaturan').classList.remove('hidden');
+                document.getElementById('admin-menu-section').classList.remove('hidden');
             }
 
             // Load Profile
@@ -432,6 +548,8 @@
             // Ambil memori halaman terakhir, jika tidak ada, gunakan 'dashboard'
             const activePage = sessionStorage.getItem('simpeg_active_page') || 'dashboard';
             showPage(activePage);
+            // Default select tab profil jika di dashboard
+            if (activePage === 'dashboard') switchUserTab('profil');
             
             showLoader(false);
         }
@@ -465,12 +583,13 @@
                         document.getElementById('profile-img').src = STATE.profile.URL_Foto_Profil;
                     }
 
-                    // Render Riwayat Pendidikan
+                    // Render Riwayat Pendidikan (Menyesuaikan response backend terbaru Anda)
                     const tbodyPend = document.getElementById('tbody-pendidikan');
                     tbodyPend.innerHTML = '';
                     if (res.riwayat_pendidikan && res.riwayat_pendidikan.length > 0) {
                         res.riwayat_pendidikan.forEach(p => {
-                            tbodyPend.innerHTML += `<tr class="border-b"><td class="p-2">${p.Jenjang||'-'}</td><td class="p-2">${p.Instansi||'-'}</td><td class="p-2">${p.Jurusan||'-'}</td><td class="p-2">${p.Thn_Lulus||'-'}</td></tr>`;
+                            let fileBtn = p.File_Ijazah ? `<a href="${p.File_Ijazah}" target="_blank" class="text-blue-500 underline text-xs"><i class="fas fa-file-pdf"></i> Lihat</a>` : '-';
+                            tbodyPend.innerHTML += `<tr class="border-b"><td class="p-2">${p.Jenjang||'-'}</td><td class="p-2">${p.Instansi||'-'}</td><td class="p-2">${p.Jurusan||'-'} <br/> ${fileBtn}</td><td class="p-2">${p.Thn_Lulus||'-'}</td></tr>`;
                         });
                     } else {
                         tbodyPend.innerHTML = `<tr><td colspan="4" class="text-center p-4 text-gray-500">Belum ada data pendidikan.</td></tr>`;
@@ -481,7 +600,7 @@
                     tbodyPangkat.innerHTML = '';
                     if (res.riwayat_pangkat && res.riwayat_pangkat.length > 0) {
                         res.riwayat_pangkat.forEach(p => {
-                            tbodyPangkat.innerHTML += `<tr class="border-b"><td class="p-2">${p.Pangkat_Gol||'-'}</td><td class="p-2">${p.TMT||'-'}</td><td class="p-2">${p.No_SK||'-'}</td><td class="p-2">${p.Masa_Kerja_Thn||'0'} Thn ${p.Masa_Kerja_Bln||'0'} Bln</td></tr>`;
+                            tbodyPangkat.innerHTML += `<tr class="border-b"><td class="p-2">${p.Pangkat_Gol||'-'}</td><td class="p-2">${p.TMT||'-'}</td><td class="p-2">${p.No_SK||'-'}</td><td class="p-2">${p.Masa_Kerja_Thn||'0'} Thn</td></tr>`;
                         });
                     } else {
                         tbodyPangkat.innerHTML = `<tr><td colspan="4" class="text-center p-4 text-gray-500">Belum ada data pangkat.</td></tr>`;
@@ -517,9 +636,9 @@
                     
                     tbody.innerHTML += `
                         <tr class="border-b border-gray-300 hover:bg-gray-50">
-                            <td class="p-2">${tgl}</td>
+                            <td class="p-2 whitespace-nowrap">${tgl}</td>
                             <td class="p-2 font-medium text-blue-600">${a.Kolom_Tujuan.replace(/_/g, ' ')}</td>
-                            <td class="p-2">${a.Nilai_Baru}</td>
+                            <td class="p-2 max-w-xs truncate" title="${a.Nilai_Baru}">${a.Nilai_Baru}</td>
                             <td class="p-2"><span class="px-2 py-1 ${statusColor} rounded text-xs whitespace-nowrap">${statusIcon}</span></td>
                         </tr>
                     `;
@@ -596,13 +715,20 @@
 
             pendingData.forEach(a => {
                 const tgl = new Date(a.Tgl_Pengajuan).toLocaleDateString('id-ID', {day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
+                
+                // Cek jika Nilai_Baru mengandung URL file untuk memunculkan tombol Lihat
+                let displayNilai = a.Nilai_Baru;
+                if(displayNilai.includes('http') && displayNilai.includes('drive')) {
+                     displayNilai += ` <br><a href="${a.Nilai_Baru.split(' | ').pop()}" target="_blank" class="text-blue-500 underline text-xs">Lihat File Upload</a>`;
+                }
+
                 let tr = document.createElement('tr');
                 tr.className = 'border-b border-gray-300 hover:bg-gray-50';
                 tr.innerHTML = `
-                    <td class="p-2">${tgl}</td>
+                    <td class="p-2 whitespace-nowrap">${tgl}</td>
                     <td class="p-2 font-bold">${a.NIP}</td>
                     <td class="p-2 text-blue-600 font-medium">${a.Kolom_Tujuan.replace(/_/g, ' ')}</td>
-                    <td class="p-2">${a.Nilai_Baru}</td>
+                    <td class="p-2 max-w-xs break-words">${displayNilai}</td>
                     <td class="p-2 whitespace-nowrap">
                         <button onclick="prosesAntrian('${a.ID_Antrian}', 'Approved')" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-xs mr-1 shadow"><i class="fas fa-check"></i> Setuju</button>
                         <button onclick="prosesAntrian('${a.ID_Antrian}', 'Rejected')" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs shadow"><i class="fas fa-times"></i> Tolak</button>
@@ -641,7 +767,7 @@
         // ==========================================
         async function editField(sheet, kolom) {
             const { value: newVal } = await Swal.fire({
-                title: `Ubah ${kolom.replace('_',' ')}`,
+                title: `Ubah ${kolom.replace(/_/g,' ')}`,
                 input: 'text',
                 inputValue: STATE.profile[kolom] || '',
                 showCancelButton: true
@@ -672,46 +798,124 @@
             }
         }
 
-        function switchUserTab(tabName) {
-            // Sembunyikan semua tab content
-            document.querySelectorAll('.user-tab-content').forEach(el => el.classList.add('hidden'));
-            // Reset style semua tombol tab
-            document.querySelectorAll('.user-tab-btn').forEach(el => {
-                el.classList.remove('border-blue-600', 'text-blue-600', 'font-bold');
-                el.classList.add('border-transparent', 'text-gray-500');
-            });
-            
-            // Tampilkan tab terpilih
-            document.getElementById('tab-' + tabName).classList.remove('hidden');
-            const btn = document.getElementById('btn-tab-' + tabName);
-            btn.classList.remove('border-transparent', 'text-gray-500');
-            btn.classList.add('border-blue-600', 'text-blue-600', 'font-bold');
-        }
-
         async function ajukanRiwayat(sheet) {
-            const isPendidikan = sheet === 'RIWAYAT_PENDIDIKAN';
+            let formTitle = 'Ajukan Data';
+            let htmlForm = '';
+
+            // Buat HTML input dinamis berdasarkan tabel riwayatnya
+            if (sheet === 'RIWAYAT_PENDIDIKAN') {
+                formTitle = 'Ajukan Riwayat Pendidikan';
+                htmlForm = `
+                    <input id="swal-in1" class="swal2-input" placeholder="Jenjang (Contoh: S1 / D3)">
+                    <input id="swal-in2" class="swal2-input" placeholder="Nama Instansi/Kampus">
+                    <input id="swal-in3" class="swal2-input" placeholder="Jurusan / Program Studi">
+                    <input id="swal-in4" class="swal2-input" placeholder="Tahun Lulus (Contoh: 2018)">
+                    <label class="block mt-4 mb-1 text-sm text-left px-2 font-bold">File PDF Ijazah (Wajib, Maks 7MB):</label>
+                    <input type="file" id="swal-file" class="swal2-file text-sm" accept="application/pdf">
+                `;
+            } else if (sheet === 'RIWAYAT_PANGKAT') {
+                formTitle = 'Ajukan Riwayat Pangkat';
+                htmlForm = `
+                    <input id="swal-in1" class="swal2-input" placeholder="Pangkat/Golongan">
+                    <input id="swal-in2" class="swal2-input" placeholder="TMT (Contoh: 01-10-2020)">
+                    <input id="swal-in3" class="swal2-input" placeholder="No SK">
+                `;
+            } else if (sheet === 'RIWAYAT_JABATAN') {
+                formTitle = 'Ajukan Riwayat Jabatan';
+                htmlForm = `
+                    <input id="swal-in1" class="swal2-input" placeholder="Nama Jabatan">
+                    <input id="swal-in2" class="swal2-input" placeholder="Eselon">
+                    <input id="swal-in3" class="swal2-input" placeholder="TMT Jabatan">
+                    <input id="swal-in4" class="swal2-input" placeholder="Unit Kerja">
+                `;
+            } else if (sheet === 'RIWAYAT_KGB') {
+                formTitle = 'Ajukan Riwayat KGB';
+                htmlForm = `
+                    <input id="swal-in1" class="swal2-input" placeholder="Golongan">
+                    <input id="swal-in2" class="swal2-input" placeholder="Gaji Pokok Baru">
+                    <input id="swal-in3" class="swal2-input" placeholder="TMT KGB">
+                    <input id="swal-in4" class="swal2-input" placeholder="Nomor SK Dasar">
+                `;
+            } else if (sheet === 'DATA_KELUARGA') {
+                formTitle = 'Ajukan Data Keluarga';
+                htmlForm = `
+                    <input id="swal-in1" class="swal2-input" placeholder="Nama Anggota Keluarga">
+                    <input id="swal-in2" class="swal2-input" placeholder="Status (Contoh: Anak / Istri)">
+                    <input id="swal-in3" class="swal2-input" placeholder="Jenis Kelamin (L/P)">
+                    <input id="swal-in4" class="swal2-input" placeholder="Tunjangan (Ya/Tidak)">
+                `;
+            } else if (sheet === 'IDENTITAS_LAIN') {
+                formTitle = 'Pembaruan Identitas Lain';
+                htmlForm = `
+                    <input id="swal-in1" class="swal2-input" placeholder="NIK (KTP)">
+                    <input id="swal-in2" class="swal2-input" placeholder="Nomor NPWP">
+                    <input id="swal-in3" class="swal2-input" placeholder="Nomor BPJS">
+                    <input id="swal-in4" class="swal2-input" placeholder="Nomor TASPEN">
+                `;
+            }
+
             const { value: formValues } = await Swal.fire({
-                title: 'Ajukan ' + (isPendidikan ? 'Pendidikan' : 'Pangkat'),
-                html: isPendidikan ?
-                    `<input id="swal-input1" class="swal2-input" placeholder="Jenjang (mis: S1)">
-                     <input id="swal-input2" class="swal2-input" placeholder="Instansi">
-                     <input id="swal-input3" class="swal2-input" placeholder="Jurusan">` :
-                    `<input id="swal-input1" class="swal2-input" placeholder="Pangkat/Gol">
-                     <input id="swal-input2" class="swal2-input" placeholder="TMT">
-                     <input id="swal-input3" class="swal2-input" placeholder="No SK">`,
+                title: formTitle,
+                html: htmlForm,
                 focusConfirm: false,
                 showCancelButton: true,
-                preConfirm: () => {
-                    return [
-                        document.getElementById('swal-input1').value,
-                        document.getElementById('swal-input2').value,
-                        document.getElementById('swal-input3').value
-                    ]
+                confirmButtonText: 'Ajukan',
+                preConfirm: async () => {
+                    const vals = [];
+                    for(let i=1; i<=4; i++) {
+                        const el = document.getElementById('swal-in'+i);
+                        if(el) vals.push(el.value || '-');
+                    }
+
+                    // Logika Wajib Upload PDF untuk Pendidikan
+                    if (sheet === 'RIWAYAT_PENDIDIKAN') {
+                        const fileInput = document.getElementById('swal-file');
+                        if (!fileInput.files.length) {
+                            Swal.showValidationMessage('File PDF Ijazah wajib dilampirkan!');
+                            return false;
+                        }
+                        const file = fileInput.files[0];
+                        if (file.type !== 'application/pdf') {
+                            Swal.showValidationMessage('Format file harus berupa PDF!');
+                            return false;
+                        }
+                        if (file.size > 7 * 1024 * 1024) {
+                            Swal.showValidationMessage('Ukuran file PDF tidak boleh lebih dari 7 MB!');
+                            return false;
+                        }
+
+                        // Konversi PDF ke Base64 (Promise)
+                        const base64PDF = await new Promise((resolve) => {
+                            const reader = new FileReader();
+                            reader.onload = (e) => resolve(e.target.result);
+                            reader.readAsDataURL(file);
+                        });
+
+                        Swal.showLoading();
+                        try {
+                            // Mengirim base64 ke Drive untuk dijadikan file utuh
+                            const resFile = await apiCall({
+                                action: 'uploadFile',
+                                nip: STATE.user.nip,
+                                nama: STATE.profile.Nama_Lengkap,
+                                fileBase64: base64PDF,
+                                mimeType: file.type,
+                                filename: `IJAZAH_${STATE.user.nip}_${new Date().getTime()}.pdf`
+                            });
+                            // Tambahkan Link Drive-nya ke array data
+                            vals.push(resFile.fileUrl); 
+                        } catch (err) {
+                            Swal.showValidationMessage('Gagal mengupload file: ' + err.message);
+                            return false;
+                        }
+                    }
+
+                    return vals;
                 }
             });
 
-            if (formValues && formValues[0]) {
-                const nilaiGabungan = formValues.join(' | '); // Gabungkan nilai untuk dikirim
+            if (formValues && formValues.length > 0) {
+                const nilaiGabungan = formValues.join(' | ');
                 showLoader();
                 try {
                     const res = await apiCall({
@@ -722,7 +926,7 @@
                         kolom_target: 'Pengajuan Data Baru',
                         nilai_baru: nilaiGabungan
                     });
-                    Swal.fire('Berhasil', res.message, 'success');
+                    Swal.fire('Berhasil', 'Pengajuan data baru Anda telah masuk ke Antrian untuk diproses Admin.', 'success');
                     fetchMyAntrian();
                 } catch(e) {
                     Swal.fire('Gagal', e.message, 'error');
