@@ -688,16 +688,30 @@
         function renderTablePegawai(data) {
             const tbody = document.getElementById('tbody-pegawai');
             tbody.innerHTML = '';
-            data.forEach(p => {
+            
+            // Urutkan: Aktif dulu, lalu urut abjad
+            const sortedData = [...data].sort((a, b) => {
+                const statusA = (a.Status_Pegawai || 'AKTIF').toUpperCase();
+                const statusB = (b.Status_Pegawai || 'AKTIF').toUpperCase();
+                if (statusA === 'AKTIF' && statusB !== 'AKTIF') return -1;
+                if (statusA !== 'AKTIF' && statusB === 'AKTIF') return 1;
+                
+                const namaA = (a.Nama_Lengkap || '').toUpperCase();
+                const namaB = (b.Nama_Lengkap || '').toUpperCase();
+                return namaA.localeCompare(namaB);
+            });
+
+            sortedData.forEach(p => {
                 if(!p.NIP) return;
+                let statusBadge = p.Status_Pegawai === 'PENSIUN' ? 'bg-gray-200 text-gray-800' : 'bg-green-100 text-green-800';
                 let tr = document.createElement('tr');
                 tr.className = 'border-b border-gray-300 hover:bg-gray-100 hover:text-black transition';
                 tr.innerHTML = `
                     <td class="p-3">${p.NIP}</td>
                     <td class="p-3 font-medium">${p.Nama_Lengkap}</td>
                     <td class="p-3">${p.Jabatan_Terakhir || '-'}</td>
-                    <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded text-xs">${p.Status_Pegawai || 'AKTIF'}</span></td>
-                    <td class="p-3"><button class="text-blue-600 hover:underline"><i class="fas fa-edit"></i> Ubah</button></td>
+                    <td class="p-3"><span class="px-2 py-1 ${statusBadge} rounded text-xs font-bold">${p.Status_Pegawai || 'AKTIF'}</span></td>
+                    <td class="p-3"><button onclick="editPegawaiAdmin('${p.NIP}')" class="text-blue-600 hover:underline bg-blue-50 px-2 py-1 rounded border border-blue-200 shadow-sm"><i class="fas fa-edit"></i> Edit / Aksi</button></td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -710,6 +724,75 @@
                 (p.NIP && String(p.NIP).includes(term))
             );
             renderTablePegawai(filtered);
+        }
+
+        async function editPegawaiAdmin(nip) {
+            if (!['admin', 'superadmin'].includes(STATE.user.role)) return;
+
+            const targetPegawai = STATE.allPegawai.find(p => String(p.NIP) === String(nip));
+            if (!targetPegawai) return;
+
+            const isSuperadmin = STATE.user.role === 'superadmin';
+
+            // Opsi standar
+            let options = {
+                'PROFIL:Status_Pegawai': 'Ubah Status (Aktif/Pensiun)',
+                'PROFIL:Jabatan_Terakhir': 'Ubah Jabatan',
+                'PROFIL:Unit_Kerja': 'Ubah Unit Kerja'
+            };
+
+            // Opsi khusus Superadmin (Role & Blokir)
+            if (isSuperadmin) {
+                options['USERS:Role'] = 'Ubah Role Akun (user/admin)';
+                options['USERS:Status_Akun'] = 'Status Akun (Aktif/Blokir)';
+            }
+
+            const { value: selectedOption } = await Swal.fire({
+                title: `Edit Pegawai`,
+                text: `${targetPegawai.Nama_Lengkap}`,
+                input: 'select',
+                inputOptions: options,
+                inputPlaceholder: 'Pilih data yang ingin diubah',
+                showCancelButton: true
+            });
+
+            if (selectedOption) {
+                const [targetSheet, targetKolom] = selectedOption.split(':');
+                
+                // Gunakan Email SSO sebagai kunci pencarian jika targetnya Sheet USERS
+                const targetKey = targetSheet === 'USERS' ? targetPegawai.Email_SSO : nip;
+
+                if (targetSheet === 'USERS' && !targetKey) {
+                    return Swal.fire('Gagal', 'Pegawai belum menautkan Email SSO. Tidak dapat merubah role/status akun.', 'error');
+                }
+
+                const { value: newVal } = await Swal.fire({
+                    title: `Ubah ${targetKolom.replace('_', ' ')}`,
+                    input: 'text',
+                    inputValue: targetPegawai[targetKolom] || '',
+                    showCancelButton: true
+                });
+
+                if (newVal) {
+                    showLoader();
+                    try {
+                        await apiCall({
+                            action: 'submitUpdate',
+                            executorRole: STATE.user.role,
+                            nip_target: targetKey, 
+                            sheet_target: targetSheet,
+                            kolom_target: targetKolom,
+                            nilai_baru: newVal
+                        });
+                        Swal.fire('Berhasil', 'Data berhasil diperbarui.', 'success');
+                        STATE.allPegawai = []; // Reset cache
+                        fetchAllPegawai(); // Muat ulang tabel
+                    } catch(e) {
+                        Swal.fire('Gagal', e.message, 'error');
+                    }
+                    showLoader(false);
+                }
+            }
         }
 
         // FUNGSI UNTUK MENU ANTRIAN (ADMIN/SUPERADMIN)
@@ -740,9 +823,11 @@
             pendingData.forEach(a => {
                 const tgl = new Date(a.Tgl_Pengajuan).toLocaleDateString('id-ID', {day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
                 
-                // Cek jika Nilai_Baru mengandung URL file untuk memunculkan tombol Lihat
+                // Cek jika Nilai_Baru mengandung URL file untuk memunculkan tombol Lihat atau Base64 Image
                 let displayNilai = a.Nilai_Baru;
-                if(displayNilai.includes('http') && displayNilai.includes('drive')) {
+                if(displayNilai && displayNilai.startsWith('data:image/')) {
+                     displayNilai = `<img src="${displayNilai}" class="w-16 h-16 object-cover rounded cursor-pointer shadow border border-gray-300" onclick="Swal.fire({imageUrl: '${displayNilai}', imageWidth: 400, showConfirmButton: false})" title="Klik untuk memperbesar">`;
+                } else if(displayNilai && displayNilai.includes('http') && displayNilai.includes('drive')) {
                      displayNilai += ` <br><a href="${a.Nilai_Baru.split(' | ').pop()}" target="_blank" class="text-blue-500 underline text-xs">Lihat File Upload</a>`;
                 }
 
