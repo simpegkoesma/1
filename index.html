@@ -388,6 +388,19 @@
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw6dOG2OHt3ioevOsrUSLJOhLJw1EyWn_t1RBnDNiBXKcSfxdUy8i_hklvOAT2Y1RgTEA/exec';
         let STATE = { user: null, profile: null, allPegawai: [], myAntrian: [] };
 
+        // Konfigurasi SweetAlert2 Toast (Notifikasi Pojok Kanan Atas)
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+
         // ==========================================
         // 1. INITIALIZATION & UI LOGIC
         // ==========================================
@@ -743,7 +756,7 @@
 
             // Opsi khusus Superadmin (Role & Blokir)
             if (isSuperadmin) {
-                options['USERS:Role'] = 'Ubah Role Akun (user/admin)';
+                options['USERS:Role'] = 'Ubah Role Akun (user/admin/superadmin)';
                 options['USERS:Status_Akun'] = 'Status Akun (Aktif/Blokir)';
             }
 
@@ -759,11 +772,9 @@
             if (selectedOption) {
                 const [targetSheet, targetKolom] = selectedOption.split(':');
                 
-                // Gunakan Email SSO sebagai kunci pencarian jika targetnya Sheet USERS
-                const targetKey = targetSheet === 'USERS' ? targetPegawai.Email_SSO : nip;
-
-                if (targetSheet === 'USERS' && !targetKey) {
-                    return Swal.fire('Gagal', 'Pegawai belum menautkan Email SSO. Tidak dapat merubah role/status akun.', 'error');
+                // Cek jika Superadmin mau ubah role tapi user belum tautkan akun ke Google
+                if (targetSheet === 'USERS' && targetPegawai.Role === 'Belum Taut Akun') {
+                    return Swal.fire('Gagal', 'Pegawai belum pernah Login / menautkan NIP dengan akun Google. Tidak dapat merubah Role/Status Akun.', 'error');
                 }
 
                 const { value: newVal } = await Swal.fire({
@@ -779,12 +790,14 @@
                         await apiCall({
                             action: 'submitUpdate',
                             executorRole: STATE.user.role,
-                            nip_target: targetKey, 
+                            nip_target: nip, // Cukup lempar NIP, backend otomatis melacaknya!
                             sheet_target: targetSheet,
                             kolom_target: targetKolom,
                             nilai_baru: newVal
                         });
-                        Swal.fire('Berhasil', 'Data berhasil diperbarui.', 'success');
+                        // Menggunakan Toast Notif
+                        Toast.fire({ icon: 'success', title: 'Data berhasil diperbarui.' });
+                        
                         STATE.allPegawai = []; // Reset cache
                         fetchAllPegawai(); // Muat ulang tabel
                     } catch(e) {
@@ -862,7 +875,10 @@
                 showLoader();
                 try {
                     const res = await apiCall({ action: 'processAntrian', id_antrian: id_antrian, action_type: action_type });
-                    Swal.fire('Berhasil', res.message, 'success');
+                    
+                    // Menggunakan Toast Notif
+                    Toast.fire({ icon: 'success', title: res.message });
+                    
                     fetchAllAntrian(); // Refresh tabel setelah diproses
                 } catch(e) {
                     Swal.fire('Gagal', e.message, 'error');
@@ -894,7 +910,9 @@
                         nilai_baru: newVal
                     });
                     
-                    Swal.fire('Berhasil', res.message, 'success');
+                    // Menggunakan Toast Notif
+                    Toast.fire({ icon: 'success', title: 'Pengajuan perubahan berhasil dikirim.' });
+                    
                     if(['admin','superadmin'].includes(STATE.user.role)) {
                         fetchProfile(); // Refresh seketika jika admin (bypass antrian)
                     } else {
@@ -1036,7 +1054,10 @@
                         kolom_target: 'Pengajuan Data Baru',
                         nilai_baru: nilaiGabungan
                     });
-                    Swal.fire('Berhasil', 'Pengajuan data baru Anda telah masuk ke Antrian untuk diproses Admin.', 'success');
+                    
+                    // Menggunakan Toast Notif
+                    Toast.fire({ icon: 'success', title: 'Pengajuan data masuk antrian.' });
+                    
                     fetchMyAntrian();
                 } catch(e) {
                     Swal.fire('Gagal', e.message, 'error');
@@ -1093,7 +1114,10 @@
 
                         document.getElementById('profile-img').src = compressedBase64;
                         if(STATE.profile) STATE.profile.URL_Foto_Profil = compressedBase64;
-                        Swal.fire('Sukses', 'Foto profil berhasil diperbarui', 'success');
+                        
+                        // Menggunakan Toast Notif
+                        Toast.fire({ icon: 'success', title: 'Foto profil diperbarui.' });
+                        
                     } catch(err) {
                         Swal.fire('Error', err.message, 'error');
                     }
