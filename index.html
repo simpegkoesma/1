@@ -286,8 +286,12 @@
 
             if(window.innerWidth < 768) toggleSidebar(); // auto close mobile
             
+            // Simpan state halaman saat ini untuk dukungan Refresh/F5
+            sessionStorage.setItem('simpeg_active_page', pageId);
+            
             // Render logic based on page
             if(pageId === 'data-pegawai') fetchAllPegawai();
+            if(pageId === 'antrian') fetchAllAntrian(); // Panggil data saat menu antrian dibuka
         }
 
         function loadTheme() {
@@ -387,6 +391,11 @@
 
             // Load Profile
             await fetchProfile();
+            
+            // Ambil memori halaman terakhir, jika tidak ada, gunakan 'dashboard'
+            const activePage = sessionStorage.getItem('simpeg_active_page') || 'dashboard';
+            showPage(activePage);
+            
             showLoader(false);
         }
 
@@ -499,6 +508,73 @@
                 (p.NIP && String(p.NIP).includes(term))
             );
             renderTablePegawai(filtered);
+        }
+
+        // FUNGSI UNTUK MENU ANTRIAN (ADMIN/SUPERADMIN)
+        async function fetchAllAntrian() {
+            if (!['admin', 'superadmin'].includes(STATE.user.role)) return;
+            showLoader();
+            try {
+                const res = await apiCall({ action: 'getAllAntrian', role: STATE.user.role });
+                renderTableAntrian(res.data);
+            } catch(e) {
+                Swal.fire('Error', e.message, 'error');
+            }
+            showLoader(false);
+        }
+
+        function renderTableAntrian(data) {
+            const tbody = document.getElementById('tbody-antrian');
+            tbody.innerHTML = '';
+            
+            // Filter hanya data yang statusnya 'Pending'
+            const pendingData = data.filter(a => a.Status === 'Pending');
+
+            if(pendingData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center p-4 opacity-70">Tidak ada pengajuan perubahan data baru.</td></tr>';
+                return;
+            }
+
+            pendingData.forEach(a => {
+                const tgl = new Date(a.Tgl_Pengajuan).toLocaleDateString('id-ID', {day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
+                let tr = document.createElement('tr');
+                tr.className = 'border-b border-gray-300 hover:bg-gray-50';
+                tr.innerHTML = `
+                    <td class="p-2">${tgl}</td>
+                    <td class="p-2 font-bold">${a.NIP}</td>
+                    <td class="p-2 text-blue-600 font-medium">${a.Kolom_Tujuan.replace(/_/g, ' ')}</td>
+                    <td class="p-2">${a.Nilai_Baru}</td>
+                    <td class="p-2 whitespace-nowrap">
+                        <button onclick="prosesAntrian('${a.ID_Antrian}', 'Approved')" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-xs mr-1 shadow"><i class="fas fa-check"></i> Setuju</button>
+                        <button onclick="prosesAntrian('${a.ID_Antrian}', 'Rejected')" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs shadow"><i class="fas fa-times"></i> Tolak</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        async function prosesAntrian(id_antrian, action_type) {
+            const labelAksi = action_type === 'Approved' ? 'menyetujui' : 'menolak';
+            const { isConfirmed } = await Swal.fire({
+                title: 'Konfirmasi',
+                text: `Anda yakin ingin ${labelAksi} pengajuan data ini?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Lanjutkan',
+                cancelButtonText: 'Batal'
+            });
+
+            if (isConfirmed) {
+                showLoader();
+                try {
+                    const res = await apiCall({ action: 'processAntrian', id_antrian: id_antrian, action_type: action_type });
+                    Swal.fire('Berhasil', res.message, 'success');
+                    fetchAllAntrian(); // Refresh tabel setelah diproses
+                } catch(e) {
+                    Swal.fire('Gagal', e.message, 'error');
+                }
+                showLoader(false);
+            }
         }
 
         // ==========================================
