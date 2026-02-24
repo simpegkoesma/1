@@ -868,12 +868,14 @@
             pendingData.forEach(a => {
                 const tgl = new Date(a.Tgl_Pengajuan).toLocaleDateString('id-ID', {day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
                 
+                // PERBAIKAN: Pastikan displayNilai selalu berupa String agar tidak error .startsWith is not a function
+                let displayNilai = a.Nilai_Baru !== undefined && a.Nilai_Baru !== null ? String(a.Nilai_Baru) : '';
+                
                 // Cek jika Nilai_Baru mengandung URL file untuk memunculkan tombol Lihat atau Base64 Image
-                let displayNilai = a.Nilai_Baru;
-                if(displayNilai && displayNilai.startsWith('data:image/')) {
+                if(displayNilai.startsWith('data:image/')) {
                      displayNilai = `<img src="${displayNilai}" class="w-16 h-16 object-cover rounded cursor-pointer shadow border border-gray-300" onclick="Swal.fire({imageUrl: '${displayNilai}', imageWidth: 400, showConfirmButton: false})" title="Klik untuk memperbesar">`;
-                } else if(displayNilai && displayNilai.includes('http') && displayNilai.includes('drive')) {
-                     displayNilai += ` <br><a href="${a.Nilai_Baru.split(' | ').pop()}" target="_blank" class="text-blue-500 underline text-xs">Lihat File Upload</a>`;
+                } else if(displayNilai.includes('http') && displayNilai.includes('drive')) {
+                     displayNilai += ` <br><a href="${displayNilai.split(' | ').pop()}" target="_blank" class="text-blue-500 underline text-xs">Lihat File Upload</a>`;
                 }
 
                 let tr = document.createElement('tr');
