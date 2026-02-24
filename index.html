@@ -1031,15 +1031,132 @@
         }
 
         function exportMyData() {
-            const element = document.getElementById('page-dashboard');
+            if (!STATE.profile) return Swal.fire('Info', 'Data profil belum dimuat', 'info');
+            
+            showLoader(true);
+            
+            // Buat container HTML sementara khusus untuk dirender menjadi PDF (Layout Kertas A4)
+            const cvContainer = document.createElement('div');
+            cvContainer.style.padding = '20px';
+            cvContainer.style.fontFamily = 'Arial, sans-serif';
+            cvContainer.style.color = '#000';
+            cvContainer.style.backgroundColor = '#fff';
+
+            const p = STATE.profile || {};
+            const namaLengkap = (p.Gelar_Depan ? p.Gelar_Depan + ' ' : '') + (p.Nama_Lengkap || '-') + (p.Gelar_Belakang ? ', ' + p.Gelar_Belakang : '');
+            
+            // Fungsi pembantu untuk mengekstrak data dari tabel di DOM dan membersihkan tombol/ikon
+            const extractTable = (tbodyId, colCount) => {
+                const tbody = document.getElementById(tbodyId);
+                if (!tbody || tbody.innerText.includes('Belum ada data') || tbody.innerText.includes('Sedang memuat')) {
+                    return `<tr><td colspan="${colCount}" style="padding:8px; border:1px solid #ddd; text-align:center;">Tidak ada data</td></tr>`;
+                }
+                
+                let rowsHtml = '';
+                for(let tr of tbody.querySelectorAll('tr')) {
+                    let rowHtml = '<tr>';
+                    let tdCount = 0;
+                    for(let td of tr.querySelectorAll('td')) {
+                        if(tdCount >= colCount) break; 
+                        
+                        // Clone elemen TD agar tidak merubah tampilan aslinya di layar
+                        let clone = td.cloneNode(true);
+                        
+                        // Hapus elemen yang tidak perlu dicetak ke PDF (Ikon, Tombol, Link File, Label Status)
+                        let elementsToRemove = clone.querySelectorAll('i, button, a, span.text-xs');
+                        elementsToRemove.forEach(el => el.remove());
+                        
+                        rowHtml += `<td style="padding:8px; border:1px solid #ddd;">${clone.innerText.trim()}</td>`;
+                        tdCount++;
+                    }
+                    rowHtml += '</tr>';
+                    rowsHtml += rowHtml;
+                }
+                return rowsHtml;
+            };
+
+            // Susun Layout HTML khusus untuk di-export ke PDF
+            cvContainer.innerHTML = `
+                <div style="text-align:center; margin-bottom: 20px;">
+                    <h2 style="margin:0; font-size:22px; font-weight:bold;">DAFTAR RIWAYAT HIDUP (CV)</h2>
+                    <h3 style="margin:5px 0 0 0; font-size:18px;">RSUD dr. R. KOESMA KABUPATEN TUBAN</h3>
+                    <hr style="margin-top:15px; border:1px solid #333;">
+                </div>
+                
+                <table style="width:100%; margin-bottom:20px;">
+                    <tr>
+                        <td style="width:130px; vertical-align:top;">
+                            <img src="${p.URL_Foto_Profil || 'https://via.placeholder.com/150'}" style="width:110px; height:140px; object-fit:cover; border:2px solid #333;">
+                        </td>
+                        <td style="vertical-align:top; padding-left:15px;">
+                            <h3 style="margin:0 0 10px 0; font-size:18px; text-transform:uppercase;">${namaLengkap}</h3>
+                            <table style="font-size:13px; text-align:left;">
+                                <tr><td style="padding-bottom:5px; width:100px;"><strong>NIP</strong></td><td style="padding-bottom:5px;">: ${p.NIP || '-'}</td></tr>
+                                <tr><td style="padding-bottom:5px;"><strong>Pangkat/Gol</strong></td><td style="padding-bottom:5px;">: ${p.Pangkat_Golongan || '-'}</td></tr>
+                                <tr><td style="padding-bottom:5px;"><strong>Jabatan</strong></td><td style="padding-bottom:5px;">: ${p.Jabatan_Terakhir || '-'}</td></tr>
+                                <tr><td style="padding-bottom:5px;"><strong>Unit Kerja</strong></td><td style="padding-bottom:5px;">: ${p.Unit_Kerja || '-'}</td></tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+
+                <h4 style="background-color:#f0f0f0; padding:8px; margin:10px 0; border:1px solid #ddd; font-size:14px;">I. KETERANGAN PERORANGAN</h4>
+                <table style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:15px;">
+                    <tr><td style="width:30%; padding:5px; border:1px solid #ddd;">Tempat, Tanggal Lahir</td><td style="padding:5px; border:1px solid #ddd;">${p.Tempat_Lahir || '-'}, ${p.Tgl_Lahir ? new Date(p.Tgl_Lahir).toLocaleDateString('id-ID') : '-'}</td></tr>
+                    <tr><td style="padding:5px; border:1px solid #ddd;">Jenis Kelamin</td><td style="padding:5px; border:1px solid #ddd;">${p.Jenis_Kelamin || '-'}</td></tr>
+                    <tr><td style="padding:5px; border:1px solid #ddd;">Agama</td><td style="padding:5px; border:1px solid #ddd;">${p.Agama || '-'}</td></tr>
+                    <tr><td style="padding:5px; border:1px solid #ddd;">Alamat</td><td style="padding:5px; border:1px solid #ddd;">${p.Alamat_Domisili || '-'}</td></tr>
+                    <tr><td style="padding:5px; border:1px solid #ddd;">No HP</td><td style="padding:5px; border:1px solid #ddd;">${p.No_HP || '-'}</td></tr>
+                    <tr><td style="padding:5px; border:1px solid #ddd;">Jenis ASN</td><td style="padding:5px; border:1px solid #ddd;">${p.Jenis_ASN || '-'}</td></tr>
+                </table>
+
+                <h4 style="background-color:#f0f0f0; padding:8px; margin:10px 0; border:1px solid #ddd; font-size:14px;">II. RIWAYAT PENDIDIKAN</h4>
+                <table style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:15px; text-align:left;">
+                    <thead><tr style="background-color:#eee;"><th style="padding:8px; border:1px solid #ddd;">Jenjang</th><th style="padding:8px; border:1px solid #ddd;">Instansi</th><th style="padding:8px; border:1px solid #ddd;">Jurusan</th><th style="padding:8px; border:1px solid #ddd;">Tahun Lulus</th></tr></thead>
+                    <tbody>${extractTable('tbody-pendidikan', 4)}</tbody>
+                </table>
+
+                <h4 style="background-color:#f0f0f0; padding:8px; margin:10px 0; border:1px solid #ddd; font-size:14px;">III. RIWAYAT PANGKAT / GOLONGAN</h4>
+                <table style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:15px; text-align:left;">
+                    <thead><tr style="background-color:#eee;"><th style="padding:8px; border:1px solid #ddd;">Pangkat/Gol</th><th style="padding:8px; border:1px solid #ddd;">TMT</th><th style="padding:8px; border:1px solid #ddd;">No SK</th><th style="padding:8px; border:1px solid #ddd;">Masa Kerja</th></tr></thead>
+                    <tbody>${extractTable('tbody-pangkat', 4)}</tbody>
+                </table>
+
+                <h4 style="background-color:#f0f0f0; padding:8px; margin:10px 0; border:1px solid #ddd; font-size:14px;">IV. RIWAYAT JABATAN</h4>
+                <table style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:15px; text-align:left;">
+                    <thead><tr style="background-color:#eee;"><th style="padding:8px; border:1px solid #ddd;">Jabatan</th><th style="padding:8px; border:1px solid #ddd;">Eselon</th><th style="padding:8px; border:1px solid #ddd;">TMT</th><th style="padding:8px; border:1px solid #ddd;">Unit Kerja</th></tr></thead>
+                    <tbody>${extractTable('tbody-jabatan', 4)}</tbody>
+                </table>
+
+                <h4 style="background-color:#f0f0f0; padding:8px; margin:10px 0; border:1px solid #ddd; font-size:14px;">V. RIWAYAT KGB</h4>
+                <table style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:15px; text-align:left;">
+                    <thead><tr style="background-color:#eee;"><th style="padding:8px; border:1px solid #ddd;">Golongan</th><th style="padding:8px; border:1px solid #ddd;">Gaji Baru</th><th style="padding:8px; border:1px solid #ddd;">TMT</th><th style="padding:8px; border:1px solid #ddd;">No SK Dasar</th></tr></thead>
+                    <tbody>${extractTable('tbody-kgb', 4)}</tbody>
+                </table>
+
+                <h4 style="background-color:#f0f0f0; padding:8px; margin:10px 0; border:1px solid #ddd; font-size:14px;">VI. DATA KELUARGA</h4>
+                <table style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:15px; text-align:left;">
+                    <thead><tr style="background-color:#eee;"><th style="padding:8px; border:1px solid #ddd;">Nama</th><th style="padding:8px; border:1px solid #ddd;">Status</th><th style="padding:8px; border:1px solid #ddd;">L/P</th><th style="padding:8px; border:1px solid #ddd;">Tunjangan</th></tr></thead>
+                    <tbody>${extractTable('tbody-keluarga', 4)}</tbody>
+                </table>
+            `;
+
+            // Konfigurasi konversi HTML ke PDF
             const opt = {
                 margin:       10,
-                filename:     `CV_${STATE.profile.Nama_Lengkap}.pdf`,
+                filename:     `CV_${namaLengkap}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2 },
+                html2canvas:  { scale: 2, useCORS: true }, // useCORS penting agar foto profil (dari web lain) bisa di-render
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
-            html2pdf().set(opt).from(element).save();
+
+            // Eksekusi print
+            html2pdf().set(opt).from(cvContainer).save().then(() => {
+                showLoader(false);
+            }).catch(err => {
+                showLoader(false);
+                Swal.fire('Error', 'Gagal mencetak PDF: ' + err.message, 'error');
+            });
         }
 
         // ==========================================
