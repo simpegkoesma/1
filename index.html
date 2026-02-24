@@ -130,28 +130,65 @@
                         </div>
                     </div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="card rounded-lg shadow-md p-6">
-                            <div class="flex justify-between items-center mb-4 border-b pb-2 border-gray-200">
-                                <h4 class="font-bold text-lg"><i class="fas fa-id-card mr-2"></i> Data Personal</h4>
+                    <!-- Tabs Navigation Baru -->
+                    <div class="flex space-x-4 border-b border-gray-300 mb-6 overflow-x-auto whitespace-nowrap px-2">
+                        <button id="btn-tab-profil" class="user-tab-btn pb-2 border-b-2 border-blue-600 font-bold text-blue-600" onclick="switchUserTab('profil')">Data Utama</button>
+                        <button id="btn-tab-pendidikan" class="user-tab-btn pb-2 border-b-2 border-transparent text-gray-500 hover:text-blue-500" onclick="switchUserTab('pendidikan')">Riwayat Pendidikan</button>
+                        <button id="btn-tab-pangkat" class="user-tab-btn pb-2 border-b-2 border-transparent text-gray-500 hover:text-blue-500" onclick="switchUserTab('pangkat')">Riwayat Pangkat</button>
+                    </div>
+
+                    <!-- Tab Content: Profil Utama -->
+                    <div id="tab-profil" class="user-tab-content">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="card rounded-lg shadow-md p-6">
+                                <div class="flex justify-between items-center mb-4 border-b pb-2 border-gray-200">
+                                    <h4 class="font-bold text-lg"><i class="fas fa-id-card mr-2"></i> Data Personal</h4>
+                                </div>
+                                <table class="w-full text-sm">
+                                    <tr class="border-b border-gray-100"><td class="py-2 opacity-75">Jabatan Terakhir</td><td id="p-jabatan" class="font-medium">-</td><td class="text-right"><button onclick="editField('PROFIL', 'Jabatan_Terakhir')" class="text-blue-500 hover:text-blue-700"><i class="fas fa-edit"></i></button></td></tr>
+                                    <tr><td class="py-2 opacity-75">Pendidikan</td><td id="p-pendidikan" class="font-medium">-</td><td class="text-right"><button onclick="editField('PROFIL', 'Jenjang_Pendidikan')" class="text-blue-500 hover:text-blue-700"><i class="fas fa-edit"></i></button></td></tr>
+                                </table>
                             </div>
-                            <table class="w-full text-sm">
-                                <tr class="border-b border-gray-100"><td class="py-2 opacity-75 w-1/3">Tempat Lahir</td><td id="p-tempatlahir" class="font-medium">-</td><td class="text-right w-8"><button onclick="editField('PROFIL', 'Tempat_Lahir')" class="text-blue-500 hover:text-blue-700"><i class="fas fa-edit"></i></button></td></tr>
-                                <tr class="border-b border-gray-100"><td class="py-2 opacity-75 w-1/3">Tanggal Lahir</td><td id="p-tgllahir" class="font-medium">-</td><td class="text-right"><button onclick="editField('PROFIL', 'Tgl_Lahir')" class="text-blue-500 hover:text-blue-700"><i class="fas fa-edit"></i></button></td></tr>
-                                <tr class="border-b border-gray-100"><td class="py-2 opacity-75">Jenis Kelamin</td><td id="p-jk" class="font-medium">-</td><td class="text-right"><button onclick="editField('PROFIL', 'Jenis_Kelamin')" class="text-blue-500 hover:text-blue-700"><i class="fas fa-edit"></i></button></td></tr>
-                                <tr class="border-b border-gray-100"><td class="py-2 opacity-75">Agama</td><td id="p-agama" class="font-medium">-</td><td class="text-right"><button onclick="editField('PROFIL', 'Agama')" class="text-blue-500 hover:text-blue-700"><i class="fas fa-edit"></i></button></td></tr>
-                                <tr class="border-b border-gray-100"><td class="py-2 opacity-75">Alamat</td><td id="p-alamat" class="font-medium">-</td><td class="text-right"><button onclick="editField('PROFIL', 'Alamat_Domisili')" class="text-blue-500 hover:text-blue-700"><i class="fas fa-edit"></i></button></td></tr>
-                                <tr><td class="py-2 opacity-75">No HP</td><td id="p-hp" class="font-medium">-</td><td class="text-right"><button onclick="editField('PROFIL', 'No_HP')" class="text-blue-500 hover:text-blue-700"><i class="fas fa-edit"></i></button></td></tr>
-                            </table>
                         </div>
+                    </div>
+
+                    <!-- Tab Content: Pendidikan -->
+                    <div id="tab-pendidikan" class="user-tab-content hidden">
                         <div class="card rounded-lg shadow-md p-6">
-                            <h4 class="font-bold text-lg mb-4 border-b pb-2 border-gray-200"><i class="fas fa-briefcase mr-2"></i> Karir & Jabatan</h4>
-                            <table class="w-full text-sm">
-                                <tr class="border-b border-gray-100"><td class="py-2 opacity-75 w-1/3">Jenis ASN</td><td id="p-jasn" class="font-medium">-</td><td class="text-right w-8"><button onclick="editField('PROFIL', 'Jenis_ASN')" class="text-blue-500 hover:text-blue-700"><i class="fas fa-edit"></i></button></td></tr>
-                                <tr class="border-b border-gray-100"><td class="py-2 opacity-75">Pangkat/Gol</td><td id="p-pangkat" class="font-medium">-</td><td class="text-right"><button onclick="editField('PROFIL', 'Pangkat_Golongan')" class="text-blue-500 hover:text-blue-700"><i class="fas fa-edit"></i></button></td></tr>
-                                <tr class="border-b border-gray-100"><td class="py-2 opacity-75">Jabatan Terakhir</td><td id="p-jabatan" class="font-medium">-</td><td class="text-right"><button onclick="editField('PROFIL', 'Jabatan_Terakhir')" class="text-blue-500 hover:text-blue-700"><i class="fas fa-edit"></i></button></td></tr>
-                                <tr><td class="py-2 opacity-75">Pendidikan</td><td id="p-pendidikan" class="font-medium">-</td><td class="text-right"><button onclick="editField('PROFIL', 'Jenjang_Pendidikan')" class="text-blue-500 hover:text-blue-700"><i class="fas fa-edit"></i></button></td></tr>
-                            </table>
+                            <div class="flex justify-between items-center mb-4 border-b pb-2">
+                                <h4 class="font-bold text-lg"><i class="fas fa-graduation-cap mr-2"></i> Riwayat Pendidikan</h4>
+                                <button onclick="ajukanRiwayat('RIWAYAT_PENDIDIKAN')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm shadow"><i class="fas fa-plus mr-1"></i> Ajukan Data Baru</button>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-sm">
+                                    <thead class="bg-gray-100 text-black">
+                                        <tr><th class="p-2">Jenjang</th><th class="p-2">Instansi</th><th class="p-2">Jurusan</th><th class="p-2">Tahun Lulus</th></tr>
+                                    </thead>
+                                    <tbody id="tbody-pendidikan">
+                                        <tr><td colspan="4" class="text-center p-4 text-gray-500">Data belum tersedia secara otomatis. Silakan ajukan penambahan/perubahan.</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab Content: Pangkat -->
+                    <div id="tab-pangkat" class="user-tab-content hidden">
+                        <div class="card rounded-lg shadow-md p-6">
+                            <div class="flex justify-between items-center mb-4 border-b pb-2">
+                                <h4 class="font-bold text-lg"><i class="fas fa-medal mr-2"></i> Riwayat Pangkat</h4>
+                                <button onclick="ajukanRiwayat('RIWAYAT_PANGKAT')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm shadow"><i class="fas fa-plus mr-1"></i> Ajukan Data Baru</button>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-sm">
+                                    <thead class="bg-gray-100 text-black">
+                                        <tr><th class="p-2">Pangkat/Gol</th><th class="p-2">TMT</th><th class="p-2">No SK</th><th class="p-2">Masa Kerja</th></tr>
+                                    </thead>
+                                    <tbody id="tbody-pangkat">
+                                        <tr><td colspan="4" class="text-center p-4 text-gray-500">Data belum tersedia secara otomatis. Silakan ajukan penambahan/perubahan.</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
 
@@ -613,41 +650,120 @@
             }
         }
 
-        function uploadFoto(input) {
-            if(!input.files[0]) return;
-            const file = input.files[0];
-            const reader = new FileReader();
+        function switchUserTab(tabName) {
+            // Sembunyikan semua tab content
+            document.querySelectorAll('.user-tab-content').forEach(el => el.classList.add('hidden'));
+            // Reset style semua tombol tab
+            document.querySelectorAll('.user-tab-btn').forEach(el => {
+                el.classList.remove('border-blue-600', 'text-blue-600', 'font-bold');
+                el.classList.add('border-transparent', 'text-gray-500');
+            });
             
-            reader.onload = async function() {
-                const base64 = reader.result;
+            // Tampilkan tab terpilih
+            document.getElementById('tab-' + tabName).classList.remove('hidden');
+            const btn = document.getElementById('btn-tab-' + tabName);
+            btn.classList.remove('border-transparent', 'text-gray-500');
+            btn.classList.add('border-blue-600', 'text-blue-600', 'font-bold');
+        }
+
+        async function ajukanRiwayat(sheet) {
+            const isPendidikan = sheet === 'RIWAYAT_PENDIDIKAN';
+            const { value: formValues } = await Swal.fire({
+                title: 'Ajukan ' + (isPendidikan ? 'Pendidikan' : 'Pangkat'),
+                html: isPendidikan ?
+                    `<input id="swal-input1" class="swal2-input" placeholder="Jenjang (mis: S1)">
+                     <input id="swal-input2" class="swal2-input" placeholder="Instansi">
+                     <input id="swal-input3" class="swal2-input" placeholder="Jurusan">` :
+                    `<input id="swal-input1" class="swal2-input" placeholder="Pangkat/Gol">
+                     <input id="swal-input2" class="swal2-input" placeholder="TMT">
+                     <input id="swal-input3" class="swal2-input" placeholder="No SK">`,
+                focusConfirm: false,
+                showCancelButton: true,
+                preConfirm: () => {
+                    return [
+                        document.getElementById('swal-input1').value,
+                        document.getElementById('swal-input2').value,
+                        document.getElementById('swal-input3').value
+                    ]
+                }
+            });
+
+            if (formValues && formValues[0]) {
+                const nilaiGabungan = formValues.join(' | '); // Gabungkan nilai untuk dikirim
                 showLoader();
                 try {
-                    // Upload ke Drive
-                    const resUpload = await apiCall({
-                        action: 'uploadFile',
-                        nip: STATE.user.nip,
-                        nama: STATE.profile.Nama_Lengkap,
-                        fileBase64: base64,
-                        mimeType: file.type,
-                        filename: `FOTO_${STATE.user.nip}.jpg`
-                    });
-
-                    // Update URL ke Sheet
-                    await apiCall({
+                    const res = await apiCall({
                         action: 'submitUpdate',
                         executorRole: STATE.user.role,
                         nip_target: STATE.user.nip,
-                        sheet_target: 'PROFIL',
-                        kolom_target: 'URL_Foto_Profil',
-                        nilai_baru: resUpload.fileUrl
+                        sheet_target: sheet,
+                        kolom_target: 'Pengajuan Data Baru',
+                        nilai_baru: nilaiGabungan
                     });
-
-                    document.getElementById('profile-img').src = resUpload.fileUrl;
-                    Swal.fire('Sukses', 'Foto profil berhasil diperbarui', 'success');
+                    Swal.fire('Berhasil', res.message, 'success');
+                    fetchMyAntrian();
                 } catch(e) {
-                    Swal.fire('Error', e.message, 'error');
+                    Swal.fire('Gagal', e.message, 'error');
                 }
                 showLoader(false);
+            }
+        }
+
+        function uploadFoto(input) {
+            if(!input.files[0]) return;
+            const file = input.files[0];
+            
+            // Batasan 7 MB
+            if(file.size > 7 * 1024 * 1024) {
+                return Swal.fire('Ditolak', 'Ukuran file terlalu besar! Maksimal 7 MB.', 'error');
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = async function() {
+                    // Kompresi Menggunakan Canvas
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 400; // Resize resolusi agar Base64 ringan dan tidak membebani limit sel GSheet
+                    const MAX_HEIGHT = 400;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+                    } else {
+                        if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    // Convert ke Base64 dengan format JPEG dan kualitas 70% (0.7)
+                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
+
+                    showLoader();
+                    try {
+                        // Langsung simpan string Base64 ke dalam sheet kolom URL_Foto_Profil
+                        await apiCall({
+                            action: 'submitUpdate',
+                            executorRole: STATE.user.role,
+                            nip_target: STATE.user.nip,
+                            sheet_target: 'PROFIL',
+                            kolom_target: 'URL_Foto_Profil',
+                            nilai_baru: compressedBase64
+                        });
+
+                        document.getElementById('profile-img').src = compressedBase64;
+                        if(STATE.profile) STATE.profile.URL_Foto_Profil = compressedBase64;
+                        Swal.fire('Sukses', 'Foto profil berhasil diperbarui', 'success');
+                    } catch(err) {
+                        Swal.fire('Error', err.message, 'error');
+                    }
+                    showLoader(false);
+                };
+                img.src = e.target.result;
             };
             reader.readAsDataURL(file);
         }
