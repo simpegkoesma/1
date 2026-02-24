@@ -465,6 +465,28 @@
                         document.getElementById('profile-img').src = STATE.profile.URL_Foto_Profil;
                     }
 
+                    // Render Riwayat Pendidikan
+                    const tbodyPend = document.getElementById('tbody-pendidikan');
+                    tbodyPend.innerHTML = '';
+                    if (res.riwayat_pendidikan && res.riwayat_pendidikan.length > 0) {
+                        res.riwayat_pendidikan.forEach(p => {
+                            tbodyPend.innerHTML += `<tr class="border-b"><td class="p-2">${p.Jenjang||'-'}</td><td class="p-2">${p.Instansi||'-'}</td><td class="p-2">${p.Jurusan||'-'}</td><td class="p-2">${p.Thn_Lulus||'-'}</td></tr>`;
+                        });
+                    } else {
+                        tbodyPend.innerHTML = `<tr><td colspan="4" class="text-center p-4 text-gray-500">Belum ada data pendidikan.</td></tr>`;
+                    }
+
+                    // Render Riwayat Pangkat
+                    const tbodyPangkat = document.getElementById('tbody-pangkat');
+                    tbodyPangkat.innerHTML = '';
+                    if (res.riwayat_pangkat && res.riwayat_pangkat.length > 0) {
+                        res.riwayat_pangkat.forEach(p => {
+                            tbodyPangkat.innerHTML += `<tr class="border-b"><td class="p-2">${p.Pangkat_Gol||'-'}</td><td class="p-2">${p.TMT||'-'}</td><td class="p-2">${p.No_SK||'-'}</td><td class="p-2">${p.Masa_Kerja_Thn||'0'} Thn ${p.Masa_Kerja_Bln||'0'} Bln</td></tr>`;
+                        });
+                    } else {
+                        tbodyPangkat.innerHTML = `<tr><td colspan="4" class="text-center p-4 text-gray-500">Belum ada data pangkat.</td></tr>`;
+                    }
+
                     // Panggil data antrian milik user ini
                     await fetchMyAntrian();
                 }
