@@ -341,6 +341,15 @@
                                 </tbody>
                             </table>
                         </div>
+                        
+                        <!-- Kontainer Paginasi Baru -->
+                        <div class="flex justify-between items-center mt-4 text-sm" id="pagination-container">
+                            <div class="text-gray-500 font-medium" id="pagination-info">Menampilkan 0 data</div>
+                            <div class="flex items-center space-x-1" id="pagination-controls">
+                                <!-- Tombol-tombol paginasi akan dirender oleh JavaScript -->
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
@@ -391,7 +400,9 @@
     <script>
         // CONFIGURATION
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw6dOG2OHt3ioevOsrUSLJOhLJw1EyWn_t1RBnDNiBXKcSfxdUy8i_hklvOAT2Y1RgTEA/exec';
-        let STATE = { user: null, profile: null, allPegawai: [], myAntrian: [] };
+        
+        // PERBAIKAN: Tambahkan variabel state untuk paginasi (rowsPerPage dan currentPage)
+        let STATE = { user: null, profile: null, allPegawai: [], myAntrian: [], filteredPegawai: [], currentPage: 1, rowsPerPage: 15 };
 
         // Konfigurasi SweetAlert2 Toast (Notifikasi Pojok Kanan Atas)
         const Toast = Swal.mixin({
@@ -718,57 +729,120 @@
         }
 
         async function fetchAllPegawai() {
-            if(STATE.allPegawai.length > 0) return; // Cache
+            if(STATE.allPegawai.length > 0) {
+                renderTablePegawai(); // Jika data sudah di-cache, langsung render halaman aktif
+                return;
+            } 
             showLoader();
             try {
                 const res = await apiCall({ action: 'getAllData', role: STATE.user.role });
                 STATE.allPegawai = res.data;
-                renderTablePegawai(STATE.allPegawai);
+                
+                // Urutkan sekali saja setelah fetch data dari database
+                STATE.allPegawai.sort((a, b) => {
+                    const statusA = (a.Status_Pegawai || 'AKTIF').toUpperCase();
+                    const statusB = (b.Status_Pegawai || 'AKTIF').toUpperCase();
+                    if (statusA === 'AKTIF' && statusB !== 'AKTIF') return -1;
+                    if (statusA !== 'AKTIF' && statusB === 'AKTIF') return 1;
+                    
+                    const namaA = (a.Nama_Lengkap || '').toUpperCase();
+                    const namaB = (b.Nama_Lengkap || '').toUpperCase();
+                    return namaA.localeCompare(namaB);
+                });
+
+                // Salin ke filteredPegawai agar tidak merusak data asli
+                STATE.filteredPegawai = [...STATE.allPegawai];
+                STATE.currentPage = 1; // Set ke halaman pertama
+                
+                renderTablePegawai();
             } catch(e) {
                 Swal.fire('Error', e.message, 'error');
             }
             showLoader(false);
         }
 
-        function renderTablePegawai(data) {
+        function renderTablePegawai() {
             const tbody = document.getElementById('tbody-pegawai');
             tbody.innerHTML = '';
             
-            // Urutkan: Aktif dulu, lalu urut abjad
-            const sortedData = [...data].sort((a, b) => {
-                const statusA = (a.Status_Pegawai || 'AKTIF').toUpperCase();
-                const statusB = (b.Status_Pegawai || 'AKTIF').toUpperCase();
-                if (statusA === 'AKTIF' && statusB !== 'AKTIF') return -1;
-                if (statusA !== 'AKTIF' && statusB === 'AKTIF') return 1;
-                
-                const namaA = (a.Nama_Lengkap || '').toUpperCase();
-                const namaB = (b.Nama_Lengkap || '').toUpperCase();
-                return namaA.localeCompare(namaB);
-            });
+            const data = STATE.filteredPegawai;
+            const totalData = data.length;
+            const totalPages = Math.ceil(totalData / STATE.rowsPerPage);
+            
+            // Validasi Nomor Halaman
+            if (STATE.currentPage < 1) STATE.currentPage = 1;
+            if (STATE.currentPage > totalPages && totalPages > 0) STATE.currentPage = totalPages;
+            
+            // Logika Pemotongan Data (Slice)
+            const startIndex = (STATE.currentPage - 1) * STATE.rowsPerPage;
+            const endIndex = Math.min(startIndex + STATE.rowsPerPage, totalData);
+            const paginatedData = data.slice(startIndex, endIndex);
 
-            sortedData.forEach(p => {
-                if(!p.NIP) return;
-                let statusBadge = p.Status_Pegawai === 'PENSIUN' ? 'bg-gray-200 text-gray-800' : 'bg-green-100 text-green-800';
-                let tr = document.createElement('tr');
-                tr.className = 'border-b border-gray-300 hover:bg-gray-100 hover:text-black transition';
-                tr.innerHTML = `
-                    <td class="p-3">${p.NIP}</td>
-                    <td class="p-3 font-medium">${p.Nama_Lengkap}</td>
-                    <td class="p-3">${p.Jabatan_Terakhir || '-'}</td>
-                    <td class="p-3"><span class="px-2 py-1 ${statusBadge} rounded text-xs font-bold">${p.Status_Pegawai || 'AKTIF'}</span></td>
-                    <td class="p-3"><button onclick="editPegawaiAdmin('${p.NIP}')" class="text-blue-600 hover:underline bg-blue-50 px-2 py-1 rounded border border-blue-200 shadow-sm"><i class="fas fa-edit"></i> Edit / Aksi</button></td>
-                `;
-                tbody.appendChild(tr);
-            });
+            if (paginatedData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center p-4 opacity-70">Data pegawai tidak ditemukan.</td></tr>';
+            } else {
+                paginatedData.forEach(p => {
+                    if(!p.NIP) return;
+                    let statusBadge = p.Status_Pegawai === 'PENSIUN' ? 'bg-gray-200 text-gray-800' : 'bg-green-100 text-green-800';
+                    let tr = document.createElement('tr');
+                    tr.className = 'border-b border-gray-300 hover:bg-gray-100 hover:text-black transition';
+                    tr.innerHTML = `
+                        <td class="p-3">${p.NIP}</td>
+                        <td class="p-3 font-medium">${p.Nama_Lengkap}</td>
+                        <td class="p-3">${p.Jabatan_Terakhir || '-'}</td>
+                        <td class="p-3"><span class="px-2 py-1 ${statusBadge} rounded text-xs font-bold">${p.Status_Pegawai || 'AKTIF'}</span></td>
+                        <td class="p-3"><button onclick="editPegawaiAdmin('${p.NIP}')" class="text-blue-600 hover:underline bg-blue-50 px-2 py-1 rounded border border-blue-200 shadow-sm"><i class="fas fa-edit"></i> Edit / Aksi</button></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            // Update Teks Informasi Data
+            document.getElementById('pagination-info').innerText = `Menampilkan ${totalData === 0 ? 0 : startIndex + 1} - ${endIndex} dari ${totalData} Pegawai`;
+            
+            // Render Kontrol Paginasi
+            renderPaginationControls(totalPages);
+        }
+
+        function renderPaginationControls(totalPages) {
+            const container = document.getElementById('pagination-controls');
+            container.innerHTML = '';
+            if (totalPages <= 1) return; // Sembunyikan jika hanya 1 halaman
+
+            // Tombol Previous
+            let btnPrev = document.createElement('button');
+            btnPrev.className = `px-3 py-1 border border-gray-300 rounded mr-2 transition ${STATE.currentPage === 1 ? 'opacity-50 cursor-not-allowed bg-gray-100 text-gray-400' : 'bg-white hover:bg-gray-200 text-black'}`;
+            btnPrev.innerHTML = '<i class="fas fa-chevron-left"></i>';
+            btnPrev.disabled = STATE.currentPage === 1;
+            btnPrev.onclick = () => { STATE.currentPage--; renderTablePegawai(); };
+            container.appendChild(btnPrev);
+
+            // Indikator Halaman (1 / X)
+            let pageIndicator = document.createElement('span');
+            pageIndicator.className = 'px-3 py-1 font-bold text-gray-700 mr-2';
+            pageIndicator.innerText = `${STATE.currentPage} / ${totalPages}`;
+            container.appendChild(pageIndicator);
+
+            // Tombol Next
+            let btnNext = document.createElement('button');
+            btnNext.className = `px-3 py-1 border border-gray-300 rounded transition ${STATE.currentPage === totalPages ? 'opacity-50 cursor-not-allowed bg-gray-100 text-gray-400' : 'bg-white hover:bg-gray-200 text-black'}`;
+            btnNext.innerHTML = '<i class="fas fa-chevron-right"></i>';
+            btnNext.disabled = STATE.currentPage === totalPages;
+            btnNext.onclick = () => { STATE.currentPage++; renderTablePegawai(); };
+            container.appendChild(btnNext);
         }
 
         function filterTablePegawai() {
             const term = document.getElementById('search-pegawai').value.toLowerCase();
-            const filtered = STATE.allPegawai.filter(p => 
+            
+            // Filter dari allPegawai ke filteredPegawai
+            STATE.filteredPegawai = STATE.allPegawai.filter(p => 
                 (p.Nama_Lengkap && p.Nama_Lengkap.toLowerCase().includes(term)) || 
                 (p.NIP && String(p.NIP).includes(term))
             );
-            renderTablePegawai(filtered);
+            
+            STATE.currentPage = 1; // Reset halaman ke 1 setiap kali melakukan pencarian baru
+            renderTablePegawai();
         }
 
         async function editPegawaiAdmin(nip) {
