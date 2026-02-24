@@ -67,7 +67,12 @@
                  data-callback="handleCredentialResponse"
                  data-auto_prompt="false">
             </div>
-            <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="sign_in_with" data-shape="rectangular" data-logo_alignment="left"></div>
+            
+            <!-- Tombol Google Login Dibuat Rata Tengah -->
+            <div class="flex justify-center mt-4 w-full">
+                <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="sign_in_with" data-shape="rectangular" data-logo_alignment="left"></div>
+            </div>
+
         </div>
     </div>
 
@@ -412,6 +417,14 @@
                 STATE.user = JSON.parse(savedUser);
                 showApp();
             }
+
+            // Mendaftarkan event listener untuk tombol back/forward browser
+            window.addEventListener('hashchange', () => {
+                if(STATE.user) {
+                    const hash = window.location.hash.substring(1);
+                    if (hash) showPage(hash, false); // false = jangan push hash lagi
+                }
+            });
         };
 
         function initParticles() {
@@ -426,17 +439,28 @@
             sb.classList.toggle('hidden');
         }
 
-        function showPage(pageId) {
+        function showPage(pageId, updateHash = true) {
+            // Proteksi Routing: Cegah User biasa mengakses menu Admin via URL
+            if (['data-pegawai', 'antrian', 'pengaturan'].includes(pageId) && !['admin', 'superadmin'].includes(STATE.user?.role)) {
+                pageId = 'dashboard';
+            }
+
             document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
-            document.getElementById('page-' + pageId).classList.remove('hidden');
+            const targetPage = document.getElementById('page-' + pageId) || document.getElementById('page-dashboard');
+            targetPage.classList.remove('hidden');
             
             const titles = { 'dashboard':'Profil Saya', 'data-pegawai':'Data Pegawai', 'antrian':'Antrian Update', 'pengaturan':'Pengaturan' };
             document.getElementById('page-title').innerText = titles[pageId] || 'Profil Saya';
 
             if(window.innerWidth < 768) toggleSidebar(); // auto close mobile
             
-            // Simpan state halaman saat ini untuk dukungan Refresh/F5
+            // Simpan state halaman
             sessionStorage.setItem('simpeg_active_page', pageId);
+            
+            // Ubah URL Hash untuk mendukung Refresh / URL sharing (tanpa memuat ulang halaman)
+            if (updateHash) {
+                window.location.hash = pageId;
+            }
             
             // Render logic based on page
             if(pageId === 'data-pegawai') fetchAllPegawai();
@@ -538,6 +562,10 @@
             localStorage.removeItem('simpeg_user');
             sessionStorage.removeItem('simpeg_active_page');
             STATE.user = null;
+            
+            // Bersihkan URL Hash
+            history.pushState("", document.title, window.location.pathname + window.location.search);
+            
             document.getElementById('app-container').style.display = 'none';
             document.getElementById('login-page').style.display = 'flex';
         }
@@ -558,11 +586,15 @@
             // Load Profile
             await fetchProfile();
             
-            // Ambil memori halaman terakhir, jika tidak ada, gunakan 'dashboard'
-            const activePage = sessionStorage.getItem('simpeg_active_page') || 'dashboard';
-            showPage(activePage);
-            // Default select tab profil jika di dashboard
-            if (activePage === 'dashboard') switchUserTab('profil');
+            // Ambil halaman dari URL Hash jika ada, jika tidak, cek session storage, jika tidak default ke dashboard
+            const urlHash = window.location.hash.substring(1);
+            const activePage = urlHash || sessionStorage.getItem('simpeg_active_page') || 'dashboard';
+            
+            // Tampilkan Halaman
+            showPage(activePage, true);
+            
+            // Default select tab profil utama jika di dashboard
+            if (activePage === 'dashboard' || !urlHash) switchUserTab('profil');
             
             showLoader(false);
         }
