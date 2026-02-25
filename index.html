@@ -1124,9 +1124,9 @@
         // --- Fungsi Baru: Edit Spesifik Baris Riwayat ---
         async function editRiwayatRow(idData, sheet) {
             const menuOptions = {
-                'RIWAYAT_PENDIDIKAN': { 'Jenjang': 'Jenjang Pendidikan', 'Instansi': 'Instansi / Kampus', 'Jurusan': 'Jurusan', 'Thn_Lulus': 'Tahun Lulus', 'No_Ijazah': 'Nomor Ijazah', 'Tgl_Ijazah': 'Tanggal Ijazah', 'Pendidikan_Terakhir': 'Pendidikan Terakhir? (Ya/Tidak)' },
-                'RIWAYAT_PANGKAT': { 'Pangkat_Gol': 'Pangkat/Golongan', 'TMT': 'TMT Pangkat', 'No_SK': 'Nomor SK', 'Tgl_SK': 'Tanggal SK', 'Masa_Kerja_Thn': 'Masa Kerja (Thn)' },
-                'RIWAYAT_JABATAN': { 'Jabatan': 'Nama Jabatan', 'Eselon': 'Eselon', 'TMT': 'TMT Jabatan', 'Unit_Kerja': 'Unit Kerja' },
+                'RIWAYAT_PENDIDIKAN': { 'Jenjang': 'Jenjang Pendidikan', 'Instansi': 'Instansi / Kampus', 'Jurusan': 'Jurusan', 'Thn_Lulus': 'Tahun Lulus', 'No_Ijazah': 'Nomor Ijazah', 'Tgl_Ijazah': 'Tanggal Ijazah', 'Pendidikan_Terakhir': 'Pendidikan Terakhir? (Ya/Tidak)', 'File_Ijazah': 'File PDF Ijazah' },
+                'RIWAYAT_PANGKAT': { 'Pangkat_Gol': 'Pangkat/Golongan', 'TMT': 'TMT Pangkat', 'No_SK': 'Nomor SK', 'Tgl_SK': 'Tanggal SK', 'Masa_Kerja_Thn': 'Masa Kerja (Thn)', 'File_SK': 'File PDF SK' },
+                'RIWAYAT_JABATAN': { 'Jabatan': 'Nama Jabatan', 'Eselon': 'Eselon', 'TMT': 'TMT Jabatan', 'Unit_Kerja': 'Unit Kerja', 'File_SK': 'File PDF SK' },
                 'RIWAYAT_KGB': { 'Golongan': 'Golongan KGB', 'Gaji_Baru': 'Gaji Baru', 'KGB_TMT': 'TMT KGB', 'Dasar_Nomor': 'Nomor SK Dasar' },
                 'DATA_KELUARGA': { 'Nama': 'Nama Anggota', 'Status_Keluarga': 'Status (Anak/Istri)', 'L/P': 'L/P', 'Tunjangan': 'Dapat Tunjangan?' }
             };
@@ -1156,9 +1156,59 @@
                 if (selectedKolom === 'Pendidikan_Terakhir' || selectedKolom === 'Tunjangan') { inputType = 'select'; inputOptions = { 'Ya': 'Ya', 'Tidak': 'Tidak' }; }
                 if (selectedKolom === 'L/P') { inputType = 'select'; inputOptions = { 'L': 'L', 'P': 'P' }; }
                 if (selectedKolom.includes('Tgl_')) { inputType = 'date'; }
+                if (selectedKolom.includes('File_')) { inputType = 'file'; } // Otomatis trigger form upload file
 
-                const swalConfig = { title: `Ubah ${kolomOptions[selectedKolom]}`, input: inputType, inputValue: rowData[selectedKolom] || '', showCancelButton: true };
-                if (inputType === 'select') { swalConfig.inputOptions = inputOptions; swalConfig.inputPlaceholder = `-- Pilih --`; }
+                const swalConfig = { title: `Ubah ${kolomOptions[selectedKolom]}`, input: inputType, showCancelButton: true };
+                
+                if (inputType === 'select') { 
+                    swalConfig.inputOptions = inputOptions; 
+                    swalConfig.inputPlaceholder = `-- Pilih --`; 
+                    swalConfig.inputValue = rowData[selectedKolom] || '';
+                } else if (inputType === 'file') {
+                    swalConfig.inputAttributes = { accept: 'application/pdf' };
+                } else {
+                    swalConfig.inputValue = rowData[selectedKolom] || '';
+                }
+
+                // Logika khusus jika yang diubah adalah Lampiran File PDF
+                if (inputType === 'file') {
+                    swalConfig.preConfirm = async (file) => {
+                        if (!file) {
+                            Swal.showValidationMessage('File wajib dipilih!');
+                            return false;
+                        }
+                        if (file.type !== 'application/pdf') {
+                            Swal.showValidationMessage('Format file harus PDF!');
+                            return false;
+                        }
+                        if (file.size > 7 * 1024 * 1024) {
+                            Swal.showValidationMessage('Ukuran file maksimal 7MB!');
+                            return false;
+                        }
+                        
+                        const base64PDF = await new Promise((resolve) => {
+                            const reader = new FileReader();
+                            reader.onload = (e) => resolve(e.target.result);
+                            reader.readAsDataURL(file);
+                        });
+
+                        Swal.showLoading();
+                        try {
+                            const resFile = await apiCall({
+                                action: 'uploadFile',
+                                nip: STATE.user.nip,
+                                nama: STATE.profile.Nama_Lengkap,
+                                fileBase64: base64PDF,
+                                mimeType: file.type,
+                                filename: `UPDATE_${selectedKolom}_${STATE.user.nip}_${new Date().getTime()}.pdf`
+                            });
+                            return resFile.fileUrl; // Kembalikan Link Drive baru untuk disimpan
+                        } catch (err) {
+                            Swal.showValidationMessage('Gagal mengupload file: ' + err.message);
+                            return false;
+                        }
+                    };
+                }
 
                 const { value: newVal } = await Swal.fire(swalConfig);
 
