@@ -360,13 +360,18 @@
                 <!-- Page: Antrian Update (Admin) -->
                 <div id="page-antrian" class="page-content hidden">
                     <div class="card rounded-lg shadow-md p-6">
-                        <div class="flex justify-between mb-4">
+                        <div class="flex justify-between mb-4 items-center flex-col md:flex-row gap-4">
                             <h3 class="font-bold text-lg">Daftar Pengajuan Perubahan Data</h3>
+                            <div id="bulk-action-container" class="hidden flex space-x-2">
+                                <button onclick="prosesBulkAntrian('Approved')" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded text-sm shadow"><i class="fas fa-check-double mr-1"></i> Setujui Terpilih</button>
+                                <button onclick="prosesBulkAntrian('Rejected')" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded text-sm shadow"><i class="fas fa-times-circle mr-1"></i> Tolak Terpilih</button>
+                            </div>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left text-sm">
                                 <thead class="bg-gray-200 text-black">
                                     <tr>
+                                        <th class="p-2 w-10 text-center"><input type="checkbox" id="cb-select-all" onchange="toggleSelectAllAntrian(this)"></th>
                                         <th class="p-2">Tgl Ajuan</th>
                                         <th class="p-2">Nama Pengaju</th>
                                         <th class="p-2">Target Data</th>
@@ -375,7 +380,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="tbody-antrian">
-                                    <tr><td colspan="5" class="text-center p-4">Sedang memuat data...</td></tr>
+                                    <tr><td colspan="6" class="text-center p-4">Sedang memuat data...</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -1028,7 +1033,7 @@
             const pendingData = data.filter(a => a.Status === 'Pending');
 
             if(pendingData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="text-center p-4 opacity-70">Tidak ada pengajuan perubahan data baru.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center p-4 opacity-70">Tidak ada pengajuan perubahan data baru.</td></tr>';
                 return;
             }
 
@@ -1048,6 +1053,7 @@
                 let tr = document.createElement('tr');
                 tr.className = 'border-b border-gray-300 hover:bg-gray-50';
                 tr.innerHTML = `
+                    <td class="p-2 text-center"><input type="checkbox" class="cb-antrian" value="${a.ID_Antrian}" onchange="checkBulkActionVisibility()"></td>
                     <td class="p-2 whitespace-nowrap">${tgl}</td>
                     <td class="p-2 font-bold">${a.Nama_Pengaju} <br><span class="text-xs text-gray-500 font-normal">NIP: ${a.NIP}</span></td>
                     <td class="p-2 text-blue-600 font-medium">${a.Kolom_Tujuan.replace(/_/g, ' ')}</td>
@@ -1059,6 +1065,69 @@
                 `;
                 tbody.appendChild(tr);
             });
+
+            // Pastikan select all tidak tercentang saat memuat ulang data
+            document.getElementById('cb-select-all').checked = false;
+            checkBulkActionVisibility();
+        }
+
+        function toggleSelectAllAntrian(source) {
+            const checkboxes = document.querySelectorAll('.cb-antrian');
+            checkboxes.forEach(cb => cb.checked = source.checked);
+            checkBulkActionVisibility();
+        }
+
+        function checkBulkActionVisibility() {
+            const anyChecked = document.querySelectorAll('.cb-antrian:checked').length > 0;
+            const allCheckboxes = document.querySelectorAll('.cb-antrian').length;
+            const checkedCount = document.querySelectorAll('.cb-antrian:checked').length;
+            
+            const container = document.getElementById('bulk-action-container');
+            const selectAllCb = document.getElementById('cb-select-all');
+            
+            if(anyChecked) {
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+            }
+            
+            // Sync status select all checkbox
+            if (checkedCount === allCheckboxes && allCheckboxes > 0) {
+                selectAllCb.checked = true;
+            } else {
+                selectAllCb.checked = false;
+            }
+        }
+
+        async function prosesBulkAntrian(action_type) {
+            const checkedBoxes = document.querySelectorAll('.cb-antrian:checked');
+            const ids = Array.from(checkedBoxes).map(cb => cb.value);
+            
+            if (ids.length === 0) return;
+
+            const labelAksi = action_type === 'Approved' ? 'MENYETUJUI' : 'MENOLAK';
+            const { isConfirmed } = await Swal.fire({
+                title: 'Konfirmasi Massal',
+                text: `Anda yakin ingin ${labelAksi} ${ids.length} pengajuan data sekaligus?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Lanjutkan',
+                cancelButtonText: 'Batal'
+            });
+
+            if (isConfirmed) {
+                showLoader();
+                try {
+                    const res = await apiCall({ action: 'processBulkAntrian', ids: ids, action_type: action_type });
+                    Toast.fire({ icon: 'success', title: res.message });
+                    document.getElementById('cb-select-all').checked = false;
+                    checkBulkActionVisibility();
+                    fetchAllAntrian(); // Refresh tabel
+                } catch(e) {
+                    Swal.fire('Gagal', e.message, 'error');
+                }
+                showLoader(false);
+            }
         }
 
         async function prosesAntrian(id_antrian, action_type) {
