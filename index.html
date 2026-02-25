@@ -68,7 +68,6 @@
                  data-auto_prompt="false">
             </div>
             
-            <!-- Tombol Google Login Dibuat Rata Tengah -->
             <div class="flex justify-center mt-4 w-full">
                 <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="sign_in_with" data-shape="rectangular" data-logo_alignment="left"></div>
             </div>
@@ -89,19 +88,20 @@
             </div>
             <nav class="flex-1 overflow-y-auto p-2">
                 <div class="text-xs uppercase opacity-50 px-3 mt-2 mb-1">Data Pegawai</div>
-                <div id="nav-tab-profil" class="sidebar-item nav-tab-item p-3 rounded mb-1 flex items-center bg-gray-700 bg-opacity-50" onclick="showPage('dashboard'); switchUserTab('profil')"><i class="fas fa-id-card mr-3 w-5"></i> Profil Utama</div>
-                <div id="nav-tab-pendidikan" class="sidebar-item nav-tab-item p-3 rounded mb-1 flex items-center" onclick="showPage('dashboard'); switchUserTab('pendidikan')"><i class="fas fa-graduation-cap mr-3 w-5"></i> Pendidikan</div>
-                <div id="nav-tab-pangkat" class="sidebar-item nav-tab-item p-3 rounded mb-1 flex items-center" onclick="showPage('dashboard'); switchUserTab('pangkat')"><i class="fas fa-medal mr-3 w-5"></i> Pangkat / Gol</div>
-                <div id="nav-tab-jabatan" class="sidebar-item nav-tab-item p-3 rounded mb-1 flex items-center" onclick="showPage('dashboard'); switchUserTab('jabatan')"><i class="fas fa-briefcase mr-3 w-5"></i> Jabatan</div>
-                <div id="nav-tab-kgb" class="sidebar-item nav-tab-item p-3 rounded mb-1 flex items-center" onclick="showPage('dashboard'); switchUserTab('kgb')"><i class="fas fa-money-bill-wave mr-3 w-5"></i> KGB</div>
-                <div id="nav-tab-keluarga" class="sidebar-item nav-tab-item p-3 rounded mb-1 flex items-center" onclick="showPage('dashboard'); switchUserTab('keluarga')"><i class="fas fa-users mr-3 w-5"></i> Data Keluarga</div>
-                <div id="nav-tab-identitas" class="sidebar-item nav-tab-item p-3 rounded mb-1 flex items-center" onclick="showPage('dashboard'); switchUserTab('identitas')"><i class="fas fa-fingerprint mr-3 w-5"></i> Identitas Lain</div>
+                <!-- Navigasi sekarang menggunakan URL Hash langsung -->
+                <div id="nav-tab-profil" class="sidebar-item p-3 rounded mb-1 flex items-center bg-gray-700 bg-opacity-50" onclick="window.location.hash='profil'"><i class="fas fa-id-card mr-3 w-5"></i> Profil Utama</div>
+                <div id="nav-tab-pendidikan" class="sidebar-item p-3 rounded mb-1 flex items-center" onclick="window.location.hash='pendidikan'"><i class="fas fa-graduation-cap mr-3 w-5"></i> Pendidikan</div>
+                <div id="nav-tab-pangkat" class="sidebar-item p-3 rounded mb-1 flex items-center" onclick="window.location.hash='pangkat'"><i class="fas fa-medal mr-3 w-5"></i> Pangkat / Gol</div>
+                <div id="nav-tab-jabatan" class="sidebar-item p-3 rounded mb-1 flex items-center" onclick="window.location.hash='jabatan'"><i class="fas fa-briefcase mr-3 w-5"></i> Jabatan</div>
+                <div id="nav-tab-kgb" class="sidebar-item p-3 rounded mb-1 flex items-center" onclick="window.location.hash='kgb'"><i class="fas fa-money-bill-wave mr-3 w-5"></i> KGB</div>
+                <div id="nav-tab-keluarga" class="sidebar-item p-3 rounded mb-1 flex items-center" onclick="window.location.hash='keluarga'"><i class="fas fa-users mr-3 w-5"></i> Data Keluarga</div>
+                <div id="nav-tab-identitas" class="sidebar-item p-3 rounded mb-1 flex items-center" onclick="window.location.hash='identitas'"><i class="fas fa-fingerprint mr-3 w-5"></i> Identitas Lain</div>
                 
                 <div id="admin-menu-section" class="hidden">
                     <div class="text-xs uppercase opacity-50 px-3 mt-4 mb-1">Administrator</div>
-                    <div id="menu-data-pegawai" class="sidebar-item p-3 rounded mb-1 flex items-center" onclick="showPage('data-pegawai'); updateNavActive(this)"><i class="fas fa-users-cog mr-3 w-5"></i> Semua Pegawai</div>
-                    <div id="menu-antrian" class="sidebar-item p-3 rounded mb-1 flex items-center" onclick="showPage('antrian'); updateNavActive(this)"><i class="fas fa-tasks mr-3 w-5"></i> Antrian Update</div>
-                    <div id="menu-pengaturan" class="sidebar-item p-3 rounded mb-1 flex items-center" onclick="showPage('pengaturan'); updateNavActive(this)"><i class="fas fa-cog mr-3 w-5"></i> Pengaturan</div>
+                    <div id="menu-data-pegawai" class="sidebar-item p-3 rounded mb-1 flex items-center" onclick="window.location.hash='data-pegawai'"><i class="fas fa-users-cog mr-3 w-5"></i> Semua Pegawai</div>
+                    <div id="menu-antrian" class="sidebar-item p-3 rounded mb-1 flex items-center" onclick="window.location.hash='antrian'"><i class="fas fa-tasks mr-3 w-5"></i> Antrian Update</div>
+                    <div id="menu-pengaturan" class="sidebar-item p-3 rounded mb-1 flex items-center" onclick="window.location.hash='pengaturan'"><i class="fas fa-cog mr-3 w-5"></i> Pengaturan</div>
                 </div>
             </nav>
             <div class="p-4 border-t border-gray-600 text-sm">
@@ -426,7 +426,7 @@
         });
 
         // ==========================================
-        // 1. INITIALIZATION & UI LOGIC
+        // 1. INITIALIZATION & ROUTING LOGIC (SPA)
         // ==========================================
         window.onload = () => {
             initParticles();
@@ -437,14 +437,67 @@
                 showApp();
             }
 
-            // Mendaftarkan event listener untuk tombol back/forward browser
+            // Mendaftarkan event listener untuk Router URL Hash
             window.addEventListener('hashchange', () => {
-                if(STATE.user) {
-                    const hash = window.location.hash.substring(1);
-                    if (hash) showPage(hash, false); // false = jangan push hash lagi
-                }
+                if(STATE.user) handleRouting();
             });
         };
+
+        // Fungsi Routing Sentral
+        function handleRouting() {
+            let hash = window.location.hash.substring(1) || 'profil';
+
+            // Proteksi Routing untuk halaman Admin
+            if (['data-pegawai', 'antrian', 'pengaturan'].includes(hash) && !['admin', 'superadmin'].includes(STATE.user?.role)) {
+                hash = 'profil';
+                window.location.hash = hash;
+                return;
+            }
+
+            // Sembunyikan seluruh halaman
+            document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
+
+            // Tentukan Page ID tujuan
+            let pageId = 'dashboard'; // Dashboard adalah container untuk semua tab user (profil, pendidikan, dsb)
+            if (['data-pegawai', 'antrian', 'pengaturan'].includes(hash)) {
+                pageId = hash;
+            }
+
+            // Tampilkan halaman
+            document.getElementById('page-' + pageId).classList.remove('hidden');
+
+            // Set Judul Halaman
+            const titles = { 
+                'profil':'Profil Utama', 'pendidikan':'Pendidikan', 'pangkat':'Pangkat / Gol',
+                'jabatan':'Jabatan', 'kgb':'KGB', 'keluarga':'Data Keluarga', 'identitas':'Identitas Lain',
+                'data-pegawai':'Data Pegawai', 'antrian':'Antrian Update', 'pengaturan':'Pengaturan' 
+            };
+            document.getElementById('page-title').innerText = titles[hash] || 'Profil Saya';
+
+            // Logika khusus: Jika ini halaman dashboard, tentukan tab mana yang aktif
+            if (pageId === 'dashboard') {
+                document.querySelectorAll('.user-tab-content').forEach(el => el.classList.add('hidden'));
+                const targetTab = document.getElementById('tab-' + hash);
+                if (targetTab) targetTab.classList.remove('hidden');
+            }
+
+            // Update Highlight Sidebar Aktif
+            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('bg-gray-700', 'bg-opacity-50'));
+            const activeNav = document.getElementById('nav-tab-' + hash) || document.getElementById('menu-' + hash);
+            if(activeNav) activeNav.classList.add('bg-gray-700', 'bg-opacity-50');
+
+            // Auto-close sidebar di mode mobile setelah klik menu
+            if(window.innerWidth < 768 && !document.getElementById('sidebar').classList.contains('hidden')) {
+                toggleSidebar();
+            }
+
+            // Panggil API Fetch jika membuka halaman spesifik admin
+            if(hash === 'data-pegawai') fetchAllPegawai();
+            if(hash === 'antrian') fetchAllAntrian();
+            
+            // Simpan posisi terakhir pengguna
+            sessionStorage.setItem('simpeg_active_hash', hash);
+        }
 
         function initParticles() {
             particlesJS("particles-js", {
@@ -456,52 +509,6 @@
         function toggleSidebar() {
             const sb = document.getElementById('sidebar');
             sb.classList.toggle('hidden');
-        }
-
-        function showPage(pageId, updateHash = true) {
-            // Proteksi Routing: Cegah User biasa mengakses menu Admin via URL
-            if (['data-pegawai', 'antrian', 'pengaturan'].includes(pageId) && !['admin', 'superadmin'].includes(STATE.user?.role)) {
-                pageId = 'dashboard';
-            }
-
-            document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
-            const targetPage = document.getElementById('page-' + pageId) || document.getElementById('page-dashboard');
-            targetPage.classList.remove('hidden');
-            
-            const titles = { 'dashboard':'Profil Saya', 'data-pegawai':'Data Pegawai', 'antrian':'Antrian Update', 'pengaturan':'Pengaturan' };
-            document.getElementById('page-title').innerText = titles[pageId] || 'Profil Saya';
-
-            if(window.innerWidth < 768) toggleSidebar(); // auto close mobile
-            
-            // Simpan state halaman
-            sessionStorage.setItem('simpeg_active_page', pageId);
-            
-            // Ubah URL Hash untuk mendukung Refresh / URL sharing (tanpa memuat ulang halaman)
-            if (updateHash) {
-                window.location.hash = pageId;
-            }
-            
-            // Render logic based on page
-            if(pageId === 'data-pegawai') fetchAllPegawai();
-            if(pageId === 'antrian') fetchAllAntrian(); // Panggil data saat menu antrian dibuka
-        }
-
-        function updateNavActive(element) {
-            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('bg-gray-700', 'bg-opacity-50'));
-            if(element) element.classList.add('bg-gray-700', 'bg-opacity-50');
-        }
-
-        function switchUserTab(tabName) {
-            // Sembunyikan semua konten tab user
-            document.querySelectorAll('.user-tab-content').forEach(el => el.classList.add('hidden'));
-            const targetTab = document.getElementById('tab-' + tabName);
-            if(targetTab) targetTab.classList.remove('hidden');
-            
-            // Highlight active navbar item di sidebar
-            document.querySelectorAll('.nav-tab-item').forEach(el => el.classList.remove('bg-gray-700', 'bg-opacity-50'));
-            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('bg-gray-700', 'bg-opacity-50')); // reset admin menu styles too
-            const activeNav = document.getElementById('nav-tab-' + tabName);
-            if(activeNav) activeNav.classList.add('bg-gray-700', 'bg-opacity-50');
         }
 
         function loadTheme() {
@@ -579,7 +586,7 @@
 
         function logout() {
             localStorage.removeItem('simpeg_user');
-            sessionStorage.removeItem('simpeg_active_page');
+            sessionStorage.removeItem('simpeg_active_hash');
             STATE.user = null;
             
             // Bersihkan URL Hash
@@ -605,15 +612,15 @@
             // Load Profile
             await fetchProfile();
             
-            // Ambil halaman dari URL Hash jika ada, jika tidak, cek session storage, jika tidak default ke dashboard
+            // Panggil Router untuk menampilkan UI berdasarkan URL / Memory saat ini
             const urlHash = window.location.hash.substring(1);
-            const activePage = urlHash || sessionStorage.getItem('simpeg_active_page') || 'dashboard';
+            const savedHash = sessionStorage.getItem('simpeg_active_hash');
             
-            // Tampilkan Halaman
-            showPage(activePage, true);
-            
-            // Default select tab profil utama jika di dashboard
-            if (activePage === 'dashboard' || !urlHash) switchUserTab('profil');
+            if (!urlHash) {
+                window.location.hash = savedHash || 'profil';
+            } else {
+                handleRouting();
+            }
             
             showLoader(false);
         }
@@ -1099,7 +1106,7 @@
                         <option value="Strata 2">Strata 2</option>
                         <option value="Strata 3">Strata 3</option>
                     </select>
-                    <input id="swal-in2" class="swal2-input text-sm" placeholder="Nama Sekolah/Kampus">
+                    <input id="swal-in2" class="swal2-input text-sm" placeholder="Nama Instansi/Kampus">
                     <input id="swal-in3" class="swal2-input text-sm" placeholder="Jurusan / Program Studi">
                     <input id="swal-in4" class="swal2-input text-sm" type="number" placeholder="Tahun Lulus (Contoh: 2018)">
                     <input id="swal-in5" class="swal2-input text-sm" placeholder="Nomor Ijazah">
