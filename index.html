@@ -1203,9 +1203,27 @@
             const { value: newVal } = await Swal.fire(swalConfig);
 
             if (newVal !== undefined && newVal !== currentValue && newVal !== "") {
+                let finalVal = newVal;
+
+                // --- Formatter Khusus Nomor HP ---
+                if (kolom === 'No_HP') {
+                    // Hapus semua karakter selain angka (seperti -, +, spasi)
+                    finalVal = finalVal.replace(/\D/g, ''); 
+                    
+                    // Standardisasi ke awalan 62
+                    if (finalVal.startsWith('0')) {
+                        finalVal = '62' + finalVal.slice(1); // Ubah 0 di depan jadi 62
+                    } else if (finalVal.startsWith('8')) {
+                        finalVal = '62' + finalVal; // Tambahkan 62 jika langsung diawali 8
+                    } else if (!finalVal.startsWith('62')) {
+                        finalVal = '62' + finalVal; // Paksa awalan 62 untuk kasus lainnya
+                    }
+                }
+                // ---------------------------------
+
                 showLoader();
                 try {
-                    await apiCall({ action: 'submitUpdate', executorRole: STATE.user.role, nip_target: STATE.user.nip, sheet_target: sheet, kolom_target: kolom, nilai_baru: newVal });
+                    await apiCall({ action: 'submitUpdate', executorRole: STATE.user.role, nip_target: STATE.user.nip, sheet_target: sheet, kolom_target: kolom, nilai_baru: finalVal });
                     Toast.fire({ icon: 'success', title: 'Pengajuan perubahan berhasil dikirim.' });
                     
                     if(['admin','superadmin'].includes(STATE.user.role)) { fetchProfile(); } 
