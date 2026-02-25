@@ -674,10 +674,17 @@
                 if(!res.data || res.data.length === 0) { tbody.innerHTML = '<tr><td colspan="4" class="text-center p-4 opacity-70">Belum ada pengajuan perubahan data.</td></tr>'; return; }
                 res.data.reverse().forEach(a => {
                     let statusColor = 'bg-yellow-100 text-yellow-800'; let statusIcon = '<i class="fas fa-clock"></i> Pending';
+                    let textAlasan = '';
+                    
                     if(a.Status === 'Approved') { statusColor = 'bg-green-100 text-green-800'; statusIcon = '<i class="fas fa-check"></i> Disetujui'; }
-                    if(a.Status === 'Rejected') { statusColor = 'bg-red-100 text-red-800'; statusIcon = '<i class="fas fa-times"></i> Ditolak'; }
+                    if(a.Status === 'Rejected') { 
+                        statusColor = 'bg-red-100 text-red-800'; 
+                        statusIcon = '<i class="fas fa-times"></i> Ditolak'; 
+                        if(a.Alasan_Tolak) textAlasan = `<div class="mt-1 text-xs text-red-600 bg-red-50 p-1 border border-red-200 rounded"><b>Alasan:</b> ${a.Alasan_Tolak}</div>`;
+                    }
+                    
                     const tgl = new Date(a.Tgl_Pengajuan).toLocaleDateString('id-ID', {day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
-                    tbody.innerHTML += `<tr class="border-b border-gray-300 hover:bg-gray-50"><td class="p-2 whitespace-nowrap">${tgl}</td><td class="p-2 font-medium text-blue-600">${a.Kolom_Tujuan.replace(/_/g, ' ')}</td><td class="p-2 max-w-xs truncate" title="${a.Nilai_Baru}">${a.Nilai_Baru}</td><td class="p-2"><span class="px-2 py-1 ${statusColor} rounded text-xs whitespace-nowrap">${statusIcon}</span></td></tr>`;
+                    tbody.innerHTML += `<tr class="border-b border-gray-300 hover:bg-gray-50"><td class="p-2 whitespace-nowrap align-top">${tgl}</td><td class="p-2 font-medium text-blue-600 align-top">${a.Kolom_Tujuan.replace(/_/g, ' ')}</td><td class="p-2 max-w-xs truncate align-top" title="${a.Nilai_Baru}">${a.Nilai_Baru}</td><td class="p-2 align-top"><span class="px-2 py-1 ${statusColor} rounded text-xs whitespace-nowrap inline-block">${statusIcon}</span>${textAlasan}</td></tr>`;
                 });
             } catch (err) { console.error(err); }
         }
@@ -804,31 +811,71 @@
             const checkedBoxes = document.querySelectorAll('.cb-antrian:checked'); const ids = Array.from(checkedBoxes).map(cb => cb.value);
             if (ids.length === 0) return;
 
-            const labelAksi = action_type === 'Approved' ? 'MENYETUJUI' : 'MENOLAK';
-            const { isConfirmed } = await Swal.fire({ title: 'Konfirmasi Massal', text: `Anda yakin ingin ${labelAksi} ${ids.length} pengajuan data sekaligus?`, icon: 'warning', showCancelButton: true, confirmButtonText: 'Ya, Lanjutkan', cancelButtonText: 'Batal' });
+            let alasan_tolak = '';
+            
+            if (action_type === 'Rejected') {
+                const { value: alasan, isConfirmed: isRejectedConfirmed } = await Swal.fire({
+                    title: 'Tolak Pengajuan Massal',
+                    text: `Tulis alasan penolakan untuk ${ids.length} pengajuan ini:`,
+                    input: 'textarea',
+                    inputPlaceholder: 'Tulis alasan penolakan di sini...',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Tolak Semua',
+                    cancelButtonText: 'Batal',
+                    inputValidator: (value) => {
+                        if (!value) return 'Alasan penolakan tidak boleh kosong!'
+                    }
+                });
 
-            if (isConfirmed) {
-                showLoader();
-                try {
-                    const res = await apiCall({ action: 'processBulkAntrian', ids: ids, action_type: action_type });
-                    Toast.fire({ icon: 'success', title: res.message }); document.getElementById('cb-select-all').checked = false; checkBulkActionVisibility(); fetchAllAntrian(); 
-                } catch(e) { Swal.fire('Gagal', e.message, 'error'); }
-                showLoader(false);
+                if (!isRejectedConfirmed) return;
+                alasan_tolak = alasan;
+            } else {
+                const labelAksi = 'MENYETUJUI';
+                const { isConfirmed } = await Swal.fire({ title: 'Konfirmasi Massal', text: `Anda yakin ingin ${labelAksi} ${ids.length} pengajuan data sekaligus?`, icon: 'warning', showCancelButton: true, confirmButtonText: 'Ya, Lanjutkan', cancelButtonText: 'Batal' });
+                if (!isConfirmed) return;
             }
+
+            showLoader();
+            try {
+                const res = await apiCall({ action: 'processBulkAntrian', ids: ids, action_type: action_type, alasan_tolak: alasan_tolak });
+                Toast.fire({ icon: 'success', title: res.message }); document.getElementById('cb-select-all').checked = false; checkBulkActionVisibility(); fetchAllAntrian(); 
+            } catch(e) { Swal.fire('Gagal', e.message, 'error'); }
+            showLoader(false);
         }
 
         async function prosesAntrian(id_antrian, action_type) {
-            const labelAksi = action_type === 'Approved' ? 'menyetujui' : 'menolak';
-            const { isConfirmed } = await Swal.fire({ title: 'Konfirmasi', text: `Anda yakin ingin ${labelAksi} pengajuan data ini?`, icon: 'warning', showCancelButton: true, confirmButtonText: 'Ya, Lanjutkan', cancelButtonText: 'Batal' });
+            let alasan_tolak = '';
+            
+            if (action_type === 'Rejected') {
+                const { value: alasan, isConfirmed: isRejectedConfirmed } = await Swal.fire({
+                    title: 'Tolak Pengajuan',
+                    text: 'Silakan tulis alasan penolakan agar user tahu penyebabnya:',
+                    input: 'textarea',
+                    inputPlaceholder: 'Tulis alasan penolakan di sini...',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Tolak Pengajuan',
+                    cancelButtonText: 'Batal',
+                    inputValidator: (value) => {
+                        if (!value) return 'Alasan penolakan tidak boleh kosong!'
+                    }
+                });
 
-            if (isConfirmed) {
-                showLoader();
-                try {
-                    const res = await apiCall({ action: 'processAntrian', id_antrian: id_antrian, action_type: action_type });
-                    Toast.fire({ icon: 'success', title: res.message }); fetchAllAntrian(); 
-                } catch(e) { Swal.fire('Gagal', e.message, 'error'); }
-                showLoader(false);
+                if (!isRejectedConfirmed) return;
+                alasan_tolak = alasan;
+            } else {
+                const labelAksi = 'menyetujui';
+                const { isConfirmed } = await Swal.fire({ title: 'Konfirmasi', text: `Anda yakin ingin ${labelAksi} pengajuan data ini?`, icon: 'warning', showCancelButton: true, confirmButtonText: 'Ya, Lanjutkan', cancelButtonText: 'Batal' });
+                if (!isConfirmed) return;
             }
+
+            showLoader();
+            try {
+                const res = await apiCall({ action: 'processAntrian', id_antrian: id_antrian, action_type: action_type, alasan_tolak: alasan_tolak });
+                Toast.fire({ icon: 'success', title: res.message }); fetchAllAntrian(); 
+            } catch(e) { Swal.fire('Gagal', e.message, 'error'); }
+            showLoader(false);
         }
 
         // ==========================================
