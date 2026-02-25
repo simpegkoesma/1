@@ -92,11 +92,10 @@
                 <div id="nav-tab-pendidikan" class="sidebar-item p-3 rounded mb-1 flex items-center" onclick="window.location.hash='pendidikan'"><i class="fas fa-graduation-cap mr-3 w-5"></i> Pendidikan</div>
                 <div id="nav-tab-pangkat" class="sidebar-item p-3 rounded mb-1 flex items-center" onclick="window.location.hash='pangkat'"><i class="fas fa-medal mr-3 w-5"></i> Pangkat / Gol</div>
                 <div id="nav-tab-jabatan" class="sidebar-item p-3 rounded mb-1 flex items-center" onclick="window.location.hash='jabatan'"><i class="fas fa-briefcase mr-3 w-5"></i> Jabatan</div>
-                <!-- Menu Pengembangan Kompetensi -->
                 <div id="nav-tab-kompetensi" class="sidebar-item p-3 rounded mb-1 flex items-center" onclick="window.location.hash='kompetensi'"><i class="fas fa-certificate mr-3 w-5"></i> Pengembangan Kompetensi</div>
                 <div id="nav-tab-kgb" class="sidebar-item p-3 rounded mb-1 flex items-center" onclick="window.location.hash='kgb'"><i class="fas fa-money-bill-wave mr-3 w-5"></i> KGB</div>
                 <div id="nav-tab-keluarga" class="sidebar-item p-3 rounded mb-1 flex items-center" onclick="window.location.hash='keluarga'"><i class="fas fa-users mr-3 w-5"></i> Data Keluarga</div>
-                <div id="nav-tab-identitas" class="sidebar-item p-3 rounded mb-1 flex items-center" onclick="window.location.hash='identitas'"><i class="fas fa-fingerprint mr-3 w-5"></i> Identitas Lain</div>
+                <div id="nav-tab-identitas" class="sidebar-item p-3 rounded mb-1 flex items-center" onclick="window.location.hash='identitas'"><i class="fas fa-fingerprint mr-3 w-5"></i> Identitas Lain & Kartu</div>
                 
                 <div id="admin-menu-section" class="hidden">
                     <div class="text-xs uppercase opacity-50 px-3 mt-4 mb-1">Administrator</div>
@@ -151,6 +150,7 @@
 
                     <!-- Tab Content: Profil Utama -->
                     <div id="tab-profil" class="user-tab-content">
+                        <!-- ... (Isi tab-profil tetap sama seperti sebelumnya) ... -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="card rounded-lg shadow-md p-6">
                                 <div class="flex justify-between items-center mb-4 border-b pb-2 border-gray-200">
@@ -175,19 +175,12 @@
                                 </table>
                             </div>
                         </div>
-
-                        <!-- Riwayat Antrian User -->
                         <div class="card rounded-lg shadow-md p-6 mt-6">
                             <h4 class="font-bold text-lg mb-4 border-b pb-2 border-gray-200"><i class="fas fa-history mr-2 text-blue-500"></i> Riwayat Pengajuan Perubahan Data</h4>
                             <div class="overflow-x-auto">
                                 <table class="w-full text-left text-sm">
                                     <thead class="bg-gray-200 text-black">
-                                        <tr>
-                                            <th class="p-2">Tgl Ajuan</th>
-                                            <th class="p-2">Data/Kolom Target</th>
-                                            <th class="p-2">Nilai Diajukan</th>
-                                            <th class="p-2">Status</th>
-                                        </tr>
+                                        <tr><th class="p-2">Tgl Ajuan</th><th class="p-2">Data/Kolom Target</th><th class="p-2">Nilai Diajukan</th><th class="p-2">Status</th></tr>
                                     </thead>
                                     <tbody id="tbody-my-antrian">
                                         <tr><td colspan="4" class="text-center p-4">Sedang memuat data...</td></tr>
@@ -199,6 +192,7 @@
 
                     <!-- Tab Content: Pendidikan -->
                     <div id="tab-pendidikan" class="user-tab-content hidden">
+                        <!-- ... (Isi tab-pendidikan tetap sama) ... -->
                         <div class="card rounded-lg shadow-md p-6">
                             <div class="flex justify-between items-center mb-4 border-b pb-2">
                                 <h4 class="font-bold text-lg"><i class="fas fa-graduation-cap mr-2 text-blue-500"></i> Riwayat Pendidikan</h4>
@@ -207,17 +201,7 @@
                             <div class="overflow-x-auto">
                                 <table class="w-full text-left text-sm">
                                     <thead class="bg-gray-100 text-black whitespace-nowrap">
-                                        <tr>
-                                            <th class="p-2">Jenjang</th>
-                                            <th class="p-2">Instansi</th>
-                                            <th class="p-2">Jurusan</th>
-                                            <th class="p-2">Thn Lulus</th>
-                                            <th class="p-2">No. Ijazah</th>
-                                            <th class="p-2">Tgl Ijazah</th>
-                                            <th class="p-2">Pdd. Terakhir</th>
-                                            <th class="p-2">File</th>
-                                            <th class="p-2 text-center">Aksi</th>
-                                        </tr>
+                                        <tr><th class="p-2">Jenjang</th><th class="p-2">Instansi</th><th class="p-2">Jurusan</th><th class="p-2">Thn Lulus</th><th class="p-2">No. Ijazah</th><th class="p-2">Tgl Ijazah</th><th class="p-2">Pdd. Terakhir</th><th class="p-2">File</th><th class="p-2 text-center">Aksi</th></tr>
                                     </thead>
                                     <tbody id="tbody-pendidikan">
                                         <tr><td colspan="9" class="text-center p-4 text-gray-500">Sedang memuat...</td></tr>
@@ -237,16 +221,7 @@
                             <div class="overflow-x-auto">
                                 <table class="w-full text-left text-sm whitespace-nowrap">
                                     <thead class="bg-gray-100 text-black">
-                                        <tr>
-                                            <th class="p-2">Pangkat/Gol</th>
-                                            <th class="p-2">No SK</th>
-                                            <th class="p-2">TMT</th>
-                                            <th class="p-2">Tgl SK</th>
-                                            <th class="p-2">Masa Kerja</th>
-                                            <th class="p-2">Pangkat Sekarang</th>
-                                            <th class="p-2">File SK</th>
-                                            <th class="p-2 text-center">Aksi</th>
-                                        </tr>
+                                        <tr><th class="p-2">Pangkat/Gol</th><th class="p-2">No SK</th><th class="p-2">TMT</th><th class="p-2">Tgl SK</th><th class="p-2">Masa Kerja</th><th class="p-2">Pangkat Sekarang</th><th class="p-2">File SK</th><th class="p-2 text-center">Aksi</th></tr>
                                     </thead>
                                     <tbody id="tbody-pangkat">
                                         <tr><td colspan="8" class="text-center p-4 text-gray-500">Sedang memuat...</td></tr>
@@ -266,16 +241,7 @@
                             <div class="overflow-x-auto">
                                 <table class="w-full text-left text-sm whitespace-nowrap">
                                     <thead class="bg-gray-100 text-black">
-                                        <tr>
-                                            <th class="p-2">Jenis Jabatan</th>
-                                            <th class="p-2">Nama Jabatan</th>
-                                            <th class="p-2">Eselon</th>
-                                            <th class="p-2">Unit Kerja</th>
-                                            <th class="p-2">TMT Pelantikan</th>
-                                            <th class="p-2">Jabatan Sekarang</th>
-                                            <th class="p-2">File SK</th>
-                                            <th class="p-2 text-center">Aksi</th>
-                                        </tr>
+                                        <tr><th class="p-2">Jenis Jabatan</th><th class="p-2">Nama Jabatan</th><th class="p-2">Eselon</th><th class="p-2">Unit Kerja</th><th class="p-2">TMT Pelantikan</th><th class="p-2">Jabatan Sekarang</th><th class="p-2">File SK</th><th class="p-2 text-center">Aksi</th></tr>
                                     </thead>
                                     <tbody id="tbody-jabatan">
                                         <tr><td colspan="8" class="text-center p-4 text-gray-500">Sedang memuat...</td></tr>
@@ -295,17 +261,7 @@
                             <div class="overflow-x-auto">
                                 <table class="w-full text-left text-sm whitespace-nowrap">
                                     <thead class="bg-gray-100 text-black">
-                                        <tr>
-                                            <th class="p-2">Jenis Diklat</th>
-                                            <th class="p-2">Nama Diklat</th>
-                                            <th class="p-2">Pelaksanaan</th>
-                                            <th class="p-2">JP</th>
-                                            <th class="p-2">Penyelenggara</th>
-                                            <th class="p-2">Anggaran</th>
-                                            <th class="p-2">No. Sertifikat</th>
-                                            <th class="p-2">File</th>
-                                            <th class="p-2 text-center">Aksi</th>
-                                        </tr>
+                                        <tr><th class="p-2">Jenis Diklat</th><th class="p-2">Nama Diklat</th><th class="p-2">Pelaksanaan</th><th class="p-2">JP</th><th class="p-2">Penyelenggara</th><th class="p-2">Anggaran</th><th class="p-2">No. Sertifikat</th><th class="p-2">File</th><th class="p-2 text-center">Aksi</th></tr>
                                     </thead>
                                     <tbody id="tbody-kompetensi">
                                         <tr><td colspan="9" class="text-center p-4 text-gray-500">Sedang memuat...</td></tr>
@@ -325,17 +281,7 @@
                             <div class="overflow-x-auto">
                                 <table class="w-full text-left text-sm whitespace-nowrap">
                                     <thead class="bg-gray-100 text-black">
-                                        <tr>
-                                            <th class="p-2">Golongan</th>
-                                            <th class="p-2">No SK KGB</th>
-                                            <th class="p-2">TMT KGB</th>
-                                            <th class="p-2">Tanggal KGB</th>
-                                            <th class="p-2">Masa Kerja</th>
-                                            <th class="p-2">Gaji Baru</th>
-                                            <th class="p-2">Dasar KGB</th>
-                                            <th class="p-2">File SK</th>
-                                            <th class="p-2 text-center">Aksi</th>
-                                        </tr>
+                                        <tr><th class="p-2">Golongan</th><th class="p-2">No SK KGB</th><th class="p-2">TMT KGB</th><th class="p-2">Tanggal KGB</th><th class="p-2">Masa Kerja</th><th class="p-2">Gaji Baru</th><th class="p-2">Dasar KGB</th><th class="p-2">File SK</th><th class="p-2 text-center">Aksi</th></tr>
                                     </thead>
                                     <tbody id="tbody-kgb">
                                         <tr><td colspan="9" class="text-center p-4 text-gray-500">Sedang memuat...</td></tr>
@@ -365,11 +311,11 @@
                         </div>
                     </div>
 
-                    <!-- Tab Content: Identitas Lain -->
+                    <!-- Tab Content: Identitas Lain & Kartu -->
                     <div id="tab-identitas" class="user-tab-content hidden">
-                        <div class="card rounded-lg shadow-md p-6 max-w-2xl mx-auto">
+                        <div class="card rounded-lg shadow-md p-6 max-w-4xl mx-auto mb-6">
                             <div class="flex justify-between items-center mb-4 border-b pb-2">
-                                <h4 class="font-bold text-lg"><i class="fas fa-fingerprint mr-2 text-blue-500"></i> Identitas Lain</h4>
+                                <h4 class="font-bold text-lg"><i class="fas fa-fingerprint mr-2 text-blue-500"></i> Ringkasan Identitas Utama</h4>
                             </div>
                             <table class="w-full text-sm">
                                 <tr class="border-b border-gray-100"><td class="py-2 opacity-75 w-1/3">NIK (KTP)</td><td id="p-nik" class="font-medium">-</td><td class="text-right w-8"><button onclick="editField('IDENTITAS_LAIN', 'NIK_KTP')" class="text-blue-500 hover:text-blue-700"><i class="fas fa-edit"></i></button></td></tr>
@@ -378,11 +324,36 @@
                                 <tr><td class="py-2 opacity-75">TASPEN</td><td id="p-taspen" class="font-medium">-</td><td class="text-right"><button onclick="editField('IDENTITAS_LAIN', 'No_TASPEN')" class="text-blue-500 hover:text-blue-700"><i class="fas fa-edit"></i></button></td></tr>
                             </table>
                         </div>
+                        
+                        <!-- TABEL KARTU DINAMIS -->
+                        <div class="card rounded-lg shadow-md p-6 max-w-4xl mx-auto">
+                            <div class="flex justify-between items-center mb-4 border-b pb-2">
+                                <h4 class="font-bold text-lg"><i class="fas fa-id-badge mr-2 text-blue-500"></i> Daftar Dokumen / Kartu</h4>
+                                <button onclick="ajukanRiwayat('DATA_KARTU')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm shadow"><i class="fas fa-plus mr-1"></i> Tambah Kartu</button>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-sm whitespace-nowrap">
+                                    <thead class="bg-gray-100 text-black">
+                                        <tr>
+                                            <th class="p-2">Jenis Kartu</th>
+                                            <th class="p-2">Nomor Kartu</th>
+                                            <th class="p-2">File Dokumen</th>
+                                            <th class="p-2 text-center">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbody-kartu">
+                                        <tr><td colspan="4" class="text-center p-4 text-gray-500">Sedang memuat...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
                     </div>
 
                 </div>
 
                 <!-- Page: Data Pegawai (Admin) -->
+                <!-- ... (Kode Admin Sama Seperti Sebelumnya) ... -->
                 <div id="page-data-pegawai" class="page-content hidden">
                     <div class="card rounded-lg shadow-md p-6">
                         <div class="flex justify-between mb-4 flex-col md:flex-row gap-2">
@@ -392,28 +363,15 @@
                         <div class="overflow-x-auto">
                             <table class="w-full text-left text-sm whitespace-nowrap" id="table-pegawai">
                                 <thead class="bg-gray-200 text-black">
-                                    <tr>
-                                        <th class="p-3">NIP</th>
-                                        <th class="p-3">Nama Pegawai</th>
-                                        <th class="p-3">Jabatan</th>
-                                        <th class="p-3">Status</th>
-                                        <th class="p-3">Aksi</th>
-                                    </tr>
+                                    <tr><th class="p-3">NIP</th><th class="p-3">Nama Pegawai</th><th class="p-3">Jabatan</th><th class="p-3">Status</th><th class="p-3">Aksi</th></tr>
                                 </thead>
-                                <tbody id="tbody-pegawai">
-                                    <!-- Dynamic rows -->
-                                </tbody>
+                                <tbody id="tbody-pegawai"></tbody>
                             </table>
                         </div>
-                        
-                        <!-- Kontainer Paginasi Baru -->
                         <div class="flex justify-between items-center mt-4 text-sm" id="pagination-container">
                             <div class="text-gray-500 font-medium" id="pagination-info">Menampilkan 0 data</div>
-                            <div class="flex items-center space-x-1" id="pagination-controls">
-                                <!-- Tombol-tombol paginasi akan dirender oleh JavaScript -->
-                            </div>
+                            <div class="flex items-center space-x-1" id="pagination-controls"></div>
                         </div>
-
                     </div>
                 </div>
 
@@ -467,133 +425,65 @@
 
     <!-- MAIN SCRIPT -->
     <script>
-        // CONFIGURATION
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw6dOG2OHt3ioevOsrUSLJOhLJw1EyWn_t1RBnDNiBXKcSfxdUy8i_hklvOAT2Y1RgTEA/exec';
         
         let STATE = { user: null, profile: null, riwayat: {}, identitasLain: null, allPegawai: [], myAntrian: [], filteredPegawai: [], currentPage: 1, rowsPerPage: 15 };
 
-        // Konfigurasi SweetAlert2 Toast (Notifikasi Pojok Kanan Atas)
-        const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-                toast.addEventListener('mouseenter', Swal.stopTimer)
-                toast.addEventListener('mouseleave', Swal.resumeTimer)
-            }
-        });
+        const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 3000, timerProgressBar: true, didOpen: (toast) => { toast.addEventListener('mouseenter', Swal.stopTimer); toast.addEventListener('mouseleave', Swal.resumeTimer); } });
 
         // ==========================================
-        // 1. INITIALIZATION & ROUTING LOGIC (SPA)
+        // ROUTING & THEME INIT
         // ==========================================
         window.onload = () => {
-            initParticles();
-            loadTheme();
+            initParticles(); loadTheme();
             const savedUser = localStorage.getItem('simpeg_user');
-            if (savedUser) {
-                STATE.user = JSON.parse(savedUser);
-                showApp();
-            }
-
-            // Mendaftarkan event listener untuk Router URL Hash
-            window.addEventListener('hashchange', () => {
-                if(STATE.user) handleRouting();
-            });
+            if (savedUser) { STATE.user = JSON.parse(savedUser); showApp(); }
+            window.addEventListener('hashchange', () => { if(STATE.user) handleRouting(); });
         };
 
-        // Fungsi Routing Sentral
         function handleRouting() {
             let hash = window.location.hash.substring(1) || 'profil';
-
-            // Proteksi Routing untuk halaman Admin
-            if (['data-pegawai', 'antrian', 'pengaturan'].includes(hash) && !['admin', 'superadmin'].includes(STATE.user?.role)) {
-                hash = 'profil';
-                window.location.hash = hash;
-                return;
-            }
-
-            // Sembunyikan seluruh halaman
+            if (['data-pegawai', 'antrian', 'pengaturan'].includes(hash) && !['admin', 'superadmin'].includes(STATE.user?.role)) { hash = 'profil'; window.location.hash = hash; return; }
             document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
 
-            // Tentukan Page ID tujuan
             let pageId = 'dashboard'; 
-            if (['data-pegawai', 'antrian', 'pengaturan'].includes(hash)) {
-                pageId = hash;
-            }
+            if (['data-pegawai', 'antrian', 'pengaturan'].includes(hash)) { pageId = hash; }
 
-            // Tampilkan halaman
             document.getElementById('page-' + pageId).classList.remove('hidden');
 
-            // Set Judul Halaman
-            const titles = { 
-                'profil':'Profil Utama', 'pendidikan':'Pendidikan', 'pangkat':'Pangkat / Gol',
-                'jabatan':'Jabatan', 'kompetensi': 'Pengembangan Kompetensi', 'kgb':'KGB', 'keluarga':'Data Keluarga', 'identitas':'Identitas Lain',
-                'data-pegawai':'Data Pegawai', 'antrian':'Antrian Update', 'pengaturan':'Pengaturan' 
-            };
+            const titles = { 'profil':'Profil Utama', 'pendidikan':'Pendidikan', 'pangkat':'Pangkat / Gol', 'jabatan':'Jabatan', 'kompetensi': 'Pengembangan Kompetensi', 'kgb':'KGB', 'keluarga':'Data Keluarga', 'identitas':'Identitas Lain & Kartu', 'data-pegawai':'Data Pegawai', 'antrian':'Antrian Update', 'pengaturan':'Pengaturan' };
             document.getElementById('page-title').innerText = titles[hash] || 'Profil Saya';
 
-            // Logika khusus: Jika ini halaman dashboard, tentukan tab mana yang aktif
             if (pageId === 'dashboard') {
                 document.querySelectorAll('.user-tab-content').forEach(el => el.classList.add('hidden'));
                 const targetTab = document.getElementById('tab-' + hash);
                 if (targetTab) targetTab.classList.remove('hidden');
             }
 
-            // Update Highlight Sidebar Aktif
             document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('bg-gray-700', 'bg-opacity-50'));
             const activeNav = document.getElementById('nav-tab-' + hash) || document.getElementById('menu-' + hash);
             if(activeNav) activeNav.classList.add('bg-gray-700', 'bg-opacity-50');
 
-            // Auto-close sidebar di mode mobile setelah klik menu
-            if(window.innerWidth < 768 && !document.getElementById('sidebar').classList.contains('hidden')) {
-                toggleSidebar();
-            }
+            if(window.innerWidth < 768 && !document.getElementById('sidebar').classList.contains('hidden')) { toggleSidebar(); }
 
-            // Panggil API Fetch jika membuka halaman spesifik admin
             if(hash === 'data-pegawai') fetchAllPegawai();
             if(hash === 'antrian') fetchAllAntrian();
-            
-            // Simpan posisi terakhir pengguna
             sessionStorage.setItem('simpeg_active_hash', hash);
         }
 
-        function initParticles() {
-            particlesJS("particles-js", {
-                "particles": {"number": {"value": 80},"color": {"value": "#ffffff"},"shape": {"type": "circle"},"opacity": {"value": 0.5},"size": {"value": 3},"line_linked": {"enable": true, "distance": 150, "color": "#ffffff", "opacity": 0.4, "width": 1},"move": {"enable": true, "speed": 2}},
-                "interactivity": {"events": {"onhover": {"enable": true, "mode": "grab"}}}
-            });
-        }
-
-        function toggleSidebar() {
-            const sb = document.getElementById('sidebar');
-            sb.classList.toggle('hidden');
-        }
-
-        function loadTheme() {
-            const theme = localStorage.getItem('simpeg_theme') || 'light';
-            document.body.setAttribute('data-theme', theme);
-            const r = document.querySelector(`input[name="theme"][value="${theme}"]`);
-            if(r) r.checked = true;
-        }
-
-        function setTheme(theme) {
-            document.body.setAttribute('data-theme', theme);
-            localStorage.setItem('simpeg_theme', theme);
-        }
-
+        function initParticles() { particlesJS("particles-js", { "particles": {"number": {"value": 80},"color": {"value": "#ffffff"},"shape": {"type": "circle"},"opacity": {"value": 0.5},"size": {"value": 3},"line_linked": {"enable": true, "distance": 150, "color": "#ffffff", "opacity": 0.4, "width": 1},"move": {"enable": true, "speed": 2}}, "interactivity": {"events": {"onhover": {"enable": true, "mode": "grab"}}} }); }
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('hidden'); }
+        function loadTheme() { const theme = localStorage.getItem('simpeg_theme') || 'light'; document.body.setAttribute('data-theme', theme); const r = document.querySelector(`input[name="theme"][value="${theme}"]`); if(r) r.checked = true; }
+        function setTheme(theme) { document.body.setAttribute('data-theme', theme); localStorage.setItem('simpeg_theme', theme); }
         function showLoader(show=true) { document.getElementById('loader').style.display = show ? 'flex' : 'none'; }
 
         // ==========================================
-        // 2. AUTHENTICATION & GOOGLE SSO
+        // AUTHENTICATION
         // ==========================================
         function parseJwt (token) {
             var base64Url = token.split('.')[1];
             var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
+            var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) { return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2); }).join(''));
             return JSON.parse(jsonPayload);
         }
 
@@ -602,7 +492,6 @@
             try {
                 const payload = parseJwt(response.credential);
                 const email = payload.email;
-
                 const res = await apiCall({ action: 'login', email: email });
                 
                 if (res.needNip) {
@@ -613,75 +502,40 @@
                     localStorage.setItem('simpeg_user', JSON.stringify(STATE.user));
                     showApp();
                 }
-            } catch (err) {
-                showLoader(false);
-                Swal.fire('Error', err.message, 'error');
-            }
+            } catch (err) { showLoader(false); Swal.fire('Error', err.message, 'error'); }
         }
 
         async function promptLinkNIP(email, role) {
-            const { value: nip } = await Swal.fire({
-                title: 'Akun Belum Ditautkan',
-                text: `Email ${email} belum memiliki NIP. Masukkan NIP Anda:`,
-                input: 'text',
-                inputPlaceholder: 'Masukkan NIP 18 Digit',
-                allowOutsideClick: false,
-                showCancelButton: true
-            });
-
+            const { value: nip } = await Swal.fire({ title: 'Akun Belum Ditautkan', text: `Email ${email} belum memiliki NIP. Masukkan NIP Anda:`, input: 'text', inputPlaceholder: 'Masukkan NIP 18 Digit', allowOutsideClick: false, showCancelButton: true });
             if (nip) {
                 showLoader();
                 try {
                     const res = await apiCall({ action: 'linkNip', email: email, nip: nip, role: role });
                     Swal.fire('Sukses', res.message, 'success');
-                    STATE.user = res.user;
-                    localStorage.setItem('simpeg_user', JSON.stringify(STATE.user));
-                    showApp();
-                } catch (err) {
-                    showLoader(false);
-                    Swal.fire('Gagal Menautkan', err.message, 'error');
-                }
+                    STATE.user = res.user; localStorage.setItem('simpeg_user', JSON.stringify(STATE.user)); showApp();
+                } catch (err) { showLoader(false); Swal.fire('Gagal Menautkan', err.message, 'error'); }
             }
         }
 
         function logout() {
-            localStorage.removeItem('simpeg_user');
-            sessionStorage.removeItem('simpeg_active_hash');
-            STATE.user = null;
-            
+            localStorage.removeItem('simpeg_user'); sessionStorage.removeItem('simpeg_active_hash'); STATE.user = null;
             history.pushState("", document.title, window.location.pathname + window.location.search);
-            
-            document.getElementById('app-container').style.display = 'none';
-            document.getElementById('login-page').style.display = 'flex';
+            document.getElementById('app-container').style.display = 'none'; document.getElementById('login-page').style.display = 'flex';
         }
 
         async function showApp() {
-            document.getElementById('login-page').style.display = 'none';
-            document.getElementById('app-container').style.display = 'flex';
-            
-            document.getElementById('user-info-name').innerText = STATE.user.nip;
-            document.getElementById('user-info-role').innerText = STATE.user.role;
-
-            if (['admin', 'superadmin'].includes(STATE.user.role)) {
-                document.getElementById('admin-menu-section').classList.remove('hidden');
-            }
-
+            document.getElementById('login-page').style.display = 'none'; document.getElementById('app-container').style.display = 'flex';
+            document.getElementById('user-info-name').innerText = STATE.user.nip; document.getElementById('user-info-role').innerText = STATE.user.role;
+            if (['admin', 'superadmin'].includes(STATE.user.role)) { document.getElementById('admin-menu-section').classList.remove('hidden'); }
             await fetchProfile();
-            
             const urlHash = window.location.hash.substring(1);
             const savedHash = sessionStorage.getItem('simpeg_active_hash');
-            
-            if (!urlHash) {
-                window.location.hash = savedHash || 'profil';
-            } else {
-                handleRouting();
-            }
-            
+            if (!urlHash) { window.location.hash = savedHash || 'profil'; } else { handleRouting(); }
             showLoader(false);
         }
 
         // ==========================================
-        // 3. DATA FETCHING & RENDERING
+        // DATA FETCHING & RENDERING
         // ==========================================
         async function fetchProfile() {
             try {
@@ -694,6 +548,7 @@
                 STATE.riwayat.kompetensi = res.riwayat_kompetensi || []; 
                 STATE.riwayat.kgb = res.riwayat_kgb || [];
                 STATE.riwayat.keluarga = res.data_keluarga || [];
+                STATE.riwayat.kartu = res.data_kartu || []; // Menampung Data Kartu Baru
                 STATE.identitasLain = (res.identitas_lain && res.identitas_lain.length > 0) ? res.identitas_lain[0] : {};
                 
                 if(STATE.profile) {
@@ -705,36 +560,25 @@
                     document.getElementById('p-unit').innerText = STATE.profile.Unit_Kerja || '-';
                     
                     document.getElementById('p-status').innerText = STATE.profile.Status_Pegawai || 'AKTIF';
-                    if(STATE.profile.URL_Foto_Profil) {
-                        document.getElementById('profile-img').src = STATE.profile.URL_Foto_Profil;
-                    }
+                    if(STATE.profile.URL_Foto_Profil) { document.getElementById('profile-img').src = STATE.profile.URL_Foto_Profil; }
 
                     updateProfileUI();
                     renderSemuaRiwayat();
                 }
-            } catch (err) {
-                console.error(err);
-                Swal.fire('Error', 'Gagal memuat profil', 'error');
-            }
+            } catch (err) { console.error(err); Swal.fire('Error', 'Gagal memuat profil', 'error'); }
         }
 
         function getFieldHTML(kolom, currentValue) {
             if (!STATE.myAntrian) return `${currentValue || '-'} <i class="fas fa-check-circle text-green-500 ml-1" title="Sudah Disetujui / Aktif"></i>`;
             const pendingReq = STATE.myAntrian.find(a => a.Kolom_Tujuan === kolom && a.Status === 'Pending');
-
-            if (pendingReq) {
-                return `<span class="text-yellow-600 font-bold" title="Sedang diajukan: ${pendingReq.Nilai_Baru}">${pendingReq.Nilai_Baru} <i class="fas fa-clock text-yellow-500 ml-1"></i><span class="text-xs ml-1 bg-yellow-100 text-yellow-700 px-1 py-0.5 rounded">Menunggu verifikasi</span></span>`;
-            }
+            if (pendingReq) return `<span class="text-yellow-600 font-bold" title="Sedang diajukan: ${pendingReq.Nilai_Baru}">${pendingReq.Nilai_Baru} <i class="fas fa-clock text-yellow-500 ml-1"></i><span class="text-xs ml-1 bg-yellow-100 text-yellow-700 px-1 py-0.5 rounded">Menunggu verifikasi</span></span>`;
             return `${currentValue || '-'} <i class="fas fa-check-circle text-green-500 ml-1" title="Sudah Disetujui / Aktif"></i>`;
         }
 
         function getRiwayatFieldHTML(idData, kolom, currentValue) {
             if (!STATE.myAntrian) return currentValue || '-';
             const pendingReq = STATE.myAntrian.find(a => String(a.Baris_Target) === String(idData) && a.Kolom_Tujuan === kolom && a.Status === 'Pending');
-
-            if (pendingReq) {
-                return `<span class="text-yellow-600 font-bold" title="Sedang diajukan: ${pendingReq.Nilai_Baru}">${pendingReq.Nilai_Baru} <i class="fas fa-clock text-yellow-500 ml-1"></i></span>`;
-            }
+            if (pendingReq) return `<span class="text-yellow-600 font-bold" title="Sedang diajukan: ${pendingReq.Nilai_Baru}">${pendingReq.Nilai_Baru} <i class="fas fa-clock text-yellow-500 ml-1"></i></span>`;
             return currentValue || '-';
         }
 
@@ -757,480 +601,245 @@
         }
 
         function renderSemuaRiwayat() {
-            // PENDIDIKAN
-            const tbodyPend = document.getElementById('tbody-pendidikan');
-            tbodyPend.innerHTML = '';
+            // ... (Pendidikan, Pangkat, Jabatan, Kompetensi, KGB, Keluarga Sama)
+            
+            const tbodyPend = document.getElementById('tbody-pendidikan'); tbodyPend.innerHTML = '';
             if (STATE.riwayat.pendidikan.length > 0) {
                 STATE.riwayat.pendidikan.forEach(p => {
                     let fileBtn = p.File_Ijazah ? `<a href="${p.File_Ijazah}" target="_blank" class="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs hover:bg-blue-200 whitespace-nowrap"><i class="fas fa-file-pdf"></i> Lihat File</a>` : '-';
-                    tbodyPend.innerHTML += `<tr class="border-b">
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Jenjang', p.Jenjang)}</td>
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Instansi', p.Instansi)}</td>
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Jurusan', p.Jurusan)}</td>
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Thn_Lulus', p.Thn_Lulus)}</td>
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'No_Ijazah', p.No_Ijazah)}</td>
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Tgl_Ijazah', p.Tgl_Ijazah ? new Date(p.Tgl_Ijazah).toLocaleDateString('id-ID') : '')}</td>
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Pendidikan_Terakhir', p.Pendidikan_Terakhir)}</td>
-                        <td class="p-2">${fileBtn}</td>
-                        <td class="p-2 text-center"><button onclick="editRiwayatRow('${p.ID_Data}', 'RIWAYAT_PENDIDIKAN')" class="text-blue-600 hover:text-blue-800 bg-blue-50 px-2 py-1 rounded border border-blue-200 shadow-sm text-xs"><i class="fas fa-edit"></i> Edit</button></td>
-                    </tr>`;
+                    tbodyPend.innerHTML += `<tr class="border-b"><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Jenjang', p.Jenjang)}</td><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Instansi', p.Instansi)}</td><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Jurusan', p.Jurusan)}</td><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Thn_Lulus', p.Thn_Lulus)}</td><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'No_Ijazah', p.No_Ijazah)}</td><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Tgl_Ijazah', p.Tgl_Ijazah ? new Date(p.Tgl_Ijazah).toLocaleDateString('id-ID') : '')}</td><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Pendidikan_Terakhir', p.Pendidikan_Terakhir)}</td><td class="p-2">${fileBtn}</td><td class="p-2 text-center"><button onclick="editRiwayatRow('${p.ID_Data}', 'RIWAYAT_PENDIDIKAN')" class="text-blue-600 hover:text-blue-800 bg-blue-50 px-2 py-1 rounded border border-blue-200 shadow-sm text-xs"><i class="fas fa-edit"></i> Edit</button></td></tr>`;
                 });
             } else { tbodyPend.innerHTML = `<tr><td colspan="9" class="text-center p-4 text-gray-500">Belum ada data pendidikan.</td></tr>`; }
 
-            // PANGKAT
-            const tbodyPangkat = document.getElementById('tbody-pangkat');
-            tbodyPangkat.innerHTML = '';
+            const tbodyPangkat = document.getElementById('tbody-pangkat'); tbodyPangkat.innerHTML = '';
             if (STATE.riwayat.pangkat.length > 0) {
                 STATE.riwayat.pangkat.forEach(p => {
                     let fileBtn = p.File_SK ? `<a href="${p.File_SK}" target="_blank" class="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs hover:bg-blue-200 whitespace-nowrap"><i class="fas fa-file-pdf"></i> Lihat SK</a>` : '-';
-                    tbodyPangkat.innerHTML += `<tr class="border-b">
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Pangkat_Gol', p.Pangkat_Gol)}</td>
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'No_SK', p.No_SK)}</td>
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'TMT', p.TMT ? new Date(p.TMT).toLocaleDateString('id-ID') : '')}</td>
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Tgl_SK', p.Tgl_SK ? new Date(p.Tgl_SK).toLocaleDateString('id-ID') : '')}</td>
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Masa_Kerja_Thn', p.Masa_Kerja_Thn)} Thn, ${getRiwayatFieldHTML(p.ID_Data, 'Masa_Kerja_Bln', p.Masa_Kerja_Bln)} Bln</td>
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Pangkat_Sekarang', p.Pangkat_Sekarang)}</td>
-                        <td class="p-2">${fileBtn}</td>
-                        <td class="p-2 text-center"><button onclick="editRiwayatRow('${p.ID_Data}', 'RIWAYAT_PANGKAT')" class="text-blue-600 hover:text-blue-800 bg-blue-50 px-2 py-1 rounded border border-blue-200 shadow-sm text-xs"><i class="fas fa-edit"></i> Edit</button></td>
-                    </tr>`;
+                    tbodyPangkat.innerHTML += `<tr class="border-b"><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Pangkat_Gol', p.Pangkat_Gol)}</td><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'No_SK', p.No_SK)}</td><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'TMT', p.TMT ? new Date(p.TMT).toLocaleDateString('id-ID') : '')}</td><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Tgl_SK', p.Tgl_SK ? new Date(p.Tgl_SK).toLocaleDateString('id-ID') : '')}</td><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Masa_Kerja_Thn', p.Masa_Kerja_Thn)} Thn, ${getRiwayatFieldHTML(p.ID_Data, 'Masa_Kerja_Bln', p.Masa_Kerja_Bln)} Bln</td><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Pangkat_Sekarang', p.Pangkat_Sekarang)}</td><td class="p-2">${fileBtn}</td><td class="p-2 text-center"><button onclick="editRiwayatRow('${p.ID_Data}', 'RIWAYAT_PANGKAT')" class="text-blue-600 hover:text-blue-800 bg-blue-50 px-2 py-1 rounded border border-blue-200 shadow-sm text-xs"><i class="fas fa-edit"></i> Edit</button></td></tr>`;
                 });
             } else { tbodyPangkat.innerHTML = `<tr><td colspan="8" class="text-center p-4 text-gray-500">Belum ada data pangkat.</td></tr>`; }
 
-            // JABATAN
-            const tbodyJabatan = document.getElementById('tbody-jabatan');
-            tbodyJabatan.innerHTML = '';
+            const tbodyJabatan = document.getElementById('tbody-jabatan'); tbodyJabatan.innerHTML = '';
             if (STATE.riwayat.jabatan.length > 0) {
                 STATE.riwayat.jabatan.forEach(p => {
                     let fileBtn = p.File_SK ? `<a href="${p.File_SK}" target="_blank" class="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs hover:bg-blue-200 whitespace-nowrap"><i class="fas fa-file-pdf"></i> Lihat SK</a>` : '-';
-                    tbodyJabatan.innerHTML += `<tr class="border-b">
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Jenis_Jabatan', p.Jenis_Jabatan)}</td>
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Jabatan', p.Jabatan)}</td>
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Eselon', p.Eselon)}</td>
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Unit_Kerja', p.Unit_Kerja)}</td>
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'TMT_Pelantikan', p.TMT_Pelantikan ? new Date(p.TMT_Pelantikan).toLocaleDateString('id-ID') : '')}</td>
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Jabatan_Sekarang', p.Jabatan_Sekarang)}</td>
-                        <td class="p-2">${fileBtn}</td>
-                        <td class="p-2 text-center"><button onclick="editRiwayatRow('${p.ID_Data}', 'RIWAYAT_JABATAN')" class="text-blue-600 hover:text-blue-800 bg-blue-50 px-2 py-1 rounded border border-blue-200 shadow-sm text-xs"><i class="fas fa-edit"></i> Edit</button></td>
-                    </tr>`;
+                    tbodyJabatan.innerHTML += `<tr class="border-b"><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Jenis_Jabatan', p.Jenis_Jabatan)}</td><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Jabatan', p.Jabatan)}</td><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Eselon', p.Eselon)}</td><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Unit_Kerja', p.Unit_Kerja)}</td><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'TMT_Pelantikan', p.TMT_Pelantikan ? new Date(p.TMT_Pelantikan).toLocaleDateString('id-ID') : '')}</td><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Jabatan_Sekarang', p.Jabatan_Sekarang)}</td><td class="p-2">${fileBtn}</td><td class="p-2 text-center"><button onclick="editRiwayatRow('${p.ID_Data}', 'RIWAYAT_JABATAN')" class="text-blue-600 hover:text-blue-800 bg-blue-50 px-2 py-1 rounded border border-blue-200 shadow-sm text-xs"><i class="fas fa-edit"></i> Edit</button></td></tr>`;
                 });
             } else { tbodyJabatan.innerHTML = `<tr><td colspan="8" class="text-center p-4 text-gray-500">Belum ada data jabatan.</td></tr>`; }
 
-            // KOMPETENSI / DIKLAT
-            const tbodyKompetensi = document.getElementById('tbody-kompetensi');
-            tbodyKompetensi.innerHTML = '';
+            const tbodyKompetensi = document.getElementById('tbody-kompetensi'); tbodyKompetensi.innerHTML = '';
             if (STATE.riwayat.kompetensi.length > 0) {
                 STATE.riwayat.kompetensi.forEach(p => {
                     let fileBtn = p.File_Sertifikat ? `<a href="${p.File_Sertifikat}" target="_blank" class="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs hover:bg-blue-200 whitespace-nowrap"><i class="fas fa-file-pdf"></i> Lihat Sertifikat</a>` : '-';
-                    let tglMulai = p.Tgl_Mulai ? new Date(p.Tgl_Mulai).toLocaleDateString('id-ID') : '-';
-                    let tglSelesai = p.Tgl_Selesai ? new Date(p.Tgl_Selesai).toLocaleDateString('id-ID') : '-';
+                    let tglMulai = p.Tgl_Mulai ? new Date(p.Tgl_Mulai).toLocaleDateString('id-ID') : '-'; let tglSelesai = p.Tgl_Selesai ? new Date(p.Tgl_Selesai).toLocaleDateString('id-ID') : '-';
                     let pelaksanaanHTML = getRiwayatFieldHTML(p.ID_Data, 'Tgl_Mulai', tglMulai) + ' s/d ' + getRiwayatFieldHTML(p.ID_Data, 'Tgl_Selesai', tglSelesai);
-                    
-                    tbodyKompetensi.innerHTML += `<tr class="border-b">
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Jenis_Diklat', p.Jenis_Diklat)}</td>
-                        <td class="p-2 max-w-xs break-words whitespace-normal">${getRiwayatFieldHTML(p.ID_Data, 'Nama_Diklat', p.Nama_Diklat)}</td>
-                        <td class="p-2 whitespace-nowrap">${pelaksanaanHTML}</td>
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Jumlah_JP', p.Jumlah_JP)}</td>
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Penyelenggara', p.Penyelenggara)}</td>
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Sumber_Anggaran', p.Sumber_Anggaran)}</td>
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'No_Sertifikat', p.No_Sertifikat)}</td>
-                        <td class="p-2">${fileBtn}</td>
-                        <td class="p-2 text-center"><button onclick="editRiwayatRow('${p.ID_Data}', 'RIWAYAT_KOMPETENSI')" class="text-blue-600 hover:text-blue-800 bg-blue-50 px-2 py-1 rounded border border-blue-200 shadow-sm text-xs"><i class="fas fa-edit"></i> Edit</button></td>
-                    </tr>`;
+                    tbodyKompetensi.innerHTML += `<tr class="border-b"><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Jenis_Diklat', p.Jenis_Diklat)}</td><td class="p-2 max-w-xs break-words whitespace-normal">${getRiwayatFieldHTML(p.ID_Data, 'Nama_Diklat', p.Nama_Diklat)}</td><td class="p-2 whitespace-nowrap">${pelaksanaanHTML}</td><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Jumlah_JP', p.Jumlah_JP)}</td><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Penyelenggara', p.Penyelenggara)}</td><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Sumber_Anggaran', p.Sumber_Anggaran)}</td><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'No_Sertifikat', p.No_Sertifikat)}</td><td class="p-2">${fileBtn}</td><td class="p-2 text-center"><button onclick="editRiwayatRow('${p.ID_Data}', 'RIWAYAT_KOMPETENSI')" class="text-blue-600 hover:text-blue-800 bg-blue-50 px-2 py-1 rounded border border-blue-200 shadow-sm text-xs"><i class="fas fa-edit"></i> Edit</button></td></tr>`;
                 });
             } else { tbodyKompetensi.innerHTML = `<tr><td colspan="9" class="text-center p-4 text-gray-500">Belum ada data pengembangan kompetensi.</td></tr>`; }
 
-            // KGB UPDATE
-            const tbodyKgb = document.getElementById('tbody-kgb');
-            tbodyKgb.innerHTML = '';
+            const tbodyKgb = document.getElementById('tbody-kgb'); tbodyKgb.innerHTML = '';
             if (STATE.riwayat.kgb.length > 0) {
                 STATE.riwayat.kgb.forEach(p => {
                     let fileBtn = p.File_SK_KGB ? `<a href="${p.File_SK_KGB}" target="_blank" class="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs hover:bg-blue-200 whitespace-nowrap"><i class="fas fa-file-pdf"></i> Lihat SK</a>` : '-';
-                    tbodyKgb.innerHTML += `<tr class="border-b">
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Golongan', p.Golongan)}</td>
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'No_SK_KGB', p.No_SK_KGB)}</td>
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'TMT_KGB', p.TMT_KGB ? new Date(p.TMT_KGB).toLocaleDateString('id-ID') : '')}</td>
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Tanggal_KGB', p.Tanggal_KGB ? new Date(p.Tanggal_KGB).toLocaleDateString('id-ID') : '')}</td>
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Masa_Kerja_Tahun', p.Masa_Kerja_Tahun)} Thn, ${getRiwayatFieldHTML(p.ID_Data, 'Masa_Kerja_Bulan', p.Masa_Kerja_Bulan)} Bln</td>
-                        <td class="p-2 text-green-600 font-medium">${getRiwayatFieldHTML(p.ID_Data, 'Gaji_Pokok_Baru', p.Gaji_Pokok_Baru)}</td>
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Dasar_KGB', p.Dasar_KGB)}</td>
-                        <td class="p-2">${fileBtn}</td>
-                        <td class="p-2 text-center"><button onclick="editRiwayatRow('${p.ID_Data}', 'RIWAYAT_KGB')" class="text-blue-600 hover:text-blue-800 bg-blue-50 px-2 py-1 rounded border border-blue-200 shadow-sm text-xs"><i class="fas fa-edit"></i> Edit</button></td>
-                    </tr>`;
+                    tbodyKgb.innerHTML += `<tr class="border-b"><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Golongan', p.Golongan)}</td><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'No_SK_KGB', p.No_SK_KGB)}</td><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'TMT_KGB', p.TMT_KGB ? new Date(p.TMT_KGB).toLocaleDateString('id-ID') : '')}</td><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Tanggal_KGB', p.Tanggal_KGB ? new Date(p.Tanggal_KGB).toLocaleDateString('id-ID') : '')}</td><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Masa_Kerja_Tahun', p.Masa_Kerja_Tahun)} Thn, ${getRiwayatFieldHTML(p.ID_Data, 'Masa_Kerja_Bulan', p.Masa_Kerja_Bulan)} Bln</td><td class="p-2 text-green-600 font-medium">${getRiwayatFieldHTML(p.ID_Data, 'Gaji_Pokok_Baru', p.Gaji_Pokok_Baru)}</td><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Dasar_KGB', p.Dasar_KGB)}</td><td class="p-2">${fileBtn}</td><td class="p-2 text-center"><button onclick="editRiwayatRow('${p.ID_Data}', 'RIWAYAT_KGB')" class="text-blue-600 hover:text-blue-800 bg-blue-50 px-2 py-1 rounded border border-blue-200 shadow-sm text-xs"><i class="fas fa-edit"></i> Edit</button></td></tr>`;
                 });
             } else { tbodyKgb.innerHTML = `<tr><td colspan="9" class="text-center p-4 text-gray-500">Belum ada data KGB.</td></tr>`; }
 
-            // KELUARGA
-            const tbodyKeluarga = document.getElementById('tbody-keluarga');
-            tbodyKeluarga.innerHTML = '';
+            const tbodyKeluarga = document.getElementById('tbody-keluarga'); tbodyKeluarga.innerHTML = '';
             if (STATE.riwayat.keluarga.length > 0) {
-                STATE.riwayat.keluarga.forEach(p => {
-                    tbodyKeluarga.innerHTML += `<tr class="border-b">
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Nama', p.Nama)}</td>
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Status_Keluarga', p.Status_Keluarga)}</td>
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'L/P', p['L/P'])}</td>
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Tunjangan', p.Tunjangan)}</td>
-                        <td class="p-2 text-center"><button onclick="editRiwayatRow('${p.ID_Data}', 'DATA_KELUARGA')" class="text-blue-600 hover:text-blue-800 bg-blue-50 px-2 py-1 rounded border border-blue-200 shadow-sm text-xs"><i class="fas fa-edit"></i> Edit</button></td>
+                STATE.riwayat.keluarga.forEach(p => { tbodyKeluarga.innerHTML += `<tr class="border-b"><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Nama', p.Nama)}</td><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Status_Keluarga', p.Status_Keluarga)}</td><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'L/P', p['L/P'])}</td><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Tunjangan', p.Tunjangan)}</td><td class="p-2 text-center"><button onclick="editRiwayatRow('${p.ID_Data}', 'DATA_KELUARGA')" class="text-blue-600 hover:text-blue-800 bg-blue-50 px-2 py-1 rounded border border-blue-200 shadow-sm text-xs"><i class="fas fa-edit"></i> Edit</button></td></tr>`; });
+            } else { tbodyKeluarga.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-gray-500">Belum ada data keluarga.</td></tr>`; }
+
+            // RENDERING UNTUK DATA KARTU BARU
+            const tbodyKartu = document.getElementById('tbody-kartu');
+            tbodyKartu.innerHTML = '';
+            if (STATE.riwayat.kartu.length > 0) {
+                STATE.riwayat.kartu.forEach(p => {
+                    let fileBtn = p.File_Kartu ? `<a href="${p.File_Kartu}" target="_blank" class="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs hover:bg-blue-200 whitespace-nowrap"><i class="fas fa-paperclip"></i> Lihat File</a>` : '-';
+                    tbodyKartu.innerHTML += `<tr class="border-b">
+                        <td class="p-2 font-medium">${getRiwayatFieldHTML(p.ID_Data, 'Jenis_Kartu', p.Jenis_Kartu)}</td>
+                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Nomor_Kartu', p.Nomor_Kartu)}</td>
+                        <td class="p-2">${fileBtn}</td>
+                        <td class="p-2 text-center"><button onclick="editRiwayatRow('${p.ID_Data}', 'DATA_KARTU')" class="text-blue-600 hover:text-blue-800 bg-blue-50 px-2 py-1 rounded border border-blue-200 shadow-sm text-xs"><i class="fas fa-edit"></i> Edit</button></td>
                     </tr>`;
                 });
-            } else { tbodyKeluarga.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-gray-500">Belum ada data keluarga.</td></tr>`; }
+            } else { tbodyKartu.innerHTML = `<tr><td colspan="4" class="text-center p-4 text-gray-500">Belum ada data kartu tambahan.</td></tr>`; }
         }
 
         async function fetchMyAntrian() {
             try {
                 const res = await apiCall({ action: 'getUserAntrian', nip: STATE.user.nip });
                 STATE.myAntrian = res.data || [];
-                
-                const tbody = document.getElementById('tbody-my-antrian');
-                tbody.innerHTML = '';
-                
-                if(!res.data || res.data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="4" class="text-center p-4 opacity-70">Belum ada pengajuan perubahan data.</td></tr>';
-                    return;
-                }
-
+                const tbody = document.getElementById('tbody-my-antrian'); tbody.innerHTML = '';
+                if(!res.data || res.data.length === 0) { tbody.innerHTML = '<tr><td colspan="4" class="text-center p-4 opacity-70">Belum ada pengajuan perubahan data.</td></tr>'; return; }
                 res.data.reverse().forEach(a => {
-                    let statusColor = 'bg-yellow-100 text-yellow-800';
-                    let statusIcon = '<i class="fas fa-clock"></i> Pending';
+                    let statusColor = 'bg-yellow-100 text-yellow-800'; let statusIcon = '<i class="fas fa-clock"></i> Pending';
                     if(a.Status === 'Approved') { statusColor = 'bg-green-100 text-green-800'; statusIcon = '<i class="fas fa-check"></i> Disetujui'; }
                     if(a.Status === 'Rejected') { statusColor = 'bg-red-100 text-red-800'; statusIcon = '<i class="fas fa-times"></i> Ditolak'; }
-                    
                     const tgl = new Date(a.Tgl_Pengajuan).toLocaleDateString('id-ID', {day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
-                    
-                    tbody.innerHTML += `
-                        <tr class="border-b border-gray-300 hover:bg-gray-50">
-                            <td class="p-2 whitespace-nowrap">${tgl}</td>
-                            <td class="p-2 font-medium text-blue-600">${a.Kolom_Tujuan.replace(/_/g, ' ')}</td>
-                            <td class="p-2 max-w-xs truncate" title="${a.Nilai_Baru}">${a.Nilai_Baru}</td>
-                            <td class="p-2"><span class="px-2 py-1 ${statusColor} rounded text-xs whitespace-nowrap">${statusIcon}</span></td>
-                        </tr>
-                    `;
+                    tbody.innerHTML += `<tr class="border-b border-gray-300 hover:bg-gray-50"><td class="p-2 whitespace-nowrap">${tgl}</td><td class="p-2 font-medium text-blue-600">${a.Kolom_Tujuan.replace(/_/g, ' ')}</td><td class="p-2 max-w-xs truncate" title="${a.Nilai_Baru}">${a.Nilai_Baru}</td><td class="p-2"><span class="px-2 py-1 ${statusColor} rounded text-xs whitespace-nowrap">${statusIcon}</span></td></tr>`;
                 });
-            } catch (err) {
-                console.error(err);
-            }
+            } catch (err) { console.error(err); }
         }
 
         async function fetchAllPegawai() {
-            if(STATE.allPegawai.length > 0) {
-                renderTablePegawai(); 
-                return;
-            } 
+            if(STATE.allPegawai.length > 0) { renderTablePegawai(); return; } 
             showLoader();
             try {
                 const res = await apiCall({ action: 'getAllData', role: STATE.user.role });
                 STATE.allPegawai = res.data;
-                
                 STATE.allPegawai.sort((a, b) => {
-                    const statusA = (a.Status_Pegawai || 'AKTIF').toUpperCase();
-                    const statusB = (b.Status_Pegawai || 'AKTIF').toUpperCase();
-                    if (statusA === 'AKTIF' && statusB !== 'AKTIF') return -1;
-                    if (statusA !== 'AKTIF' && statusB === 'AKTIF') return 1;
-                    
-                    const namaA = (a.Nama_Lengkap || '').toUpperCase();
-                    const namaB = (b.Nama_Lengkap || '').toUpperCase();
-                    return namaA.localeCompare(namaB);
+                    const statusA = (a.Status_Pegawai || 'AKTIF').toUpperCase(); const statusB = (b.Status_Pegawai || 'AKTIF').toUpperCase();
+                    if (statusA === 'AKTIF' && statusB !== 'AKTIF') return -1; if (statusA !== 'AKTIF' && statusB === 'AKTIF') return 1;
+                    const namaA = (a.Nama_Lengkap || '').toUpperCase(); const namaB = (b.Nama_Lengkap || '').toUpperCase(); return namaA.localeCompare(namaB);
                 });
-
-                STATE.filteredPegawai = [...STATE.allPegawai];
-                STATE.currentPage = 1; 
-                
-                renderTablePegawai();
-            } catch(e) {
-                Swal.fire('Error', e.message, 'error');
-            }
+                STATE.filteredPegawai = [...STATE.allPegawai]; STATE.currentPage = 1; renderTablePegawai();
+            } catch(e) { Swal.fire('Error', e.message, 'error'); }
             showLoader(false);
         }
 
         function renderTablePegawai() {
-            const tbody = document.getElementById('tbody-pegawai');
-            tbody.innerHTML = '';
-            
-            const data = STATE.filteredPegawai;
-            const totalData = data.length;
-            const totalPages = Math.ceil(totalData / STATE.rowsPerPage);
-            
-            if (STATE.currentPage < 1) STATE.currentPage = 1;
-            if (STATE.currentPage > totalPages && totalPages > 0) STATE.currentPage = totalPages;
-            
-            const startIndex = (STATE.currentPage - 1) * STATE.rowsPerPage;
-            const endIndex = Math.min(startIndex + STATE.rowsPerPage, totalData);
+            const tbody = document.getElementById('tbody-pegawai'); tbody.innerHTML = '';
+            const data = STATE.filteredPegawai; const totalData = data.length; const totalPages = Math.ceil(totalData / STATE.rowsPerPage);
+            if (STATE.currentPage < 1) STATE.currentPage = 1; if (STATE.currentPage > totalPages && totalPages > 0) STATE.currentPage = totalPages;
+            const startIndex = (STATE.currentPage - 1) * STATE.rowsPerPage; const endIndex = Math.min(startIndex + STATE.rowsPerPage, totalData);
             const paginatedData = data.slice(startIndex, endIndex);
 
-            if (paginatedData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="text-center p-4 opacity-70">Data pegawai tidak ditemukan.</td></tr>';
-            } else {
+            if (paginatedData.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="text-center p-4 opacity-70">Data pegawai tidak ditemukan.</td></tr>'; } 
+            else {
                 paginatedData.forEach(p => {
                     if(!p.NIP) return;
                     let statusBadge = p.Status_Pegawai === 'PENSIUN' ? 'bg-gray-200 text-gray-800' : 'bg-green-100 text-green-800';
-                    let tr = document.createElement('tr');
-                    tr.className = 'border-b border-gray-300 hover:bg-gray-100 hover:text-black transition';
-                    tr.innerHTML = `
-                        <td class="p-3">${p.NIP}</td>
-                        <td class="p-3 font-medium">${p.Nama_Lengkap}</td>
-                        <td class="p-3">${p.Jabatan_Terakhir || '-'}</td>
-                        <td class="p-3"><span class="px-2 py-1 ${statusBadge} rounded text-xs font-bold">${p.Status_Pegawai || 'AKTIF'}</span></td>
-                        <td class="p-3"><button onclick="editPegawaiAdmin('${p.NIP}')" class="text-blue-600 hover:underline bg-blue-50 px-2 py-1 rounded border border-blue-200 shadow-sm"><i class="fas fa-edit"></i> Edit / Aksi</button></td>
-                    `;
+                    let tr = document.createElement('tr'); tr.className = 'border-b border-gray-300 hover:bg-gray-100 hover:text-black transition';
+                    tr.innerHTML = `<td class="p-3">${p.NIP}</td><td class="p-3 font-medium">${p.Nama_Lengkap}</td><td class="p-3">${p.Jabatan_Terakhir || '-'}</td><td class="p-3"><span class="px-2 py-1 ${statusBadge} rounded text-xs font-bold">${p.Status_Pegawai || 'AKTIF'}</span></td><td class="p-3"><button onclick="editPegawaiAdmin('${p.NIP}')" class="text-blue-600 hover:underline bg-blue-50 px-2 py-1 rounded border border-blue-200 shadow-sm"><i class="fas fa-edit"></i> Edit / Aksi</button></td>`;
                     tbody.appendChild(tr);
                 });
             }
-
-            document.getElementById('pagination-info').innerText = `Menampilkan ${totalData === 0 ? 0 : startIndex + 1} - ${endIndex} dari ${totalData} Pegawai`;
-            renderPaginationControls(totalPages);
+            document.getElementById('pagination-info').innerText = `Menampilkan ${totalData === 0 ? 0 : startIndex + 1} - ${endIndex} dari ${totalData} Pegawai`; renderPaginationControls(totalPages);
         }
 
         function renderPaginationControls(totalPages) {
-            const container = document.getElementById('pagination-controls');
-            container.innerHTML = '';
+            const container = document.getElementById('pagination-controls'); container.innerHTML = '';
             if (totalPages <= 1) return; 
-
-            let btnPrev = document.createElement('button');
-            btnPrev.className = `px-3 py-1 border border-gray-300 rounded mr-2 transition ${STATE.currentPage === 1 ? 'opacity-50 cursor-not-allowed bg-gray-100 text-gray-400' : 'bg-white hover:bg-gray-200 text-black'}`;
-            btnPrev.innerHTML = '<i class="fas fa-chevron-left"></i>';
-            btnPrev.disabled = STATE.currentPage === 1;
-            btnPrev.onclick = () => { STATE.currentPage--; renderTablePegawai(); };
-            container.appendChild(btnPrev);
-
-            let pageIndicator = document.createElement('span');
-            pageIndicator.className = 'px-3 py-1 font-bold text-gray-700 mr-2';
-            pageIndicator.innerText = `${STATE.currentPage} / ${totalPages}`;
-            container.appendChild(pageIndicator);
-
-            let btnNext = document.createElement('button');
-            btnNext.className = `px-3 py-1 border border-gray-300 rounded transition ${STATE.currentPage === totalPages ? 'opacity-50 cursor-not-allowed bg-gray-100 text-gray-400' : 'bg-white hover:bg-gray-200 text-black'}`;
-            btnNext.innerHTML = '<i class="fas fa-chevron-right"></i>';
-            btnNext.disabled = STATE.currentPage === totalPages;
-            btnNext.onclick = () => { STATE.currentPage++; renderTablePegawai(); };
-            container.appendChild(btnNext);
+            let btnPrev = document.createElement('button'); btnPrev.className = `px-3 py-1 border border-gray-300 rounded mr-2 transition ${STATE.currentPage === 1 ? 'opacity-50 cursor-not-allowed bg-gray-100 text-gray-400' : 'bg-white hover:bg-gray-200 text-black'}`; btnPrev.innerHTML = '<i class="fas fa-chevron-left"></i>'; btnPrev.disabled = STATE.currentPage === 1; btnPrev.onclick = () => { STATE.currentPage--; renderTablePegawai(); }; container.appendChild(btnPrev);
+            let pageIndicator = document.createElement('span'); pageIndicator.className = 'px-3 py-1 font-bold text-gray-700 mr-2'; pageIndicator.innerText = `${STATE.currentPage} / ${totalPages}`; container.appendChild(pageIndicator);
+            let btnNext = document.createElement('button'); btnNext.className = `px-3 py-1 border border-gray-300 rounded transition ${STATE.currentPage === totalPages ? 'opacity-50 cursor-not-allowed bg-gray-100 text-gray-400' : 'bg-white hover:bg-gray-200 text-black'}`; btnNext.innerHTML = '<i class="fas fa-chevron-right"></i>'; btnNext.disabled = STATE.currentPage === totalPages; btnNext.onclick = () => { STATE.currentPage++; renderTablePegawai(); }; container.appendChild(btnNext);
         }
 
         function filterTablePegawai() {
             const term = document.getElementById('search-pegawai').value.toLowerCase();
-            
-            STATE.filteredPegawai = STATE.allPegawai.filter(p => 
-                (p.Nama_Lengkap && p.Nama_Lengkap.toLowerCase().includes(term)) || 
-                (p.NIP && String(p.NIP).includes(term))
-            );
-            
-            STATE.currentPage = 1; 
-            renderTablePegawai();
+            STATE.filteredPegawai = STATE.allPegawai.filter(p => (p.Nama_Lengkap && p.Nama_Lengkap.toLowerCase().includes(term)) || (p.NIP && String(p.NIP).includes(term)));
+            STATE.currentPage = 1; renderTablePegawai();
         }
 
         async function editPegawaiAdmin(nip) {
             if (!['admin', 'superadmin'].includes(STATE.user.role)) return;
-
             const targetPegawai = STATE.allPegawai.find(p => String(p.NIP) === String(nip));
             if (!targetPegawai) return;
 
-            const isSuperadmin = STATE.user.role === 'superadmin';
+            let options = { 'PROFIL:Status_Pegawai': 'Ubah Status (Aktif/Pensiun)', 'PROFIL:Jabatan_Terakhir': 'Ubah Jabatan', 'PROFIL:Unit_Kerja': 'Ubah Unit Kerja' };
+            if (STATE.user.role === 'superadmin') { options['USERS:Role'] = 'Ubah Role Akun (user/admin/superadmin)'; options['USERS:Status_Akun'] = 'Status Akun (Aktif/Blokir)'; }
 
-            let options = {
-                'PROFIL:Status_Pegawai': 'Ubah Status (Aktif/Pensiun)',
-                'PROFIL:Jabatan_Terakhir': 'Ubah Jabatan',
-                'PROFIL:Unit_Kerja': 'Ubah Unit Kerja'
-            };
-
-            if (isSuperadmin) {
-                options['USERS:Role'] = 'Ubah Role Akun (user/admin/superadmin)';
-                options['USERS:Status_Akun'] = 'Status Akun (Aktif/Blokir)';
-            }
-
-            const { value: selectedOption } = await Swal.fire({
-                title: `Edit Pegawai`,
-                text: `${targetPegawai.Nama_Lengkap}`,
-                input: 'select',
-                inputOptions: options,
-                inputPlaceholder: 'Pilih data yang ingin diubah',
-                showCancelButton: true
-            });
+            const { value: selectedOption } = await Swal.fire({ title: `Edit Pegawai`, text: `${targetPegawai.Nama_Lengkap}`, input: 'select', inputOptions: options, inputPlaceholder: 'Pilih data yang ingin diubah', showCancelButton: true });
 
             if (selectedOption) {
                 const [targetSheet, targetKolom] = selectedOption.split(':');
-                
-                if (targetSheet === 'USERS' && targetPegawai.Role === 'Belum Taut Akun') {
-                    return Swal.fire('Gagal', 'Pegawai belum pernah Login / menautkan NIP dengan akun Google. Tidak dapat merubah Role/Status Akun.', 'error');
-                }
+                if (targetSheet === 'USERS' && targetPegawai.Role === 'Belum Taut Akun') { return Swal.fire('Gagal', 'Pegawai belum pernah Login / menautkan NIP dengan akun Google. Tidak dapat merubah Role/Status Akun.', 'error'); }
 
-                const { value: newVal } = await Swal.fire({
-                    title: `Ubah ${targetKolom.replace('_', ' ')}`,
-                    input: 'text',
-                    inputValue: targetPegawai[targetKolom] || '',
-                    showCancelButton: true
-                });
+                const { value: newVal } = await Swal.fire({ title: `Ubah ${targetKolom.replace('_', ' ')}`, input: 'text', inputValue: targetPegawai[targetKolom] || '', showCancelButton: true });
 
                 if (newVal) {
                     showLoader();
                     try {
-                        await apiCall({
-                            action: 'submitUpdate',
-                            executorRole: STATE.user.role,
-                            nip_target: nip, 
-                            sheet_target: targetSheet,
-                            kolom_target: targetKolom,
-                            nilai_baru: newVal
-                        });
-                        Toast.fire({ icon: 'success', title: 'Data berhasil diperbarui.' });
-                        
-                        STATE.allPegawai = []; 
-                        fetchAllPegawai(); 
-                    } catch(e) {
-                        Swal.fire('Gagal', e.message, 'error');
-                    }
+                        await apiCall({ action: 'submitUpdate', executorRole: STATE.user.role, nip_target: nip, sheet_target: targetSheet, kolom_target: targetKolom, nilai_baru: newVal });
+                        Toast.fire({ icon: 'success', title: 'Data berhasil diperbarui.' }); STATE.allPegawai = []; fetchAllPegawai(); 
+                    } catch(e) { Swal.fire('Gagal', e.message, 'error'); }
                     showLoader(false);
                 }
             }
         }
 
-        // FUNGSI UNTUK MENU ANTRIAN (ADMIN/SUPERADMIN)
+        // ==========================================
+        // MENU ANTRIAN (ADMIN/SUPERADMIN)
+        // ==========================================
         async function fetchAllAntrian() {
             if (!['admin', 'superadmin'].includes(STATE.user.role)) return;
             showLoader();
-            try {
-                const res = await apiCall({ action: 'getAllAntrian', role: STATE.user.role });
-                renderTableAntrian(res.data);
-            } catch(e) {
-                Swal.fire('Error', e.message, 'error');
-            }
+            try { const res = await apiCall({ action: 'getAllAntrian', role: STATE.user.role }); renderTableAntrian(res.data); } catch(e) { Swal.fire('Error', e.message, 'error'); }
             showLoader(false);
         }
 
         function renderTableAntrian(data) {
-            const tbody = document.getElementById('tbody-antrian');
-            tbody.innerHTML = '';
-            
+            const tbody = document.getElementById('tbody-antrian'); tbody.innerHTML = '';
             const pendingData = data.filter(a => a.Status === 'Pending');
 
-            if(pendingData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="text-center p-4 opacity-70">Tidak ada pengajuan perubahan data baru.</td></tr>';
-                return;
-            }
+            if(pendingData.length === 0) { tbody.innerHTML = '<tr><td colspan="6" class="text-center p-4 opacity-70">Tidak ada pengajuan perubahan data baru.</td></tr>'; return; }
 
             pendingData.forEach(a => {
                 const tgl = new Date(a.Tgl_Pengajuan).toLocaleDateString('id-ID', {day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
                 let displayNilai = a.Nilai_Baru !== undefined && a.Nilai_Baru !== null ? String(a.Nilai_Baru) : '';
                 
-                if(displayNilai.startsWith('data:image/')) {
-                     displayNilai = `<img src="${displayNilai}" class="w-16 h-16 object-cover rounded cursor-pointer shadow border border-gray-300" onclick="Swal.fire({imageUrl: '${displayNilai}', imageWidth: 400, showConfirmButton: false})" title="Klik untuk memperbesar">`;
-                } else if(displayNilai.includes('http') && displayNilai.includes('drive')) {
-                     displayNilai += ` <br><a href="${displayNilai.split(' | ').pop()}" target="_blank" class="text-blue-500 underline text-xs">Lihat File Upload</a>`;
-                }
+                if(displayNilai.startsWith('data:image/')) { displayNilai = `<img src="${displayNilai}" class="w-16 h-16 object-cover rounded cursor-pointer shadow border border-gray-300" onclick="Swal.fire({imageUrl: '${displayNilai}', imageWidth: 400, showConfirmButton: false})" title="Klik untuk memperbesar">`; } 
+                else if(displayNilai.includes('http') && displayNilai.includes('drive')) { displayNilai += ` <br><a href="${displayNilai.split(' | ').pop()}" target="_blank" class="text-blue-500 underline text-xs">Lihat File Upload</a>`; }
 
-                let tr = document.createElement('tr');
-                tr.className = 'border-b border-gray-300 hover:bg-gray-50';
-                tr.innerHTML = `
-                    <td class="p-2 text-center"><input type="checkbox" class="cb-antrian" value="${a.ID_Antrian}" onchange="checkBulkActionVisibility()"></td>
-                    <td class="p-2 whitespace-nowrap">${tgl}</td>
-                    <td class="p-2 font-bold">${a.Nama_Pengaju} <br><span class="text-xs text-gray-500 font-normal">NIP: ${a.NIP}</span></td>
-                    <td class="p-2 text-blue-600 font-medium">${a.Kolom_Tujuan.replace(/_/g, ' ')}</td>
-                    <td class="p-2 max-w-xs break-words">${displayNilai}</td>
-                    <td class="p-2 whitespace-nowrap">
-                        <button onclick="prosesAntrian('${a.ID_Antrian}', 'Approved')" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-xs mr-1 shadow"><i class="fas fa-check"></i> Setuju</button>
-                        <button onclick="prosesAntrian('${a.ID_Antrian}', 'Rejected')" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs shadow"><i class="fas fa-times"></i> Tolak</button>
-                    </td>
-                `;
+                let tr = document.createElement('tr'); tr.className = 'border-b border-gray-300 hover:bg-gray-50';
+                tr.innerHTML = `<td class="p-2 text-center"><input type="checkbox" class="cb-antrian" value="${a.ID_Antrian}" onchange="checkBulkActionVisibility()"></td><td class="p-2 whitespace-nowrap">${tgl}</td><td class="p-2 font-bold">${a.Nama_Pengaju} <br><span class="text-xs text-gray-500 font-normal">NIP: ${a.NIP}</span></td><td class="p-2 text-blue-600 font-medium">${a.Kolom_Tujuan.replace(/_/g, ' ')}</td><td class="p-2 max-w-xs break-words">${displayNilai}</td><td class="p-2 whitespace-nowrap"><button onclick="prosesAntrian('${a.ID_Antrian}', 'Approved')" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-xs mr-1 shadow"><i class="fas fa-check"></i> Setuju</button><button onclick="prosesAntrian('${a.ID_Antrian}', 'Rejected')" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs shadow"><i class="fas fa-times"></i> Tolak</button></td>`;
                 tbody.appendChild(tr);
             });
-
-            document.getElementById('cb-select-all').checked = false;
-            checkBulkActionVisibility();
+            document.getElementById('cb-select-all').checked = false; checkBulkActionVisibility();
         }
 
-        function toggleSelectAllAntrian(source) {
-            const checkboxes = document.querySelectorAll('.cb-antrian');
-            checkboxes.forEach(cb => cb.checked = source.checked);
-            checkBulkActionVisibility();
-        }
-
+        function toggleSelectAllAntrian(source) { document.querySelectorAll('.cb-antrian').forEach(cb => cb.checked = source.checked); checkBulkActionVisibility(); }
         function checkBulkActionVisibility() {
             const anyChecked = document.querySelectorAll('.cb-antrian:checked').length > 0;
             const allCheckboxes = document.querySelectorAll('.cb-antrian').length;
             const checkedCount = document.querySelectorAll('.cb-antrian:checked').length;
             
-            const container = document.getElementById('bulk-action-container');
-            const selectAllCb = document.getElementById('cb-select-all');
-            
-            if(anyChecked) {
-                container.classList.remove('hidden');
-            } else {
-                container.classList.add('hidden');
-            }
-            
-            if (checkedCount === allCheckboxes && allCheckboxes > 0) {
-                selectAllCb.checked = true;
-            } else {
-                selectAllCb.checked = false;
-            }
+            const container = document.getElementById('bulk-action-container'); const selectAllCb = document.getElementById('cb-select-all');
+            anyChecked ? container.classList.remove('hidden') : container.classList.add('hidden');
+            selectAllCb.checked = (checkedCount === allCheckboxes && allCheckboxes > 0);
         }
 
         async function prosesBulkAntrian(action_type) {
-            const checkedBoxes = document.querySelectorAll('.cb-antrian:checked');
-            const ids = Array.from(checkedBoxes).map(cb => cb.value);
-            
+            const checkedBoxes = document.querySelectorAll('.cb-antrian:checked'); const ids = Array.from(checkedBoxes).map(cb => cb.value);
             if (ids.length === 0) return;
 
             const labelAksi = action_type === 'Approved' ? 'MENYETUJUI' : 'MENOLAK';
-            const { isConfirmed } = await Swal.fire({
-                title: 'Konfirmasi Massal',
-                text: `Anda yakin ingin ${labelAksi} ${ids.length} pengajuan data sekaligus?`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Ya, Lanjutkan',
-                cancelButtonText: 'Batal'
-            });
+            const { isConfirmed } = await Swal.fire({ title: 'Konfirmasi Massal', text: `Anda yakin ingin ${labelAksi} ${ids.length} pengajuan data sekaligus?`, icon: 'warning', showCancelButton: true, confirmButtonText: 'Ya, Lanjutkan', cancelButtonText: 'Batal' });
 
             if (isConfirmed) {
                 showLoader();
                 try {
                     const res = await apiCall({ action: 'processBulkAntrian', ids: ids, action_type: action_type });
-                    Toast.fire({ icon: 'success', title: res.message });
-                    document.getElementById('cb-select-all').checked = false;
-                    checkBulkActionVisibility();
-                    fetchAllAntrian(); 
-                } catch(e) {
-                    Swal.fire('Gagal', e.message, 'error');
-                }
+                    Toast.fire({ icon: 'success', title: res.message }); document.getElementById('cb-select-all').checked = false; checkBulkActionVisibility(); fetchAllAntrian(); 
+                } catch(e) { Swal.fire('Gagal', e.message, 'error'); }
                 showLoader(false);
             }
         }
 
         async function prosesAntrian(id_antrian, action_type) {
             const labelAksi = action_type === 'Approved' ? 'menyetujui' : 'menolak';
-            const { isConfirmed } = await Swal.fire({
-                title: 'Konfirmasi',
-                text: `Anda yakin ingin ${labelAksi} pengajuan data ini?`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Ya, Lanjutkan',
-                cancelButtonText: 'Batal'
-            });
+            const { isConfirmed } = await Swal.fire({ title: 'Konfirmasi', text: `Anda yakin ingin ${labelAksi} pengajuan data ini?`, icon: 'warning', showCancelButton: true, confirmButtonText: 'Ya, Lanjutkan', cancelButtonText: 'Batal' });
 
             if (isConfirmed) {
                 showLoader();
                 try {
                     const res = await apiCall({ action: 'processAntrian', id_antrian: id_antrian, action_type: action_type });
-                    Toast.fire({ icon: 'success', title: res.message });
-                    fetchAllAntrian(); 
-                } catch(e) {
-                    Swal.fire('Gagal', e.message, 'error');
-                }
+                    Toast.fire({ icon: 'success', title: res.message }); fetchAllAntrian(); 
+                } catch(e) { Swal.fire('Gagal', e.message, 'error'); }
                 showLoader(false);
             }
         }
 
         // ==========================================
-        // 4. ACTION LOGIC (UPDATE & UPLOAD)
+        // ACTION LOGIC (UPDATE & UPLOAD)
         // ==========================================
         async function editField(sheet, kolom) {
-            let inputType = 'text';
-            let inputOptions = {};
-            let currentValue = (sheet === 'IDENTITAS_LAIN') ? (STATE.identitasLain[kolom] || '') : (STATE.profile[kolom] || '');
+            let inputType = 'text'; let inputOptions = {}; let currentValue = (sheet === 'IDENTITAS_LAIN') ? (STATE.identitasLain[kolom] || '') : (STATE.profile[kolom] || '');
             
-            if (kolom === 'Jenjang_Pendidikan') {
-                inputType = 'select';
-                inputOptions = { 'SD /sederajat': 'SD /sederajat', 'SMP /sederajat': 'SMP /sederajat', 'SMA /sederajat': 'SMA /sederajat', 'D1': 'D1', 'D2': 'D2', 'D3': 'D3', 'D4': 'D4', 'Strata 1': 'Strata 1', 'Strata 2': 'Strata 2', 'Strata 3': 'Strata 3' };
-            } else if (kolom === 'Jenis_Kelamin') {
-                inputType = 'select'; inputOptions = { 'Laki-laki': 'Laki-laki', 'Perempuan': 'Perempuan' };
-            } else if (kolom === 'Tgl_Lahir') { inputType = 'date'; }
+            if (kolom === 'Jenjang_Pendidikan') { inputType = 'select'; inputOptions = { 'SD /sederajat': 'SD /sederajat', 'SMP /sederajat': 'SMP /sederajat', 'SMA /sederajat': 'SMA /sederajat', 'D1': 'D1', 'D2': 'D2', 'D3': 'D3', 'D4': 'D4', 'Strata 1': 'Strata 1', 'Strata 2': 'Strata 2', 'Strata 3': 'Strata 3' }; } 
+            else if (kolom === 'Jenis_Kelamin') { inputType = 'select'; inputOptions = { 'Laki-laki': 'Laki-laki', 'Perempuan': 'Perempuan' }; } 
+            else if (kolom === 'Tgl_Lahir') { inputType = 'date'; }
 
             const swalConfig = { title: `Ubah ${kolom.replace(/_/g,' ')}`, input: inputType, inputValue: currentValue, showCancelButton: true };
             if (inputType === 'select') { swalConfig.inputOptions = inputOptions; swalConfig.inputPlaceholder = `-- Pilih --`; }
@@ -1239,25 +848,16 @@
 
             if (newVal !== undefined && newVal !== currentValue && newVal !== "") {
                 let finalVal = newVal;
-
                 if (kolom === 'No_HP') {
                     finalVal = finalVal.replace(/\D/g, ''); 
-                    if (finalVal.startsWith('0')) {
-                        finalVal = '62' + finalVal.slice(1); 
-                    } else if (finalVal.startsWith('8')) {
-                        finalVal = '62' + finalVal; 
-                    } else if (!finalVal.startsWith('62')) {
-                        finalVal = '62' + finalVal; 
-                    }
+                    if (finalVal.startsWith('0')) { finalVal = '62' + finalVal.slice(1); } else if (finalVal.startsWith('8')) { finalVal = '62' + finalVal; } else if (!finalVal.startsWith('62')) { finalVal = '62' + finalVal; }
                 }
 
                 showLoader();
                 try {
                     await apiCall({ action: 'submitUpdate', executorRole: STATE.user.role, nip_target: STATE.user.nip, sheet_target: sheet, kolom_target: kolom, nilai_baru: finalVal });
                     Toast.fire({ icon: 'success', title: 'Pengajuan perubahan berhasil dikirim.' });
-                    
-                    if(['admin','superadmin'].includes(STATE.user.role)) { fetchProfile(); } 
-                    else { await fetchMyAntrian(); updateProfileUI(); }
+                    if(['admin','superadmin'].includes(STATE.user.role)) { fetchProfile(); } else { await fetchMyAntrian(); updateProfileUI(); }
                 } catch(e) { Swal.fire('Gagal', e.message, 'error'); }
                 showLoader(false);
             }
@@ -1269,42 +869,26 @@
                 'RIWAYAT_PANGKAT': { 'Pangkat_Gol': 'Pangkat/Golongan', 'No_SK': 'Nomor SK', 'TMT': 'TMT Pangkat', 'Tgl_SK': 'Tanggal SK', 'Masa_Kerja_Thn': 'Masa Kerja (Tahun)', 'Masa_Kerja_Bln': 'Masa Kerja (Bulan)', 'Pangkat_Sekarang': 'Pangkat/Gol Sekarang? (Ya/Tidak)', 'File_SK': 'File PDF SK' },
                 'RIWAYAT_JABATAN': { 'Jenis_Jabatan': 'Jenis Jabatan', 'Jabatan': 'Nama Jabatan', 'Eselon': 'Eselon', 'Unit_Kerja': 'Unit Kerja', 'TMT_Pelantikan': 'TMT Pelantikan', 'Jabatan_Sekarang': 'Jabatan Sekarang? (Ya/Tidak)', 'File_SK': 'File PDF SK' },
                 'RIWAYAT_KOMPETENSI': { 'Jenis_Diklat': 'Jenis Diklat', 'Nama_Diklat': 'Nama Diklat', 'Tgl_Mulai': 'Tgl Mulai Diklat', 'Tgl_Selesai': 'Tgl Selesai Diklat', 'Jumlah_JP': 'Jumlah JP', 'Penyelenggara': 'Penyelenggara', 'Sumber_Anggaran': 'Sumber Anggaran', 'No_Sertifikat': 'No Sertifikat', 'File_Sertifikat': 'File PDF Sertifikat' },
-                // UPDATE: Pemetaan KGB untuk Edit Spesifik
                 'RIWAYAT_KGB': { 'Golongan': 'Golongan KGB', 'No_SK_KGB': 'Nomor SK KGB', 'TMT_KGB': 'TMT KGB', 'Tanggal_KGB': 'Tanggal SK KGB', 'Masa_Kerja_Tahun': 'Masa Kerja (Tahun)', 'Masa_Kerja_Bulan': 'Masa Kerja (Bulan)', 'Gaji_Pokok_Baru': 'Gaji Pokok Baru', 'Dasar_KGB': 'KGB Berdasarkan', 'File_SK_KGB': 'File PDF SK KGB' },
-                'DATA_KELUARGA': { 'Nama': 'Nama Anggota', 'Status_Keluarga': 'Status (Anak/Istri)', 'L/P': 'L/P', 'Tunjangan': 'Dapat Tunjangan?' }
+                'DATA_KELUARGA': { 'Nama': 'Nama Anggota', 'Status_Keluarga': 'Status (Anak/Istri)', 'L/P': 'L/P', 'Tunjangan': 'Dapat Tunjangan?' },
+                'DATA_KARTU': { 'Jenis_Kartu': 'Jenis Kartu', 'Nomor_Kartu': 'Nomor Kartu', 'File_Kartu': 'File Dokumen Kartu' }
             };
 
             const dataTabelMapping = {
                 'RIWAYAT_PENDIDIKAN': STATE.riwayat.pendidikan, 'RIWAYAT_PANGKAT': STATE.riwayat.pangkat,
-                'RIWAYAT_JABATAN': STATE.riwayat.jabatan, 'RIWAYAT_KOMPETENSI': STATE.riwayat.kompetensi, 'RIWAYAT_KGB': STATE.riwayat.kgb, 'DATA_KELUARGA': STATE.riwayat.keluarga
+                'RIWAYAT_JABATAN': STATE.riwayat.jabatan, 'RIWAYAT_KOMPETENSI': STATE.riwayat.kompetensi, 'RIWAYAT_KGB': STATE.riwayat.kgb, 'DATA_KELUARGA': STATE.riwayat.keluarga, 'DATA_KARTU': STATE.riwayat.kartu
             };
 
             const rowData = dataTabelMapping[sheet].find(r => r.ID_Data === idData);
             const kolomOptions = menuOptions[sheet];
 
-            const { value: selectedKolom } = await Swal.fire({
-                title: 'Edit Riwayat',
-                input: 'select',
-                inputOptions: kolomOptions,
-                inputPlaceholder: 'Apa yang ingin diubah?',
-                showCancelButton: true
-            });
+            const { value: selectedKolom } = await Swal.fire({ title: 'Edit Riwayat', input: 'select', inputOptions: kolomOptions, inputPlaceholder: 'Apa yang ingin diubah?', showCancelButton: true });
 
             if (selectedKolom) {
-                let inputType = 'text';
-                let inputOptions = {};
+                let inputType = 'text'; let inputOptions = {};
                 
                 if (selectedKolom === 'Jenjang') { inputType = 'select'; inputOptions = { 'SD /sederajat': 'SD /sederajat', 'SMP /sederajat': 'SMP /sederajat', 'SMA /sederajat': 'SMA /sederajat', 'D1': 'D1', 'D2': 'D2', 'D3': 'D3', 'D4': 'D4', 'Strata 1': 'Strata 1', 'Strata 2': 'Strata 2', 'Strata 3': 'Strata 3' }; }
-                if (selectedKolom === 'Pangkat_Gol') { 
-                    inputType = 'select'; 
-                    inputOptions = {
-                        'Gol I': {'Juru Muda (I/a)': 'Juru Muda (I/a)', 'Juru Muda Tk.I (I/b)': 'Juru Muda Tk.I (I/b)', 'Juru (I/c)': 'Juru (I/c)', 'Juru Tk.I (I/d)': 'Juru Tk.I (I/d)'},
-                        'Gol II': {'Pengatur Muda (II/a)': 'Pengatur Muda (II/a)', 'Pengatur Muda Tk.I (II/b)': 'Pengatur Muda Tk.I (II/b)', 'Pengatur (II/c)': 'Pengatur (II/c)', 'Pengatur Tk.I (II/d)': 'Pengatur Tk.I (II/d)'},
-                        'Gol III': {'Penata Muda (III/a)': 'Penata Muda (III/a)', 'Penata Muda Tk.I (III/b)': 'Penata Muda Tk.I (III/b)', 'Penata (III/c)': 'Penata (III/c)', 'Penata Tk.I (III/d)': 'Penata Tk.I (III/d)'},
-                        'Gol IV': {'Pembina (IV/a)': 'Pembina (IV/a)', 'Pembina Tk.I (IV/b)': 'Pembina Tk.I (IV/b)', 'Pembina Utama Muda (IV/c)': 'Pembina Utama Muda (IV/c)', 'Pembina Utama Madya (IV/d)': 'Pembina Utama Madya (IV/d)', 'Pembina Utama (IV/e)': 'Pembina Utama (IV/e)'},
-                        'PPPK': {'PPPK Gol. 5': 'PPPK Gol. 5', 'PPPK Gol. 7': 'PPPK Gol. 7', 'PPPK Gol. 9': 'PPPK Gol. 9', 'PPPK Gol. 10': 'PPPK Gol. 10', 'PPPK Gol. 11': 'PPPK Gol. 11'}
-                    }; 
-                }
+                if (selectedKolom === 'Pangkat_Gol') { inputType = 'select'; inputOptions = { 'Gol I': {'Juru Muda (I/a)': 'Juru Muda (I/a)', 'Juru Muda Tk.I (I/b)': 'Juru Muda Tk.I (I/b)', 'Juru (I/c)': 'Juru (I/c)', 'Juru Tk.I (I/d)': 'Juru Tk.I (I/d)'}, 'Gol II': {'Pengatur Muda (II/a)': 'Pengatur Muda (II/a)', 'Pengatur Muda Tk.I (II/b)': 'Pengatur Muda Tk.I (II/b)', 'Pengatur (II/c)': 'Pengatur (II/c)', 'Pengatur Tk.I (II/d)': 'Pengatur Tk.I (II/d)'}, 'Gol III': {'Penata Muda (III/a)': 'Penata Muda (III/a)', 'Penata Muda Tk.I (III/b)': 'Penata Muda Tk.I (III/b)', 'Penata (III/c)': 'Penata (III/c)', 'Penata Tk.I (III/d)': 'Penata Tk.I (III/d)'}, 'Gol IV': {'Pembina (IV/a)': 'Pembina (IV/a)', 'Pembina Tk.I (IV/b)': 'Pembina Tk.I (IV/b)', 'Pembina Utama Muda (IV/c)': 'Pembina Utama Muda (IV/c)', 'Pembina Utama Madya (IV/d)': 'Pembina Utama Madya (IV/d)', 'Pembina Utama (IV/e)': 'Pembina Utama (IV/e)'}, 'PPPK': {'PPPK Gol. 5': 'PPPK Gol. 5', 'PPPK Gol. 7': 'PPPK Gol. 7', 'PPPK Gol. 9': 'PPPK Gol. 9', 'PPPK Gol. 10': 'PPPK Gol. 10', 'PPPK Gol. 11': 'PPPK Gol. 11'} }; }
                 
                 if (selectedKolom === 'Jenis_Jabatan') { inputType = 'select'; inputOptions = { 'Staf': 'Staf', 'Jabatan Struktural': 'Jabatan Struktural', 'JFT (Jabatan Fungsional Tertentu)': 'JFT (Jabatan Fungsional Tertentu)', 'JFU (Jabatan Fungsional Umum)': 'JFU (Jabatan Fungsional Umum)', 'Jenis jabatan tidak di ketahui': 'Jenis jabatan tidak di ketahui' }; }
                 if (selectedKolom === 'Eselon') { inputType = 'select'; inputOptions = { 'ESELON II': 'ESELON II', 'ESELON III': 'ESELON III', 'ESELON IV': 'ESELON IV' }; }
@@ -1320,11 +904,13 @@
                 const swalConfig = { title: `Ubah ${kolomOptions[selectedKolom]}`, input: inputType, showCancelButton: true };
                 
                 if (inputType === 'select') { 
-                    swalConfig.inputOptions = inputOptions; 
-                    swalConfig.inputPlaceholder = `-- Pilih --`; 
-                    swalConfig.inputValue = rowData[selectedKolom] || '';
+                    swalConfig.inputOptions = inputOptions; swalConfig.inputPlaceholder = `-- Pilih --`; swalConfig.inputValue = rowData[selectedKolom] || '';
                 } else if (inputType === 'file') {
-                    swalConfig.inputAttributes = { accept: 'application/pdf' };
+                    if (sheet === 'DATA_KARTU') {
+                        swalConfig.inputAttributes = { accept: 'application/pdf, image/*' };
+                    } else {
+                        swalConfig.inputAttributes = { accept: 'application/pdf' };
+                    }
                 } else {
                     swalConfig.inputValue = rowData[selectedKolom] || '';
                 }
@@ -1332,10 +918,14 @@
                 if (inputType === 'file') {
                     swalConfig.preConfirm = async (file) => {
                         if (!file) { Swal.showValidationMessage('File wajib dipilih!'); return false; }
-                        if (file.type !== 'application/pdf') { Swal.showValidationMessage('Format file harus PDF!'); return false; }
+                        
+                        const allowedTypes = ['application/pdf'];
+                        if (sheet === 'DATA_KARTU') { allowedTypes.push('image/jpeg', 'image/png', 'image/jpg', 'image/webp'); }
+                        
+                        if (!allowedTypes.includes(file.type)) { Swal.showValidationMessage('Format file tidak didukung!'); return false; }
                         if (file.size > 7 * 1024 * 1024) { Swal.showValidationMessage('Ukuran file maksimal 7MB!'); return false; }
                         
-                        const base64PDF = await new Promise((resolve) => {
+                        const base64File = await new Promise((resolve) => {
                             const reader = new FileReader();
                             reader.onload = (e) => resolve(e.target.result);
                             reader.readAsDataURL(file);
@@ -1344,18 +934,11 @@
                         Swal.showLoading();
                         try {
                             const resFile = await apiCall({
-                                action: 'uploadFile',
-                                nip: STATE.user.nip,
-                                nama: STATE.profile.Nama_Lengkap,
-                                fileBase64: base64PDF,
-                                mimeType: file.type,
-                                filename: `UPDATE_${selectedKolom}_${STATE.user.nip}_${new Date().getTime()}.pdf`
+                                action: 'uploadFile', nip: STATE.user.nip, nama: STATE.profile.Nama_Lengkap,
+                                fileBase64: base64File, mimeType: file.type, filename: `UPDATE_${selectedKolom}_${STATE.user.nip}_${new Date().getTime()}.${file.name.split('.').pop()}`
                             });
                             return resFile.fileUrl; 
-                        } catch (err) {
-                            Swal.showValidationMessage('Gagal mengupload file: ' + err.message);
-                            return false;
-                        }
+                        } catch (err) { Swal.showValidationMessage('Gagal mengupload file: ' + err.message); return false; }
                     };
                 }
 
@@ -1364,10 +947,7 @@
                 if (newVal !== undefined && newVal !== rowData[selectedKolom] && newVal !== '') {
                     showLoader();
                     try {
-                        await apiCall({
-                            action: 'submitUpdate', executorRole: STATE.user.role, nip_target: STATE.user.nip,
-                            sheet_target: sheet, baris_target: idData, kolom_target: selectedKolom, nilai_baru: newVal
-                        });
+                        await apiCall({ action: 'submitUpdate', executorRole: STATE.user.role, nip_target: STATE.user.nip, sheet_target: sheet, baris_target: idData, kolom_target: selectedKolom, nilai_baru: newVal });
                         Toast.fire({ icon: 'success', title: 'Perubahan berhasil masuk antrian.' });
                         if(['admin','superadmin'].includes(STATE.user.role)) { fetchProfile(); } else { await fetchMyAntrian(); renderSemuaRiwayat(); }
                     } catch(e) { Swal.fire('Gagal', e.message, 'error'); }
@@ -1377,96 +957,42 @@
         }
 
         async function ajukanRiwayat(sheet) {
-            let formTitle = 'Ajukan Data';
-            let htmlForm = '';
+            let formTitle = 'Ajukan Data'; let htmlForm = '';
 
             if (sheet === 'RIWAYAT_PENDIDIKAN') {
                 formTitle = 'Ajukan Riwayat Pendidikan';
                 htmlForm = `
-                    <select id="swal-in1" class="swal2-select w-full m-0 mt-2 text-sm">
-                        <option value="" disabled selected>-- Pilih Jenjang Pendidikan --</option>
-                        <option value="SD /sederajat">SD /sederajat</option>
-                        <option value="SMP /sederajat">SMP /sederajat</option>
-                        <option value="SMA /sederajat">SMA /sederajat</option>
-                        <option value="D1">D1</option>
-                        <option value="D2">D2</option>
-                        <option value="D3">D3</option>
-                        <option value="D4">D4</option>
-                        <option value="Strata 1">Strata 1</option>
-                        <option value="Strata 2">Strata 2</option>
-                        <option value="Strata 3">Strata 3</option>
-                    </select>
+                    <select id="swal-in1" class="swal2-select w-full m-0 mt-2 text-sm"><option value="" disabled selected>-- Pilih Jenjang Pendidikan --</option><option value="SD /sederajat">SD /sederajat</option><option value="SMP /sederajat">SMP /sederajat</option><option value="SMA /sederajat">SMA /sederajat</option><option value="D1">D1</option><option value="D2">D2</option><option value="D3">D3</option><option value="D4">D4</option><option value="Strata 1">Strata 1</option><option value="Strata 2">Strata 2</option><option value="Strata 3">Strata 3</option></select>
                     <input id="swal-in2" class="swal2-input text-sm" placeholder="Nama Instansi/Kampus">
                     <input id="swal-in3" class="swal2-input text-sm" placeholder="Jurusan / Program Studi">
                     <input id="swal-in4" class="swal2-input text-sm" type="number" placeholder="Tahun Lulus (Contoh: 2018)">
                     <input id="swal-in5" class="swal2-input text-sm" placeholder="Nomor Ijazah">
-                    <div class="text-left mt-3 px-1"><label class="text-sm font-bold text-gray-700">Tanggal Ijazah:</label></div>
-                    <input id="swal-in6" class="swal2-input text-sm m-0 w-full mb-2" type="date">
-                    <select id="swal-in7" class="swal2-select w-full m-0 mt-2 text-sm">
-                        <option value="" disabled selected>-- Pendidikan Terakhir? --</option>
-                        <option value="Ya">Ya</option>
-                        <option value="Tidak">Tidak</option>
-                    </select>
-                    <div class="text-left mt-4 px-1"><label class="text-sm font-bold text-gray-700">File PDF Ijazah (Maks 7MB):</label></div>
-                    <input type="file" id="swal-file" class="swal2-file text-sm" accept="application/pdf">
+                    <div class="text-left mt-3 px-1"><label class="text-sm font-bold text-gray-700">Tanggal Ijazah:</label></div><input id="swal-in6" class="swal2-input text-sm m-0 w-full mb-2" type="date">
+                    <select id="swal-in7" class="swal2-select w-full m-0 mt-2 text-sm"><option value="" disabled selected>-- Pendidikan Terakhir? --</option><option value="Ya">Ya</option><option value="Tidak">Tidak</option></select>
+                    <div class="text-left mt-4 px-1"><label class="text-sm font-bold text-gray-700">File PDF Ijazah (Maks 7MB):</label></div><input type="file" id="swal-file" class="swal2-file text-sm" accept="application/pdf">
                 `;
             } else if (sheet === 'RIWAYAT_PANGKAT') {
                 formTitle = 'Ajukan Riwayat Pangkat';
                 htmlForm = `
-                    <select id="swal-in1" class="swal2-select w-full m-0 mt-2 text-sm">
-                        <option value="" disabled selected>-- Pilih Pangkat/Golongan --</option>
-                        <optgroup label="Golongan I (Juru)"><option value="Juru Muda (I/a)">Juru Muda (I/a)</option><option value="Juru Muda Tk.I (I/b)">Juru Muda Tk.I (I/b)</option><option value="Juru (I/c)">Juru (I/c)</option><option value="Juru Tk.I (I/d)">Juru Tk.I (I/d)</option></optgroup>
-                        <optgroup label="Golongan II (Pengatur)"><option value="Pengatur Muda (II/a)">Pengatur Muda (II/a)</option><option value="Pengatur Muda Tk.I (II/b)">Pengatur Muda Tk.I (II/b)</option><option value="Pengatur (II/c)">Pengatur (II/c)</option><option value="Pengatur Tk.I (II/d)">Pengatur Tk.I (II/d)</option></optgroup>
-                        <optgroup label="Golongan III (Penata)"><option value="Penata Muda (III/a)">Penata Muda (III/a)</option><option value="Penata Muda Tk.I (III/b)">Penata Muda Tk.I (III/b)</option><option value="Penata (III/c)">Penata (III/c)</option><option value="Penata Tk.I (III/d)">Penata Tk.I (III/d)</option></optgroup>
-                        <optgroup label="Golongan IV (Pembina)"><option value="Pembina (IV/a)">Pembina (IV/a)</option><option value="Pembina Tk.I (IV/b)">Pembina Tk.I (IV/b)</option><option value="Pembina Utama Muda (IV/c)">Pembina Utama Muda (IV/c)</option><option value="Pembina Utama Madya (IV/d)">Pembina Utama Madya (IV/d)</option><option value="Pembina Utama (IV/e)">Pembina Utama (IV/e)</option></optgroup>
-                        <optgroup label="PPPK"><option value="PPPK Gol. 5">PPPK Gol. 5</option><option value="PPPK Gol. 7">PPPK Gol. 7</option><option value="PPPK Gol. 9">PPPK Gol. 9</option><option value="PPPK Gol. 10">PPPK Gol. 10</option><option value="PPPK Gol. 11">PPPK Gol. 11</option></optgroup>
-                    </select>
+                    <select id="swal-in1" class="swal2-select w-full m-0 mt-2 text-sm"><option value="" disabled selected>-- Pilih Pangkat/Golongan --</option><optgroup label="Golongan I (Juru)"><option value="Juru Muda (I/a)">Juru Muda (I/a)</option><option value="Juru Muda Tk.I (I/b)">Juru Muda Tk.I (I/b)</option><option value="Juru (I/c)">Juru (I/c)</option><option value="Juru Tk.I (I/d)">Juru Tk.I (I/d)</option></optgroup><optgroup label="Golongan II (Pengatur)"><option value="Pengatur Muda (II/a)">Pengatur Muda (II/a)</option><option value="Pengatur Muda Tk.I (II/b)">Pengatur Muda Tk.I (II/b)</option><option value="Pengatur (II/c)">Pengatur (II/c)</option><option value="Pengatur Tk.I (II/d)">Pengatur Tk.I (II/d)</option></optgroup><optgroup label="Golongan III (Penata)"><option value="Penata Muda (III/a)">Penata Muda (III/a)</option><option value="Penata Muda Tk.I (III/b)">Penata Muda Tk.I (III/b)</option><option value="Penata (III/c)">Penata (III/c)</option><option value="Penata Tk.I (III/d)">Penata Tk.I (III/d)</option></optgroup><optgroup label="Golongan IV (Pembina)"><option value="Pembina (IV/a)">Pembina (IV/a)</option><option value="Pembina Tk.I (IV/b)">Pembina Tk.I (IV/b)</option><option value="Pembina Utama Muda (IV/c)">Pembina Utama Muda (IV/c)</option><option value="Pembina Utama Madya (IV/d)">Pembina Utama Madya (IV/d)</option><option value="Pembina Utama (IV/e)">Pembina Utama (IV/e)</option></optgroup><optgroup label="PPPK"><option value="PPPK Gol. 5">PPPK Gol. 5</option><option value="PPPK Gol. 7">PPPK Gol. 7</option><option value="PPPK Gol. 9">PPPK Gol. 9</option><option value="PPPK Gol. 10">PPPK Gol. 10</option><option value="PPPK Gol. 11">PPPK Gol. 11</option></optgroup></select>
                     <input id="swal-in2" class="swal2-input text-sm" placeholder="Nomor SK Pengangkatan">
-                    <div class="text-left mt-3 px-1"><label class="text-sm font-bold text-gray-700">TMT Pangkat/Golongan:</label></div>
-                    <input id="swal-in3" class="swal2-input text-sm m-0 w-full mb-2" type="date">
-                    <div class="text-left mt-3 px-1"><label class="text-sm font-bold text-gray-700">Tanggal SK:</label></div>
-                    <input id="swal-in4" class="swal2-input text-sm m-0 w-full mb-2" type="date">
-                    <div class="flex gap-2 px-1">
-                        <input id="swal-in5" class="swal2-input text-sm w-1/2 m-0 mt-2" type="number" placeholder="Masa Kerja (Tahun)">
-                        <input id="swal-in6" class="swal2-input text-sm w-1/2 m-0 mt-2" type="number" placeholder="Masa Kerja (Bulan)">
-                    </div>
-                    <select id="swal-in7" class="swal2-select w-full m-0 mt-3 text-sm">
-                        <option value="" disabled selected>-- Pangkat/Golongan Sekarang? --</option>
-                        <option value="Ya">Ya</option>
-                        <option value="Tidak">Tidak</option>
-                    </select>
-                    <div class="text-left mt-4 px-1"><label class="text-sm font-bold text-gray-700">File PDF SK (Maks 7MB):</label></div>
-                    <input type="file" id="swal-file" class="swal2-file text-sm" accept="application/pdf">
+                    <div class="text-left mt-3 px-1"><label class="text-sm font-bold text-gray-700">TMT Pangkat/Golongan:</label></div><input id="swal-in3" class="swal2-input text-sm m-0 w-full mb-2" type="date">
+                    <div class="text-left mt-3 px-1"><label class="text-sm font-bold text-gray-700">Tanggal SK:</label></div><input id="swal-in4" class="swal2-input text-sm m-0 w-full mb-2" type="date">
+                    <div class="flex gap-2 px-1"><input id="swal-in5" class="swal2-input text-sm w-1/2 m-0 mt-2" type="number" placeholder="Masa Kerja (Tahun)"><input id="swal-in6" class="swal2-input text-sm w-1/2 m-0 mt-2" type="number" placeholder="Masa Kerja (Bulan)"></div>
+                    <select id="swal-in7" class="swal2-select w-full m-0 mt-3 text-sm"><option value="" disabled selected>-- Pangkat/Golongan Sekarang? --</option><option value="Ya">Ya</option><option value="Tidak">Tidak</option></select>
+                    <div class="text-left mt-4 px-1"><label class="text-sm font-bold text-gray-700">File PDF SK (Maks 7MB):</label></div><input type="file" id="swal-file" class="swal2-file text-sm" accept="application/pdf">
                 `;
             } else if (sheet === 'RIWAYAT_JABATAN') {
                 formTitle = 'Ajukan Riwayat Jabatan';
                 htmlForm = `
-                    <select id="swal-jenis" class="swal2-select w-full m-0 mt-2 text-sm" onchange="document.getElementById('div-eselon').style.display = this.value === 'Jabatan Struktural' ? 'block' : 'none'">
-                        <option value="" disabled selected>-- Pilih Jenis Jabatan --</option>
-                        <option value="Staf">Staf</option><option value="Jabatan Struktural">Jabatan Struktural</option><option value="JFT (Jabatan Fungsional Tertentu)">JFT (Jabatan Fungsional Tertentu)</option><option value="JFU (Jabatan Fungsional Umum)">JFU (Jabatan Fungsional Umum)</option><option value="Jenis jabatan tidak di ketahui">Jenis jabatan tidak di ketahui</option>
-                    </select>
-                    <div id="div-eselon" style="display:none;" class="mt-2 w-full">
-                        <select id="swal-eselon" class="swal2-select w-full m-0 text-sm">
-                            <option value="" disabled selected>-- Pilih Eselon (Jika Struktural) --</option>
-                            <option value="ESELON II">ESELON II</option><option value="ESELON III">ESELON III</option><option value="ESELON IV">ESELON IV</option>
-                        </select>
-                    </div>
-                    <select id="swal-unit" class="swal2-select w-full m-0 mt-3 text-sm" onchange="document.getElementById('div-unit-lainnya').style.display = this.value === 'LAINNYA' ? 'block' : 'none'">
-                        <option value="" disabled selected>-- Pilih Unit Kerja (Bidang/Bagian/Ruangan) --</option>
-                        <option value="LAINNYA">Lainnya (Ketik Manual)...</option>
-                        <option value="BAGIAN KEUANGAN">BAGIAN KEUANGAN</option><option value="BAGIAN ADMINISTRASI DAN UMUM">BAGIAN ADMINISTRASI DAN UMUM</option>
-                    </select>
-                    <div id="div-unit-lainnya" style="display:none;" class="mt-2 w-full">
-                        <input id="swal-unit-lainnya" class="swal2-input text-sm m-0 w-full" placeholder="Ketik Unit Kerja Lainnya">
-                    </div>
+                    <select id="swal-jenis" class="swal2-select w-full m-0 mt-2 text-sm" onchange="document.getElementById('div-eselon').style.display = this.value === 'Jabatan Struktural' ? 'block' : 'none'"><option value="" disabled selected>-- Pilih Jenis Jabatan --</option><option value="Staf">Staf</option><option value="Jabatan Struktural">Jabatan Struktural</option><option value="JFT (Jabatan Fungsional Tertentu)">JFT (Jabatan Fungsional Tertentu)</option><option value="JFU (Jabatan Fungsional Umum)">JFU (Jabatan Fungsional Umum)</option><option value="Jenis jabatan tidak di ketahui">Jenis jabatan tidak di ketahui</option></select>
+                    <div id="div-eselon" style="display:none;" class="mt-2 w-full"><select id="swal-eselon" class="swal2-select w-full m-0 text-sm"><option value="" disabled selected>-- Pilih Eselon (Jika Struktural) --</option><option value="ESELON II">ESELON II</option><option value="ESELON III">ESELON III</option><option value="ESELON IV">ESELON IV</option></select></div>
+                    <select id="swal-unit" class="swal2-select w-full m-0 mt-3 text-sm" onchange="document.getElementById('div-unit-lainnya').style.display = this.value === 'LAINNYA' ? 'block' : 'none'"><option value="" disabled selected>-- Pilih Unit Kerja (Bidang/Bagian/Ruangan) --</option><option value="LAINNYA">Lainnya (Ketik Manual)...</option><option value="BAGIAN KEUANGAN">BAGIAN KEUANGAN</option><option value="BAGIAN ADMINISTRASI DAN UMUM">BAGIAN ADMINISTRASI DAN UMUM</option></select>
+                    <div id="div-unit-lainnya" style="display:none;" class="mt-2 w-full"><input id="swal-unit-lainnya" class="swal2-input text-sm m-0 w-full" placeholder="Ketik Unit Kerja Lainnya"></div>
                     <input id="swal-nama" class="swal2-input text-sm m-0 mt-3 w-full" placeholder="Nama Jabatan">
-                    <div class="text-left mt-3 px-1"><label class="text-sm font-bold text-gray-700">TMT Pelantikan:</label></div>
-                    <input id="swal-tmt" class="swal2-input text-sm m-0 w-full mb-2" type="date">
-                    <select id="swal-sekarang" class="swal2-select w-full m-0 mt-2 text-sm">
-                        <option value="" disabled selected>-- Jabatan Sekarang? --</option><option value="Ya">Ya</option><option value="Tidak">Tidak</option>
-                    </select>
-                    <div class="text-left mt-4 px-1"><label class="text-sm font-bold text-gray-700">File PDF SK (Maks 7MB):</label></div>
-                    <input type="file" id="swal-file" class="swal2-file text-sm" accept="application/pdf">
+                    <div class="text-left mt-3 px-1"><label class="text-sm font-bold text-gray-700">TMT Pelantikan:</label></div><input id="swal-tmt" class="swal2-input text-sm m-0 w-full mb-2" type="date">
+                    <select id="swal-sekarang" class="swal2-select w-full m-0 mt-2 text-sm"><option value="" disabled selected>-- Jabatan Sekarang? --</option><option value="Ya">Ya</option><option value="Tidak">Tidak</option></select>
+                    <div class="text-left mt-4 px-1"><label class="text-sm font-bold text-gray-700">File PDF SK (Maks 7MB):</label></div><input type="file" id="swal-file" class="swal2-file text-sm" accept="application/pdf">
                 `;
             } else if (sheet === 'RIWAYAT_KOMPETENSI') {
                 formTitle = 'Pengembangan Kompetensi / Diklat';
@@ -1477,48 +1003,43 @@
                     <div class="flex gap-2 px-1"><input id="swal-in3" class="swal2-input text-sm w-1/2 m-0" type="date"><input id="swal-in4" class="swal2-input text-sm w-1/2 m-0" type="date"></div>
                     <input id="swal-in5" class="swal2-input text-sm" type="number" placeholder="Jumlah JP (Jam Pelajaran)">
                     <input id="swal-in6" class="swal2-input text-sm" placeholder="Penyelenggara Instansi">
-                    <select id="swal-in7" class="swal2-select w-full m-0 mt-3 text-sm">
-                        <option value="" disabled selected>-- Pilih Sumber Anggaran --</option><option value="Gratis">Gratis</option><option value="Mandiri">Mandiri</option><option value="APBD">APBD</option>
-                    </select>
+                    <select id="swal-in7" class="swal2-select w-full m-0 mt-3 text-sm"><option value="" disabled selected>-- Pilih Sumber Anggaran --</option><option value="Gratis">Gratis</option><option value="Mandiri">Mandiri</option><option value="APBD">APBD</option></select>
                     <input id="swal-in8" class="swal2-input text-sm" placeholder="Nomor Sertifikat">
-                    <div class="text-left mt-4 px-1"><label class="text-sm font-bold text-gray-700">File PDF Sertifikat (Maks 7MB):</label></div>
-                    <input type="file" id="swal-file" class="swal2-file text-sm" accept="application/pdf">
+                    <div class="text-left mt-4 px-1"><label class="text-sm font-bold text-gray-700">File PDF Sertifikat (Maks 7MB):</label></div><input type="file" id="swal-file" class="swal2-file text-sm" accept="application/pdf">
                 `;
             } else if (sheet === 'RIWAYAT_KGB') {
                 formTitle = 'Ajukan Riwayat KGB';
                 htmlForm = `
                     <input id="swal-in1" class="swal2-input text-sm" placeholder="Golongan">
                     <input id="swal-in2" class="swal2-input text-sm" placeholder="No SK KGB">
-                    
-                    <div class="text-left mt-3 px-1"><label class="text-sm font-bold text-gray-700">TMT KGB:</label></div>
-                    <input id="swal-in3" class="swal2-input text-sm m-0 w-full mb-2" type="date">
-                    
-                    <div class="text-left mt-3 px-1"><label class="text-sm font-bold text-gray-700">Tanggal SK KGB:</label></div>
-                    <input id="swal-in4" class="swal2-input text-sm m-0 w-full mb-2" type="date">
-                    
-                    <div class="flex gap-2 px-1">
-                        <input id="swal-in5" class="swal2-input text-sm w-1/2 m-0 mt-2" type="number" placeholder="Masa Kerja (Tahun)">
-                        <input id="swal-in6" class="swal2-input text-sm w-1/2 m-0 mt-2" type="number" placeholder="Masa Kerja (Bulan)">
-                    </div>
-                    
+                    <div class="text-left mt-3 px-1"><label class="text-sm font-bold text-gray-700">TMT KGB:</label></div><input id="swal-in3" class="swal2-input text-sm m-0 w-full mb-2" type="date">
+                    <div class="text-left mt-3 px-1"><label class="text-sm font-bold text-gray-700">Tanggal SK KGB:</label></div><input id="swal-in4" class="swal2-input text-sm m-0 w-full mb-2" type="date">
+                    <div class="flex gap-2 px-1"><input id="swal-in5" class="swal2-input text-sm w-1/2 m-0 mt-2" type="number" placeholder="Masa Kerja (Tahun)"><input id="swal-in6" class="swal2-input text-sm w-1/2 m-0 mt-2" type="number" placeholder="Masa Kerja (Bulan)"></div>
                     <input id="swal-in7" class="swal2-input text-sm" type="number" placeholder="Gaji Pokok Baru (Hanya Angka)">
-                    
-                    <select id="swal-in8" class="swal2-select w-full m-0 mt-3 text-sm">
-                        <option value="" disabled selected>-- KGB Berdasarkan --</option>
-                        <option value="Kenaikan Gaji">Kenaikan Gaji</option>
-                        <option value="Kenaikan Pangkat">Kenaikan Pangkat</option>
-                    </select>
-                    
-                    <div class="text-left mt-4 px-1"><label class="text-sm font-bold text-gray-700">File PDF SK KGB (Maks 7MB):</label></div>
-                    <input type="file" id="swal-file" class="swal2-file text-sm" accept="application/pdf">
+                    <select id="swal-in8" class="swal2-select w-full m-0 mt-3 text-sm"><option value="" disabled selected>-- KGB Berdasarkan --</option><option value="Kenaikan Gaji">Kenaikan Gaji</option><option value="Kenaikan Pangkat">Kenaikan Pangkat</option></select>
+                    <div class="text-left mt-4 px-1"><label class="text-sm font-bold text-gray-700">File PDF SK KGB (Maks 7MB):</label></div><input type="file" id="swal-file" class="swal2-file text-sm" accept="application/pdf">
                 `;
             } else if (sheet === 'DATA_KELUARGA') {
                 formTitle = 'Ajukan Data Keluarga';
+                htmlForm = `<input id="swal-in1" class="swal2-input text-sm" placeholder="Nama Anggota Keluarga"><input id="swal-in2" class="swal2-input text-sm" placeholder="Status (Contoh: Anak / Istri)"><input id="swal-in3" class="swal2-input text-sm" placeholder="Jenis Kelamin (L/P)"><input id="swal-in4" class="swal2-input text-sm" placeholder="Tunjangan (Ya/Tidak)">`;
+            } else if (sheet === 'DATA_KARTU') { // FORM UNTUK DATA KARTU BARU
+                formTitle = 'Tambah Dokumen / Kartu';
                 htmlForm = `
-                    <input id="swal-in1" class="swal2-input text-sm" placeholder="Nama Anggota Keluarga">
-                    <input id="swal-in2" class="swal2-input text-sm" placeholder="Status (Contoh: Anak / Istri)">
-                    <input id="swal-in3" class="swal2-input text-sm" placeholder="Jenis Kelamin (L/P)">
-                    <input id="swal-in4" class="swal2-input text-sm" placeholder="Tunjangan (Ya/Tidak)">
+                    <select id="swal-jenis-kartu" class="swal2-select w-full m-0 mt-2 text-sm" onchange="document.getElementById('div-kartu-lainnya').style.display = this.value === 'Lainnya' ? 'block' : 'none'">
+                        <option value="" disabled selected>-- Pilih Jenis Kartu --</option>
+                        <option value="KTP">KTP</option>
+                        <option value="Kartu Keluarga">Kartu Keluarga</option>
+                        <option value="SIM">SIM</option>
+                        <option value="NPWP">NPWP</option>
+                        <option value="Lainnya">Lainnya...</option>
+                    </select>
+                    <div id="div-kartu-lainnya" style="display:none;" class="mt-2 w-full">
+                        <input id="swal-kartu-lainnya" class="swal2-input text-sm m-0 w-full" placeholder="Ketik Nama Kartu">
+                    </div>
+                    <input id="swal-nomor-kartu" class="swal2-input text-sm m-0 mt-3 w-full" placeholder="Nomor Kartu">
+                    
+                    <div class="text-left mt-4 px-1"><label class="text-sm font-bold text-gray-700">File Dokumen Kartu (PDF atau Image, Maks 7MB):</label></div>
+                    <input type="file" id="swal-file" class="swal2-file text-sm" accept="application/pdf, image/*">
                 `;
             }
 
@@ -1541,28 +1062,38 @@
                             unit = document.getElementById('swal-unit-lainnya')?.value;
                             if (!unit) { Swal.showValidationMessage('Unit Kerja Lainnya wajib diketik!'); return false; }
                         }
-                        const nama = document.getElementById('swal-nama')?.value || '-';
-                        const tmt = document.getElementById('swal-tmt')?.value || '-';
-                        const sekarang = document.getElementById('swal-sekarang')?.value || '-';
+                        const nama = document.getElementById('swal-nama')?.value || '-'; const tmt = document.getElementById('swal-tmt')?.value || '-'; const sekarang = document.getElementById('swal-sekarang')?.value || '-';
                         vals = [jenis, eselon, unit, nama, tmt, sekarang];
+                    } else if (sheet === 'DATA_KARTU') { // LOGIKA CAPTURE KARTU
+                        let jenis = document.getElementById('swal-jenis-kartu')?.value;
+                        if (!jenis) { Swal.showValidationMessage('Jenis Kartu wajib dipilih!'); return false; }
+                        if (jenis === 'Lainnya') {
+                            jenis = document.getElementById('swal-kartu-lainnya')?.value;
+                            if (!jenis) { Swal.showValidationMessage('Nama kartu lainnya wajib diisi!'); return false; }
+                        }
+                        const nomor = document.getElementById('swal-nomor-kartu')?.value;
+                        if (!nomor) { Swal.showValidationMessage('Nomor Kartu wajib diisi!'); return false; }
+                        vals = [jenis, nomor];
                     } else {
                         let idx = 1;
                         while(true) {
                             const el = document.getElementById('swal-in'+idx);
-                            if(!el) break;
-                            vals.push(el.value || '-');
-                            idx++;
+                            if(!el) break; vals.push(el.value || '-'); idx++;
                         }
                     }
 
-                    if (sheet === 'RIWAYAT_PENDIDIKAN' || sheet === 'RIWAYAT_PANGKAT' || sheet === 'RIWAYAT_JABATAN' || sheet === 'RIWAYAT_KOMPETENSI' || sheet === 'RIWAYAT_KGB') {
+                    if (sheet === 'RIWAYAT_PENDIDIKAN' || sheet === 'RIWAYAT_PANGKAT' || sheet === 'RIWAYAT_JABATAN' || sheet === 'RIWAYAT_KOMPETENSI' || sheet === 'RIWAYAT_KGB' || sheet === 'DATA_KARTU') {
                         const fileInput = document.getElementById('swal-file');
-                        if (!fileInput.files.length) { Swal.showValidationMessage('File PDF wajib dilampirkan!'); return false; }
+                        if (!fileInput.files.length) { Swal.showValidationMessage('File dokumen wajib dilampirkan!'); return false; }
                         const file = fileInput.files[0];
-                        if (file.type !== 'application/pdf') { Swal.showValidationMessage('Format file harus berupa PDF!'); return false; }
-                        if (file.size > 7 * 1024 * 1024) { Swal.showValidationMessage('Ukuran file PDF tidak boleh lebih dari 7 MB!'); return false; }
+                        
+                        const allowedTypes = ['application/pdf'];
+                        if (sheet === 'DATA_KARTU') { allowedTypes.push('image/jpeg', 'image/png', 'image/jpg', 'image/webp'); }
 
-                        const base64PDF = await new Promise((resolve) => {
+                        if (!allowedTypes.includes(file.type)) { Swal.showValidationMessage('Format file tidak didukung untuk jenis data ini!'); return false; }
+                        if (file.size > 7 * 1024 * 1024) { Swal.showValidationMessage('Ukuran file tidak boleh lebih dari 7 MB!'); return false; }
+
+                        const base64File = await new Promise((resolve) => {
                             const reader = new FileReader();
                             reader.onload = (e) => resolve(e.target.result);
                             reader.readAsDataURL(file);
@@ -1576,18 +1107,15 @@
                             if(sheet === 'RIWAYAT_JABATAN') fNamePrefix = 'SK_JABATAN';
                             if(sheet === 'RIWAYAT_KOMPETENSI') fNamePrefix = 'SERTIFIKAT_DIKLAT';
                             if(sheet === 'RIWAYAT_KGB') fNamePrefix = 'SK_KGB';
+                            if(sheet === 'DATA_KARTU') fNamePrefix = 'DOK_KARTU'; // PREFIX FILE KARTU
                             
                             const resFile = await apiCall({
                                 action: 'uploadFile', nip: STATE.user.nip, nama: STATE.profile.Nama_Lengkap,
-                                fileBase64: base64PDF, mimeType: file.type, filename: `${fNamePrefix}_${STATE.user.nip}_${new Date().getTime()}.pdf`
+                                fileBase64: base64File, mimeType: file.type, filename: `${fNamePrefix}_${STATE.user.nip}_${new Date().getTime()}.${file.name.split('.').pop()}`
                             });
                             vals.push(resFile.fileUrl); 
-                        } catch (err) {
-                            Swal.showValidationMessage('Gagal mengupload file: ' + err.message);
-                            return false;
-                        }
+                        } catch (err) { Swal.showValidationMessage('Gagal mengupload file: ' + err.message); return false; }
                     }
-
                     return vals;
                 }
             });
@@ -1624,17 +1152,13 @@
                     if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } } 
                     else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
                     
-                    canvas.width = width; canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-                    
+                    canvas.width = width; canvas.height = height; const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height);
                     const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
 
                     showLoader();
                     try {
                         await apiCall({ action: 'submitUpdate', executorRole: STATE.user.role, nip_target: STATE.user.nip, sheet_target: 'PROFIL', kolom_target: 'URL_Foto_Profil', nilai_baru: compressedBase64 });
-                        document.getElementById('profile-img').src = compressedBase64;
-                        if(STATE.profile) STATE.profile.URL_Foto_Profil = compressedBase64;
+                        document.getElementById('profile-img').src = compressedBase64; if(STATE.profile) STATE.profile.URL_Foto_Profil = compressedBase64;
                         Toast.fire({ icon: 'success', title: 'Foto profil diperbarui.' });
                     } catch(err) { Swal.fire('Error', err.message, 'error'); }
                     showLoader(false);
@@ -1645,14 +1169,12 @@
         }
 
         // ==========================================
-        // 5. EXPORT LOGIC (SheetJS & html2pdf)
+        // EXPORT LOGIC
         // ==========================================
         function exportToExcel() {
             if(!STATE.allPegawai || STATE.allPegawai.length === 0) return Swal.fire('Info', 'Data belum dimuat', 'info');
-            const ws = XLSX.utils.json_to_sheet(STATE.allPegawai);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Data Pegawai");
-            XLSX.writeFile(wb, "Data_Pegawai_RSUD_Koesma.xlsx");
+            const ws = XLSX.utils.json_to_sheet(STATE.allPegawai); const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Data Pegawai"); XLSX.writeFile(wb, "Data_Pegawai_RSUD_Koesma.xlsx");
         }
 
         function exportMyData() {
@@ -1660,33 +1182,25 @@
             showLoader(true);
             
             const cvContainer = document.createElement('div');
-            cvContainer.style.padding = '20px';
-            cvContainer.style.fontFamily = 'Arial, sans-serif';
-            cvContainer.style.color = '#000';
-            cvContainer.style.backgroundColor = '#fff';
+            cvContainer.style.padding = '20px'; cvContainer.style.fontFamily = 'Arial, sans-serif'; cvContainer.style.color = '#000'; cvContainer.style.backgroundColor = '#fff';
 
             const p = STATE.profile || {};
             const namaLengkap = (p.Gelar_Depan ? p.Gelar_Depan + ' ' : '') + (p.Nama_Lengkap || '-') + (p.Gelar_Belakang ? ', ' + p.Gelar_Belakang : '');
             
             const extractTable = (tbodyId, colCount) => {
                 const tbody = document.getElementById(tbodyId);
-                if (!tbody || tbody.innerText.includes('Belum ada data') || tbody.innerText.includes('Sedang memuat')) {
-                    return `<tr><td colspan="${colCount}" style="padding:8px; border:1px solid #ddd; text-align:center;">Tidak ada data</td></tr>`;
-                }
+                if (!tbody || tbody.innerText.includes('Belum ada data') || tbody.innerText.includes('Sedang memuat')) { return `<tr><td colspan="${colCount}" style="padding:8px; border:1px solid #ddd; text-align:center;">Tidak ada data</td></tr>`; }
                 let rowsHtml = '';
                 for(let tr of tbody.querySelectorAll('tr')) {
-                    let rowHtml = '<tr>';
-                    let tdCount = 0;
+                    let rowHtml = '<tr>'; let tdCount = 0;
                     for(let td of tr.querySelectorAll('td')) {
                         if(tdCount >= colCount) break; 
-                        let clone = td.cloneNode(true);
-                        let elementsToRemove = clone.querySelectorAll('i, button, a, span.text-xs');
+                        let clone = td.cloneNode(true); let elementsToRemove = clone.querySelectorAll('i, button, a, span.text-xs');
                         elementsToRemove.forEach(el => el.remove());
                         rowHtml += `<td style="padding:8px; border:1px solid #ddd;">${clone.innerText.trim()}</td>`;
                         tdCount++;
                     }
-                    rowHtml += '</tr>';
-                    rowsHtml += rowHtml;
+                    rowHtml += '</tr>'; rowsHtml += rowHtml;
                 }
                 return rowsHtml;
             };
