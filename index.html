@@ -301,10 +301,10 @@
                             <div class="overflow-x-auto">
                                 <table class="w-full text-left text-sm whitespace-nowrap">
                                     <thead class="bg-gray-100 text-black">
-                                        <tr><th class="p-2">Nama</th><th class="p-2">Status</th><th class="p-2">L/P</th><th class="p-2">Tunjangan</th><th class="p-2 text-center">Aksi</th></tr>
+                                        <tr><th class="p-2">NIK</th><th class="p-2">Nama</th><th class="p-2">Status</th><th class="p-2">L/P</th><th class="p-2">Tunjangan</th><th class="p-2 text-center">Aksi</th></tr>
                                     </thead>
                                     <tbody id="tbody-keluarga">
-                                        <tr><td colspan="5" class="text-center p-4 text-gray-500">Sedang memuat...</td></tr>
+                                        <tr><td colspan="6" class="text-center p-4 text-gray-500">Sedang memuat...</td></tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -655,7 +655,7 @@
         }
 
         function renderSemuaRiwayat() {
-            // ... (Pendidikan, Pangkat, Jabatan, Kompetensi, KGB, Keluarga Sama)
+            // ... (Pendidikan, Pangkat, Jabatan, Kompetensi, KGB Sama)
             
             const tbodyPend = document.getElementById('tbody-pendidikan'); tbodyPend.innerHTML = '';
             if (STATE.riwayat.pendidikan.length > 0) {
@@ -701,8 +701,8 @@
 
             const tbodyKeluarga = document.getElementById('tbody-keluarga'); tbodyKeluarga.innerHTML = '';
             if (STATE.riwayat.keluarga.length > 0) {
-                STATE.riwayat.keluarga.forEach(p => { tbodyKeluarga.innerHTML += `<tr class="border-b"><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Nama', p.Nama)}</td><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Status_Keluarga', p.Status_Keluarga)}</td><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'L/P', p['L/P'])}</td><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Tunjangan', p.Tunjangan)}</td><td class="p-2 text-center"><button onclick="editRiwayatRow('${p.ID_Data}', 'DATA_KELUARGA')" class="text-blue-600 hover:text-blue-800 bg-blue-50 px-2 py-1 rounded border border-blue-200 shadow-sm text-xs"><i class="fas fa-edit"></i> Edit</button></td></tr>`; });
-            } else { tbodyKeluarga.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-gray-500">Belum ada data keluarga.</td></tr>`; }
+                STATE.riwayat.keluarga.forEach(p => { tbodyKeluarga.innerHTML += `<tr class="border-b"><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'NIK_Keluarga', p.NIK_Keluarga)}</td><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Nama', p.Nama)}</td><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Status_Keluarga', p.Status_Keluarga)}</td><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'L/P', p['L/P'])}</td><td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Tunjangan', p.Tunjangan)}</td><td class="p-2 text-center"><button onclick="editRiwayatRow('${p.ID_Data}', 'DATA_KELUARGA')" class="text-blue-600 hover:text-blue-800 bg-blue-50 px-2 py-1 rounded border border-blue-200 shadow-sm text-xs"><i class="fas fa-edit"></i> Edit</button></td></tr>`; });
+            } else { tbodyKeluarga.innerHTML = `<tr><td colspan="6" class="text-center p-4 text-gray-500">Belum ada data keluarga.</td></tr>`; }
 
             // RENDERING UNTUK DATA KARTU BARU
             const tbodyKartu = document.getElementById('tbody-kartu');
@@ -1055,7 +1055,7 @@
                 'RIWAYAT_JABATAN': { 'Jenis_Jabatan': 'Jenis Jabatan', 'Jabatan': 'Nama Jabatan', 'Eselon': 'Eselon', 'Unit_Kerja': 'Unit Kerja', 'TMT_Pelantikan': 'TMT Pelantikan', 'Jabatan_Sekarang': 'Jabatan Sekarang? (Ya/Tidak)', 'File_SK': 'File PDF SK' },
                 'RIWAYAT_KOMPETENSI': { 'Jenis_Diklat': 'Jenis Diklat', 'Nama_Diklat': 'Nama Diklat', 'Tgl_Mulai': 'Tgl Mulai Diklat', 'Tgl_Selesai': 'Tgl Selesai Diklat', 'Jumlah_JP': 'Jumlah JP', 'Penyelenggara': 'Penyelenggara', 'Sumber_Anggaran': 'Sumber Anggaran', 'No_Sertifikat': 'No Sertifikat', 'File_Sertifikat': 'File PDF Sertifikat' },
                 'RIWAYAT_KGB': { 'Golongan': 'Golongan KGB', 'No_SK_KGB': 'Nomor SK KGB', 'TMT_KGB': 'TMT KGB', 'Tanggal_KGB': 'Tanggal SK KGB', 'Masa_Kerja_Tahun': 'Masa Kerja (Tahun)', 'Masa_Kerja_Bulan': 'Masa Kerja (Bulan)', 'Gaji_Pokok_Baru': 'Gaji Pokok Baru', 'Dasar_KGB': 'KGB Berdasarkan', 'File_SK_KGB': 'File PDF SK KGB' },
-                'DATA_KELUARGA': { 'Nama': 'Nama Anggota', 'Status_Keluarga': 'Status (Anak/Istri)', 'L/P': 'L/P', 'Tunjangan': 'Dapat Tunjangan?' },
+                'DATA_KELUARGA': { 'NIK_Keluarga': 'NIK', 'Nama': 'Nama Anggota', 'L/P': 'Jenis Kelamin (L/P)', 'Status_Keluarga': 'Status Keluarga', 'Tmp_Tgl_Lahir': 'Tempat & Tgl Lahir', 'Agama': 'Agama', 'Tunjangan': 'Dapat Tunjangan?' },
                 'DATA_KARTU': { 'Jenis_Kartu': 'Jenis Kartu', 'Nomor_Kartu': 'Nomor Kartu', 'File_Kartu': 'File Dokumen Kartu' }
             };
 
@@ -1206,7 +1206,41 @@
                 `;
             } else if (sheet === 'DATA_KELUARGA') {
                 formTitle = 'Ajukan Data Keluarga';
-                htmlForm = `<input id="swal-in1" class="swal2-input text-sm" placeholder="Nama Anggota Keluarga"><input id="swal-in2" class="swal2-input text-sm" placeholder="Status (Contoh: Anak / Istri)"><input id="swal-in3" class="swal2-input text-sm" placeholder="Jenis Kelamin (L/P)"><input id="swal-in4" class="swal2-input text-sm" placeholder="Tunjangan (Ya/Tidak)">`;
+                
+                // CEK KELENGKAPAN KARTU KELUARGA
+                const hasKK = STATE.riwayat.kartu && STATE.riwayat.kartu.some(k => k.Jenis_Kartu === 'Kartu Keluarga');
+                const pendingKK = STATE.myAntrian && STATE.myAntrian.some(a => a.Sheet_Tujuan === 'DATA_KARTU' && typeof a.Nilai_Baru === 'string' && a.Nilai_Baru.includes('Kartu Keluarga'));
+                
+                let kkHtml = '';
+                if (!hasKK && !pendingKK) {
+                    kkHtml = `
+                        <div class="mb-4 p-3 bg-blue-50 border border-blue-200 rounded text-left">
+                            <p class="text-sm font-bold text-blue-800 mb-1"><i class="fas fa-info-circle"></i> Upload Kartu Keluarga</p>
+                            <p class="text-xs text-blue-700 mb-3">Karena ini pengisian pertama, Anda diwajibkan mengunggah Kartu Keluarga Anda.</p>
+                            <input id="swal-kk-nomor" class="swal2-input text-sm m-0 w-full mb-2" placeholder="Nomor Kartu Keluarga">
+                            <input type="file" id="swal-file-kk" class="swal2-file text-sm m-0 w-full" accept="application/pdf, image/*">
+                        </div>
+                    `;
+                }
+                
+                htmlForm = kkHtml + `
+                    <div class="text-left px-1 mb-1 font-bold text-sm text-gray-700">Data Anggota Keluarga:</div>
+                    <input id="swal-in1" class="swal2-input text-sm m-0 w-full mb-2" placeholder="NIK Anggota Keluarga">
+                    <input id="swal-in2" class="swal2-input text-sm m-0 w-full mb-2" placeholder="Nama Anggota Keluarga">
+                    <select id="swal-in3" class="swal2-select w-full m-0 mb-2 text-sm">
+                        <option value="" disabled selected>-- Pilih Jenis Kelamin --</option>
+                        <option value="L">Laki-laki (L)</option>
+                        <option value="P">Perempuan (P)</option>
+                    </select>
+                    <input id="swal-in4" class="swal2-input text-sm m-0 w-full mb-2" placeholder="Status (Cth: Anak/Istri/Suami)">
+                    <input id="swal-in5" class="swal2-input text-sm m-0 w-full mb-2" placeholder="Tempat, Tgl Lahir (Cth: Tuban, 17-08-2000)">
+                    <input id="swal-in6" class="swal2-input text-sm m-0 w-full mb-2" placeholder="Agama">
+                    <select id="swal-in7" class="swal2-select w-full m-0 mb-2 text-sm">
+                        <option value="" disabled selected>-- Dapat Tunjangan? --</option>
+                        <option value="Ya">Ya</option>
+                        <option value="Tidak">Tidak</option>
+                    </select>
+                `;
             } else if (sheet === 'DATA_KARTU') { // FORM UNTUK DATA KARTU BARU
                 formTitle = 'Tambah Dokumen / Kartu';
                 htmlForm = `
@@ -1259,6 +1293,41 @@
                         const nomor = document.getElementById('swal-nomor-kartu')?.value;
                         if (!nomor) { Swal.showValidationMessage('Nomor Kartu wajib diisi!'); return false; }
                         vals = [jenis, nomor];
+                    } else if (sheet === 'DATA_KELUARGA') { // LOGIKA CAPTURE COMBO KELUARGA & KK
+                        let kkData = null;
+                        if (document.getElementById('swal-kk-nomor')) {
+                            const noKK = document.getElementById('swal-kk-nomor').value;
+                            const fileKKInput = document.getElementById('swal-file-kk');
+                            if (!noKK) { Swal.showValidationMessage('Nomor Kartu Keluarga wajib diisi!'); return false; }
+                            if (!fileKKInput.files.length) { Swal.showValidationMessage('File Kartu Keluarga wajib diunggah!'); return false; }
+                            
+                            const fileKK = fileKKInput.files[0];
+                            const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+                            if (!allowedTypes.includes(fileKK.type)) { Swal.showValidationMessage('Format file KK tidak didukung!'); return false; }
+                            if (fileKK.size > 7 * 1024 * 1024) { Swal.showValidationMessage('Ukuran file maksimal 7MB!'); return false; }
+                            
+                            const base64File = await new Promise((resolve) => {
+                                const reader = new FileReader();
+                                reader.onload = (e) => resolve(e.target.result);
+                                reader.readAsDataURL(fileKK);
+                            });
+                            
+                            Swal.showLoading();
+                            try {
+                                const resFile = await apiCall({
+                                    action: 'uploadFile', nip: STATE.user.nip, nama: STATE.profile.Nama_Lengkap,
+                                    fileBase64: base64File, mimeType: fileKK.type, filename: `DOK_KARTU_KK_${STATE.user.nip}_${new Date().getTime()}.${fileKK.name.split('.').pop()}`
+                                });
+                                kkData = { nomor: noKK, url: resFile.fileUrl };
+                            } catch (err) { Swal.showValidationMessage('Gagal mengupload file KK: ' + err.message); return false; }
+                        }
+                        
+                        let idx = 1;
+                        while(true) {
+                            const el = document.getElementById('swal-in'+idx);
+                            if(!el) break; vals.push(el.value || '-'); idx++;
+                        }
+                        return { isCombo: true, keluargaVals: vals, kkData: kkData };
                     } else {
                         let idx = 1;
                         while(true) {
@@ -1305,18 +1374,39 @@
                 }
             });
 
-            if (formValues && formValues.length > 0) {
-                const nilaiGabungan = formValues.join(' | ');
-                showLoader();
-                try {
-                    const res = await apiCall({
-                        action: 'submitUpdate', executorRole: STATE.user.role, nip_target: STATE.user.nip,
-                        sheet_target: sheet, kolom_target: 'Pengajuan Data Baru', nilai_baru: nilaiGabungan
-                    });
-                    Toast.fire({ icon: 'success', title: 'Pengajuan data masuk antrian.' });
-                    if(['admin','superadmin'].includes(STATE.user.role)) { fetchProfile(); } else { fetchMyAntrian(); }
-                } catch(e) { Swal.fire('Gagal', e.message, 'error'); }
-                showLoader(false);
+            if (formValues) {
+                if (formValues.isCombo) {
+                    showLoader();
+                    try {
+                        if (formValues.kkData) {
+                            const nilaiKK = ['Kartu Keluarga', formValues.kkData.nomor, formValues.kkData.url].join(' | ');
+                            await apiCall({
+                                action: 'submitUpdate', executorRole: STATE.user.role, nip_target: STATE.user.nip,
+                                sheet_target: 'DATA_KARTU', kolom_target: 'Pengajuan Data Baru', nilai_baru: nilaiKK
+                            });
+                        }
+                        const nilaiKeluarga = formValues.keluargaVals.join(' | ');
+                        await apiCall({
+                            action: 'submitUpdate', executorRole: STATE.user.role, nip_target: STATE.user.nip,
+                            sheet_target: sheet, kolom_target: 'Pengajuan Data Baru', nilai_baru: nilaiKeluarga
+                        });
+                        Toast.fire({ icon: 'success', title: 'Pengajuan data masuk antrian.' });
+                        if(['admin','superadmin'].includes(STATE.user.role)) { fetchProfile(); } else { fetchMyAntrian(); }
+                    } catch(e) { Swal.fire('Gagal', e.message, 'error'); }
+                    showLoader(false);
+                } else if (formValues.length > 0) {
+                    const nilaiGabungan = formValues.join(' | ');
+                    showLoader();
+                    try {
+                        const res = await apiCall({
+                            action: 'submitUpdate', executorRole: STATE.user.role, nip_target: STATE.user.nip,
+                            sheet_target: sheet, kolom_target: 'Pengajuan Data Baru', nilai_baru: nilaiGabungan
+                        });
+                        Toast.fire({ icon: 'success', title: 'Pengajuan data masuk antrian.' });
+                        if(['admin','superadmin'].includes(STATE.user.role)) { fetchProfile(); } else { fetchMyAntrian(); }
+                    } catch(e) { Swal.fire('Gagal', e.message, 'error'); }
+                    showLoader(false);
+                }
             }
         }
 
@@ -1534,7 +1624,7 @@
             const tbodyJabatan = r.jabatan?.length ? r.jabatan.map(x => `<tr><td style="padding:8px; border:1px solid #ddd;">${x.Jenis_Jabatan||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${x.Jabatan||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${x.Eselon||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${x.Unit_Kerja||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${formatDate(x.TMT_Pelantikan)}</td><td style="padding:8px; border:1px solid #ddd;">${x.Jabatan_Sekarang||'-'}</td></tr>`).join('') : `<tr><td colspan="6" style="padding:8px; border:1px solid #ddd; text-align:center;">Tidak ada data</td></tr>`;
             const tbodyKomp = r.kompetensi?.length ? r.kompetensi.map(x => `<tr><td style="padding:8px; border:1px solid #ddd;">${x.Jenis_Diklat||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${x.Nama_Diklat||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${formatDate(x.Tgl_Mulai)} s/d ${formatDate(x.Tgl_Selesai)}</td><td style="padding:8px; border:1px solid #ddd;">${x.Jumlah_JP||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${x.Penyelenggara||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${x.Sumber_Anggaran||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${x.No_Sertifikat||'-'}</td></tr>`).join('') : `<tr><td colspan="7" style="padding:8px; border:1px solid #ddd; text-align:center;">Tidak ada data</td></tr>`;
             const tbodyKgb = r.kgb?.length ? r.kgb.map(x => `<tr><td style="padding:8px; border:1px solid #ddd;">${x.Golongan||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${x.No_SK_KGB||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${formatDate(x.TMT_KGB)}</td><td style="padding:8px; border:1px solid #ddd;">${formatDate(x.Tanggal_KGB)}</td><td style="padding:8px; border:1px solid #ddd;">${x.Masa_Kerja_Tahun||'0'} Thn, ${x.Masa_Kerja_Bulan||'0'} Bln</td><td style="padding:8px; border:1px solid #ddd;">${x.Gaji_Pokok_Baru||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${x.Dasar_KGB||'-'}</td></tr>`).join('') : `<tr><td colspan="7" style="padding:8px; border:1px solid #ddd; text-align:center;">Tidak ada data</td></tr>`;
-            const tbodyKel = r.keluarga?.length ? r.keluarga.map(x => `<tr><td style="padding:8px; border:1px solid #ddd;">${x.Nama||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${x.Status_Keluarga||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${x['L/P']||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${x.Tunjangan||'-'}</td></tr>`).join('') : `<tr><td colspan="4" style="padding:8px; border:1px solid #ddd; text-align:center;">Tidak ada data</td></tr>`;
+            const tbodyKel = r.keluarga?.length ? r.keluarga.map(x => `<tr><td style="padding:8px; border:1px solid #ddd;">${x.NIK_Keluarga||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${x.Nama||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${x.Status_Keluarga||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${x['L/P']||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${x.Tunjangan||'-'}</td></tr>`).join('') : `<tr><td colspan="5" style="padding:8px; border:1px solid #ddd; text-align:center;">Tidak ada data</td></tr>`;
 
             cvContainer.innerHTML = `
                 <div style="text-align:center; margin-bottom: 20px;">
@@ -1602,7 +1692,7 @@
 
                 <h4 style="background-color:#f0f0f0; padding:8px; margin:10px 0; border:1px solid #ddd; font-size:14px;">VII. DATA KELUARGA</h4>
                 <table style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:15px; text-align:left;">
-                    <thead><tr style="background-color:#eee;"><th style="padding:8px; border:1px solid #ddd;">Nama</th><th style="padding:8px; border:1px solid #ddd;">Status</th><th style="padding:8px; border:1px solid #ddd;">L/P</th><th style="padding:8px; border:1px solid #ddd;">Tunjangan</th></tr></thead>
+                    <thead><tr style="background-color:#eee;"><th style="padding:8px; border:1px solid #ddd;">NIK</th><th style="padding:8px; border:1px solid #ddd;">Nama</th><th style="padding:8px; border:1px solid #ddd;">Status</th><th style="padding:8px; border:1px solid #ddd;">L/P</th><th style="padding:8px; border:1px solid #ddd;">Tunjangan</th></tr></thead>
                     <tbody>${tbodyKel}</tbody>
                 </table>
             `;
