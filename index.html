@@ -230,15 +230,24 @@
                         <div class="card rounded-lg shadow-md p-6">
                             <div class="flex justify-between items-center mb-4 border-b pb-2">
                                 <h4 class="font-bold text-lg"><i class="fas fa-medal mr-2 text-blue-500"></i> Riwayat Pangkat</h4>
-                                <button onclick="ajukanRiwayat('RIWAYAT_PANGKAT')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm shadow"><i class="fas fa-plus mr-1"></i> Ajukan Data Baru</button>
+                                <button onclick="ajukanRiwayat('RIWAYAT_PANGKAT')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm shadow"><i class="fas fa-plus mr-1"></i> Tambah Data & SK</button>
                             </div>
                             <div class="overflow-x-auto">
                                 <table class="w-full text-left text-sm whitespace-nowrap">
                                     <thead class="bg-gray-100 text-black">
-                                        <tr><th class="p-2">Pangkat/Gol</th><th class="p-2">TMT</th><th class="p-2">No SK</th><th class="p-2">Tgl SK</th><th class="p-2">Masa Kerja (Thn)</th><th class="p-2 text-center">Aksi</th></tr>
+                                        <tr>
+                                            <th class="p-2">Pangkat/Gol</th>
+                                            <th class="p-2">No SK</th>
+                                            <th class="p-2">TMT</th>
+                                            <th class="p-2">Tgl SK</th>
+                                            <th class="p-2">Masa Kerja</th>
+                                            <th class="p-2">Pangkat Sekarang</th>
+                                            <th class="p-2">File SK</th>
+                                            <th class="p-2 text-center">Aksi</th>
+                                        </tr>
                                     </thead>
                                     <tbody id="tbody-pangkat">
-                                        <tr><td colspan="6" class="text-center p-4 text-gray-500">Sedang memuat...</td></tr>
+                                        <tr><td colspan="8" class="text-center p-4 text-gray-500">Sedang memuat...</td></tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -734,16 +743,19 @@
             tbodyPangkat.innerHTML = '';
             if (STATE.riwayat.pangkat.length > 0) {
                 STATE.riwayat.pangkat.forEach(p => {
+                    let fileBtn = p.File_SK ? `<a href="${p.File_SK}" target="_blank" class="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs hover:bg-blue-200 whitespace-nowrap"><i class="fas fa-file-pdf"></i> Lihat SK</a>` : '-';
                     tbodyPangkat.innerHTML += `<tr class="border-b">
                         <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Pangkat_Gol', p.Pangkat_Gol)}</td>
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'TMT', p.TMT)}</td>
                         <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'No_SK', p.No_SK)}</td>
+                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'TMT', p.TMT ? new Date(p.TMT).toLocaleDateString('id-ID') : '')}</td>
                         <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Tgl_SK', p.Tgl_SK ? new Date(p.Tgl_SK).toLocaleDateString('id-ID') : '')}</td>
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Masa_Kerja_Thn', p.Masa_Kerja_Thn)}</td>
+                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Masa_Kerja_Thn', p.Masa_Kerja_Thn)} Thn, ${getRiwayatFieldHTML(p.ID_Data, 'Masa_Kerja_Bln', p.Masa_Kerja_Bln)} Bln</td>
+                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Pangkat_Sekarang', p.Pangkat_Sekarang)}</td>
+                        <td class="p-2">${fileBtn}</td>
                         <td class="p-2 text-center"><button onclick="editRiwayatRow('${p.ID_Data}', 'RIWAYAT_PANGKAT')" class="text-blue-600 hover:text-blue-800 bg-blue-50 px-2 py-1 rounded border border-blue-200 shadow-sm text-xs"><i class="fas fa-edit"></i> Edit</button></td>
                     </tr>`;
                 });
-            } else { tbodyPangkat.innerHTML = `<tr><td colspan="6" class="text-center p-4 text-gray-500">Belum ada data pangkat.</td></tr>`; }
+            } else { tbodyPangkat.innerHTML = `<tr><td colspan="8" class="text-center p-4 text-gray-500">Belum ada data pangkat.</td></tr>`; }
 
             // 3. JABATAN
             const tbodyJabatan = document.getElementById('tbody-jabatan');
@@ -1194,7 +1206,7 @@
         async function editRiwayatRow(idData, sheet) {
             const menuOptions = {
                 'RIWAYAT_PENDIDIKAN': { 'Jenjang': 'Jenjang Pendidikan', 'Instansi': 'Instansi / Kampus', 'Jurusan': 'Jurusan', 'Thn_Lulus': 'Tahun Lulus', 'No_Ijazah': 'Nomor Ijazah', 'Tgl_Ijazah': 'Tanggal Ijazah', 'Pendidikan_Terakhir': 'Pendidikan Terakhir? (Ya/Tidak)', 'File_Ijazah': 'File PDF Ijazah' },
-                'RIWAYAT_PANGKAT': { 'Pangkat_Gol': 'Pangkat/Golongan', 'TMT': 'TMT Pangkat', 'No_SK': 'Nomor SK', 'Tgl_SK': 'Tanggal SK', 'Masa_Kerja_Thn': 'Masa Kerja (Thn)', 'File_SK': 'File PDF SK' },
+                'RIWAYAT_PANGKAT': { 'Pangkat_Gol': 'Pangkat/Golongan', 'No_SK': 'Nomor SK', 'TMT': 'TMT Pangkat', 'Tgl_SK': 'Tanggal SK', 'Masa_Kerja_Thn': 'Masa Kerja (Tahun)', 'Masa_Kerja_Bln': 'Masa Kerja (Bulan)', 'Pangkat_Sekarang': 'Pangkat/Gol Sekarang? (Ya/Tidak)', 'File_SK': 'File PDF SK' },
                 'RIWAYAT_JABATAN': { 'Jabatan': 'Nama Jabatan', 'Eselon': 'Eselon', 'TMT': 'TMT Jabatan', 'Unit_Kerja': 'Unit Kerja', 'File_SK': 'File PDF SK' },
                 'RIWAYAT_KGB': { 'Golongan': 'Golongan KGB', 'Gaji_Baru': 'Gaji Baru', 'KGB_TMT': 'TMT KGB', 'Dasar_Nomor': 'Nomor SK Dasar' },
                 'DATA_KELUARGA': { 'Nama': 'Nama Anggota', 'Status_Keluarga': 'Status (Anak/Istri)', 'L/P': 'L/P', 'Tunjangan': 'Dapat Tunjangan?' }
@@ -1222,9 +1234,19 @@
                 
                 // Dropdown spesifik untuk riwayat edit
                 if (selectedKolom === 'Jenjang') { inputType = 'select'; inputOptions = { 'SD /sederajat': 'SD /sederajat', 'SMP /sederajat': 'SMP /sederajat', 'SMA /sederajat': 'SMA /sederajat', 'D1': 'D1', 'D2': 'D2', 'D3': 'D3', 'D4': 'D4', 'Strata 1': 'Strata 1', 'Strata 2': 'Strata 2', 'Strata 3': 'Strata 3' }; }
-                if (selectedKolom === 'Pendidikan_Terakhir' || selectedKolom === 'Tunjangan') { inputType = 'select'; inputOptions = { 'Ya': 'Ya', 'Tidak': 'Tidak' }; }
+                if (selectedKolom === 'Pangkat_Gol') { 
+                    inputType = 'select'; 
+                    inputOptions = {
+                        'Gol I': {'Juru Muda (I/a)': 'Juru Muda (I/a)', 'Juru Muda Tk.I (I/b)': 'Juru Muda Tk.I (I/b)', 'Juru (I/c)': 'Juru (I/c)', 'Juru Tk.I (I/d)': 'Juru Tk.I (I/d)'},
+                        'Gol II': {'Pengatur Muda (II/a)': 'Pengatur Muda (II/a)', 'Pengatur Muda Tk.I (II/b)': 'Pengatur Muda Tk.I (II/b)', 'Pengatur (II/c)': 'Pengatur (II/c)', 'Pengatur Tk.I (II/d)': 'Pengatur Tk.I (II/d)'},
+                        'Gol III': {'Penata Muda (III/a)': 'Penata Muda (III/a)', 'Penata Muda Tk.I (III/b)': 'Penata Muda Tk.I (III/b)', 'Penata (III/c)': 'Penata (III/c)', 'Penata Tk.I (III/d)': 'Penata Tk.I (III/d)'},
+                        'Gol IV': {'Pembina (IV/a)': 'Pembina (IV/a)', 'Pembina Tk.I (IV/b)': 'Pembina Tk.I (IV/b)', 'Pembina Utama Muda (IV/c)': 'Pembina Utama Muda (IV/c)', 'Pembina Utama Madya (IV/d)': 'Pembina Utama Madya (IV/d)', 'Pembina Utama (IV/e)': 'Pembina Utama (IV/e)'},
+                        'PPPK': {'PPPK Gol. 5': 'PPPK Gol. 5', 'PPPK Gol. 7': 'PPPK Gol. 7', 'PPPK Gol. 9': 'PPPK Gol. 9', 'PPPK Gol. 10': 'PPPK Gol. 10', 'PPPK Gol. 11': 'PPPK Gol. 11'}
+                    }; 
+                }
+                if (selectedKolom === 'Pendidikan_Terakhir' || selectedKolom === 'Tunjangan' || selectedKolom === 'Pangkat_Sekarang') { inputType = 'select'; inputOptions = { 'Ya': 'Ya', 'Tidak': 'Tidak' }; }
                 if (selectedKolom === 'L/P') { inputType = 'select'; inputOptions = { 'L': 'L', 'P': 'P' }; }
-                if (selectedKolom.includes('Tgl_')) { inputType = 'date'; }
+                if (selectedKolom.includes('Tgl_') || selectedKolom === 'TMT') { inputType = 'date'; }
                 if (selectedKolom.includes('File_')) { inputType = 'file'; } // Otomatis trigger form upload file
 
                 const swalConfig = { title: `Ubah ${kolomOptions[selectedKolom]}`, input: inputType, showCancelButton: true };
@@ -1337,9 +1359,63 @@
             } else if (sheet === 'RIWAYAT_PANGKAT') {
                 formTitle = 'Ajukan Riwayat Pangkat';
                 htmlForm = `
-                    <input id="swal-in1" class="swal2-input" placeholder="Pangkat/Golongan">
-                    <input id="swal-in2" class="swal2-input" placeholder="TMT (Contoh: 01-10-2020)">
-                    <input id="swal-in3" class="swal2-input" placeholder="No SK">
+                    <select id="swal-in1" class="swal2-select w-full m-0 mt-2 text-sm">
+                        <option value="" disabled selected>-- Pilih Pangkat/Golongan --</option>
+                        <optgroup label="Golongan I (Juru)">
+                            <option value="Juru Muda (I/a)">Juru Muda (I/a)</option>
+                            <option value="Juru Muda Tk.I (I/b)">Juru Muda Tk.I (I/b)</option>
+                            <option value="Juru (I/c)">Juru (I/c)</option>
+                            <option value="Juru Tk.I (I/d)">Juru Tk.I (I/d)</option>
+                        </optgroup>
+                        <optgroup label="Golongan II (Pengatur)">
+                            <option value="Pengatur Muda (II/a)">Pengatur Muda (II/a)</option>
+                            <option value="Pengatur Muda Tk.I (II/b)">Pengatur Muda Tk.I (II/b)</option>
+                            <option value="Pengatur (II/c)">Pengatur (II/c)</option>
+                            <option value="Pengatur Tk.I (II/d)">Pengatur Tk.I (II/d)</option>
+                        </optgroup>
+                        <optgroup label="Golongan III (Penata)">
+                            <option value="Penata Muda (III/a)">Penata Muda (III/a)</option>
+                            <option value="Penata Muda Tk.I (III/b)">Penata Muda Tk.I (III/b)</option>
+                            <option value="Penata (III/c)">Penata (III/c)</option>
+                            <option value="Penata Tk.I (III/d)">Penata Tk.I (III/d)</option>
+                        </optgroup>
+                        <optgroup label="Golongan IV (Pembina)">
+                            <option value="Pembina (IV/a)">Pembina (IV/a)</option>
+                            <option value="Pembina Tk.I (IV/b)">Pembina Tk.I (IV/b)</option>
+                            <option value="Pembina Utama Muda (IV/c)">Pembina Utama Muda (IV/c)</option>
+                            <option value="Pembina Utama Madya (IV/d)">Pembina Utama Madya (IV/d)</option>
+                            <option value="Pembina Utama (IV/e)">Pembina Utama (IV/e)</option>
+                        </optgroup>
+                        <optgroup label="PPPK">
+                            <option value="PPPK Gol. 5">PPPK Gol. 5</option>
+                            <option value="PPPK Gol. 7">PPPK Gol. 7</option>
+                            <option value="PPPK Gol. 9">PPPK Gol. 9</option>
+                            <option value="PPPK Gol. 10">PPPK Gol. 10</option>
+                            <option value="PPPK Gol. 11">PPPK Gol. 11</option>
+                        </optgroup>
+                    </select>
+
+                    <input id="swal-in2" class="swal2-input text-sm" placeholder="Nomor SK Pengangkatan">
+                    
+                    <div class="text-left mt-3 px-1"><label class="text-sm font-bold text-gray-700">TMT Pangkat/Golongan:</label></div>
+                    <input id="swal-in3" class="swal2-input text-sm m-0 w-full mb-2" type="date">
+                    
+                    <div class="text-left mt-3 px-1"><label class="text-sm font-bold text-gray-700">Tanggal SK:</label></div>
+                    <input id="swal-in4" class="swal2-input text-sm m-0 w-full mb-2" type="date">
+                    
+                    <div class="flex gap-2 px-1">
+                        <input id="swal-in5" class="swal2-input text-sm w-1/2 m-0 mt-2" type="number" placeholder="Masa Kerja (Tahun)">
+                        <input id="swal-in6" class="swal2-input text-sm w-1/2 m-0 mt-2" type="number" placeholder="Masa Kerja (Bulan)">
+                    </div>
+
+                    <select id="swal-in7" class="swal2-select w-full m-0 mt-3 text-sm">
+                        <option value="" disabled selected>-- Pangkat/Golongan Sekarang? --</option>
+                        <option value="Ya">Ya</option>
+                        <option value="Tidak">Tidak</option>
+                    </select>
+
+                    <div class="text-left mt-4 px-1"><label class="text-sm font-bold text-gray-700">File PDF SK (Maks 7MB):</label></div>
+                    <input type="file" id="swal-file" class="swal2-file text-sm" accept="application/pdf">
                 `;
             } else if (sheet === 'RIWAYAT_JABATAN') {
                 formTitle = 'Ajukan Riwayat Jabatan';
@@ -1384,11 +1460,11 @@
                         idx++;
                     }
 
-                    // Logika Wajib Upload PDF untuk Pendidikan
-                    if (sheet === 'RIWAYAT_PENDIDIKAN') {
+                    // Logika Wajib Upload PDF untuk Pendidikan & Pangkat
+                    if (sheet === 'RIWAYAT_PENDIDIKAN' || sheet === 'RIWAYAT_PANGKAT') {
                         const fileInput = document.getElementById('swal-file');
                         if (!fileInput.files.length) {
-                            Swal.showValidationMessage('File PDF Ijazah wajib dilampirkan!');
+                            Swal.showValidationMessage('File PDF wajib dilampirkan!');
                             return false;
                         }
                         const file = fileInput.files[0];
@@ -1410,6 +1486,8 @@
 
                         Swal.showLoading();
                         try {
+                            let fNamePrefix = sheet === 'RIWAYAT_PENDIDIKAN' ? 'IJAZAH' : 'SK_PANGKAT';
+                            
                             // Mengirim base64 ke Drive untuk dijadikan file utuh
                             const resFile = await apiCall({
                                 action: 'uploadFile',
@@ -1417,7 +1495,7 @@
                                 nama: STATE.profile.Nama_Lengkap,
                                 fileBase64: base64PDF,
                                 mimeType: file.type,
-                                filename: `IJAZAH_${STATE.user.nip}_${new Date().getTime()}.pdf`
+                                filename: `${fNamePrefix}_${STATE.user.nip}_${new Date().getTime()}.pdf`
                             });
                             // Tambahkan Link Drive-nya ke array data
                             vals.push(resFile.fileUrl); 
@@ -1589,8 +1667,15 @@
 
                 <h4 style="background-color:#f0f0f0; padding:8px; margin:10px 0; border:1px solid #ddd; font-size:14px;">III. RIWAYAT PANGKAT / GOLONGAN</h4>
                 <table style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:15px; text-align:left;">
-                    <thead><tr style="background-color:#eee;"><th style="padding:8px; border:1px solid #ddd;">Pangkat/Gol</th><th style="padding:8px; border:1px solid #ddd;">TMT</th><th style="padding:8px; border:1px solid #ddd;">No SK</th><th style="padding:8px; border:1px solid #ddd;">Tgl SK</th><th style="padding:8px; border:1px solid #ddd;">Masa Kerja</th></tr></thead>
-                    <tbody>${extractTable('tbody-pangkat', 5)}</tbody>
+                    <thead><tr style="background-color:#eee;">
+                        <th style="padding:8px; border:1px solid #ddd;">Pangkat/Gol</th>
+                        <th style="padding:8px; border:1px solid #ddd;">No SK</th>
+                        <th style="padding:8px; border:1px solid #ddd;">TMT</th>
+                        <th style="padding:8px; border:1px solid #ddd;">Tgl SK</th>
+                        <th style="padding:8px; border:1px solid #ddd;">Masa Kerja</th>
+                        <th style="padding:8px; border:1px solid #ddd;">Pangkat Sekarang</th>
+                    </tr></thead>
+                    <tbody>${extractTable('tbody-pangkat', 6)}</tbody>
                 </table>
 
                 <h4 style="background-color:#f0f0f0; padding:8px; margin:10px 0; border:1px solid #ddd; font-size:14px;">IV. RIWAYAT JABATAN</h4>
