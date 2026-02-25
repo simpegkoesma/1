@@ -320,15 +320,25 @@
                         <div class="card rounded-lg shadow-md p-6">
                             <div class="flex justify-between items-center mb-4 border-b pb-2">
                                 <h4 class="font-bold text-lg"><i class="fas fa-money-bill-wave mr-2 text-blue-500"></i> Riwayat KGB</h4>
-                                <button onclick="ajukanRiwayat('RIWAYAT_KGB')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm shadow"><i class="fas fa-plus mr-1"></i> Ajukan Data Baru</button>
+                                <button onclick="ajukanRiwayat('RIWAYAT_KGB')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm shadow"><i class="fas fa-plus mr-1"></i> Ajukan Data & SK</button>
                             </div>
                             <div class="overflow-x-auto">
                                 <table class="w-full text-left text-sm whitespace-nowrap">
                                     <thead class="bg-gray-100 text-black">
-                                        <tr><th class="p-2">Golongan</th><th class="p-2">Gaji Baru</th><th class="p-2">TMT</th><th class="p-2">No SK Dasar</th><th class="p-2 text-center">Aksi</th></tr>
+                                        <tr>
+                                            <th class="p-2">Golongan</th>
+                                            <th class="p-2">No SK KGB</th>
+                                            <th class="p-2">TMT KGB</th>
+                                            <th class="p-2">Tanggal KGB</th>
+                                            <th class="p-2">Masa Kerja</th>
+                                            <th class="p-2">Gaji Baru</th>
+                                            <th class="p-2">Dasar KGB</th>
+                                            <th class="p-2">File SK</th>
+                                            <th class="p-2 text-center">Aksi</th>
+                                        </tr>
                                     </thead>
                                     <tbody id="tbody-kgb">
-                                        <tr><td colspan="5" class="text-center p-4 text-gray-500">Sedang memuat...</td></tr>
+                                        <tr><td colspan="9" class="text-center p-4 text-gray-500">Sedang memuat...</td></tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -508,7 +518,7 @@
             document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
 
             // Tentukan Page ID tujuan
-            let pageId = 'dashboard'; // Dashboard adalah container untuk semua tab user (profil, pendidikan, dsb)
+            let pageId = 'dashboard'; 
             if (['data-pegawai', 'antrian', 'pengaturan'].includes(hash)) {
                 pageId = hash;
             }
@@ -639,7 +649,6 @@
             sessionStorage.removeItem('simpeg_active_hash');
             STATE.user = null;
             
-            // Bersihkan URL Hash
             history.pushState("", document.title, window.location.pathname + window.location.search);
             
             document.getElementById('app-container').style.display = 'none';
@@ -650,19 +659,15 @@
             document.getElementById('login-page').style.display = 'none';
             document.getElementById('app-container').style.display = 'flex';
             
-            // Set User Info
             document.getElementById('user-info-name').innerText = STATE.user.nip;
             document.getElementById('user-info-role').innerText = STATE.user.role;
 
-            // RBAC UI Render
             if (['admin', 'superadmin'].includes(STATE.user.role)) {
                 document.getElementById('admin-menu-section').classList.remove('hidden');
             }
 
-            // Load Profile
             await fetchProfile();
             
-            // Panggil Router untuk menampilkan UI berdasarkan URL / Memory saat ini
             const urlHash = window.location.hash.substring(1);
             const savedHash = sessionStorage.getItem('simpeg_active_hash');
             
@@ -683,17 +688,15 @@
                 const res = await apiCall({ action: 'getProfile', nip: STATE.user.nip });
                 STATE.profile = res.data;
                 
-                // Simpan Riwayat
                 STATE.riwayat.pendidikan = res.riwayat_pendidikan || [];
                 STATE.riwayat.pangkat = res.riwayat_pangkat || [];
                 STATE.riwayat.jabatan = res.riwayat_jabatan || [];
-                STATE.riwayat.kompetensi = res.riwayat_kompetensi || []; // Simpan Kompetensi
+                STATE.riwayat.kompetensi = res.riwayat_kompetensi || []; 
                 STATE.riwayat.kgb = res.riwayat_kgb || [];
                 STATE.riwayat.keluarga = res.data_keluarga || [];
                 STATE.identitasLain = (res.identitas_lain && res.identitas_lain.length > 0) ? res.identitas_lain[0] : {};
                 
                 if(STATE.profile) {
-                    // Panggil data antrian milik user ini terlebih dahulu agar status verifikasi dapat dicek
                     await fetchMyAntrian();
 
                     document.getElementById('user-info-name').innerText = STATE.profile.Nama_Lengkap;
@@ -706,7 +709,6 @@
                         document.getElementById('profile-img').src = STATE.profile.URL_Foto_Profil;
                     }
 
-                    // Render Data Utama & Semua Riwayat
                     updateProfileUI();
                     renderSemuaRiwayat();
                 }
@@ -716,7 +718,6 @@
             }
         }
 
-        // --- Logika Status Pending untuk Profil / Data Utama ---
         function getFieldHTML(kolom, currentValue) {
             if (!STATE.myAntrian) return `${currentValue || '-'} <i class="fas fa-check-circle text-green-500 ml-1" title="Sudah Disetujui / Aktif"></i>`;
             const pendingReq = STATE.myAntrian.find(a => a.Kolom_Tujuan === kolom && a.Status === 'Pending');
@@ -727,10 +728,8 @@
             return `${currentValue || '-'} <i class="fas fa-check-circle text-green-500 ml-1" title="Sudah Disetujui / Aktif"></i>`;
         }
 
-        // --- Logika Status Pending Spesifik per Baris ID_Data Riwayat ---
         function getRiwayatFieldHTML(idData, kolom, currentValue) {
             if (!STATE.myAntrian) return currentValue || '-';
-            // Cek di antrian apakah ada pengajuan update untuk sel (baris idData dan kolom) ini
             const pendingReq = STATE.myAntrian.find(a => String(a.Baris_Target) === String(idData) && a.Kolom_Tujuan === kolom && a.Status === 'Pending');
 
             if (pendingReq) {
@@ -740,7 +739,6 @@
         }
 
         function updateProfileUI() {
-            // PROFIL
             document.getElementById('p-tempatlahir').innerHTML = getFieldHTML('Tempat_Lahir', STATE.profile.Tempat_Lahir);
             document.getElementById('p-tgllahir').innerHTML = getFieldHTML('Tgl_Lahir', STATE.profile.Tgl_Lahir ? new Date(STATE.profile.Tgl_Lahir).toLocaleDateString('id-ID') : '');
             document.getElementById('p-jk').innerHTML = getFieldHTML('Jenis_Kelamin', STATE.profile.Jenis_Kelamin);
@@ -752,7 +750,6 @@
             document.getElementById('p-jabatan').innerHTML = getFieldHTML('Jabatan_Terakhir', STATE.profile.Jabatan_Terakhir);
             document.getElementById('p-pendidikan').innerHTML = getFieldHTML('Jenjang_Pendidikan', STATE.profile.Jenjang_Pendidikan);
 
-            // IDENTITAS LAIN (karena formatnya 1 NIP = 1 Baris seperti Profil Utama)
             document.getElementById('p-nik').innerHTML = getFieldHTML('NIK_KTP', STATE.identitasLain.NIK_KTP);
             document.getElementById('p-npwp').innerHTML = getFieldHTML('No_NPWP', STATE.identitasLain.No_NPWP);
             document.getElementById('p-bpjs').innerHTML = getFieldHTML('No_BPJS', STATE.identitasLain.No_BPJS);
@@ -760,7 +757,7 @@
         }
 
         function renderSemuaRiwayat() {
-            // 1. PENDIDIKAN
+            // PENDIDIKAN
             const tbodyPend = document.getElementById('tbody-pendidikan');
             tbodyPend.innerHTML = '';
             if (STATE.riwayat.pendidikan.length > 0) {
@@ -780,7 +777,7 @@
                 });
             } else { tbodyPend.innerHTML = `<tr><td colspan="9" class="text-center p-4 text-gray-500">Belum ada data pendidikan.</td></tr>`; }
 
-            // 2. PANGKAT
+            // PANGKAT
             const tbodyPangkat = document.getElementById('tbody-pangkat');
             tbodyPangkat.innerHTML = '';
             if (STATE.riwayat.pangkat.length > 0) {
@@ -799,7 +796,7 @@
                 });
             } else { tbodyPangkat.innerHTML = `<tr><td colspan="8" class="text-center p-4 text-gray-500">Belum ada data pangkat.</td></tr>`; }
 
-            // 3. JABATAN
+            // JABATAN
             const tbodyJabatan = document.getElementById('tbody-jabatan');
             tbodyJabatan.innerHTML = '';
             if (STATE.riwayat.jabatan.length > 0) {
@@ -818,7 +815,7 @@
                 });
             } else { tbodyJabatan.innerHTML = `<tr><td colspan="8" class="text-center p-4 text-gray-500">Belum ada data jabatan.</td></tr>`; }
 
-            // 3B. KOMPETENSI / DIKLAT
+            // KOMPETENSI / DIKLAT
             const tbodyKompetensi = document.getElementById('tbody-kompetensi');
             tbodyKompetensi.innerHTML = '';
             if (STATE.riwayat.kompetensi.length > 0) {
@@ -842,22 +839,27 @@
                 });
             } else { tbodyKompetensi.innerHTML = `<tr><td colspan="9" class="text-center p-4 text-gray-500">Belum ada data pengembangan kompetensi.</td></tr>`; }
 
-            // 4. KGB
+            // KGB UPDATE
             const tbodyKgb = document.getElementById('tbody-kgb');
             tbodyKgb.innerHTML = '';
             if (STATE.riwayat.kgb.length > 0) {
                 STATE.riwayat.kgb.forEach(p => {
+                    let fileBtn = p.File_SK_KGB ? `<a href="${p.File_SK_KGB}" target="_blank" class="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs hover:bg-blue-200 whitespace-nowrap"><i class="fas fa-file-pdf"></i> Lihat SK</a>` : '-';
                     tbodyKgb.innerHTML += `<tr class="border-b">
                         <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Golongan', p.Golongan)}</td>
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Gaji_Baru', p.Gaji_Baru)}</td>
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'KGB_TMT', p.KGB_TMT)}</td>
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Dasar_Nomor', p.Dasar_Nomor)}</td>
+                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'No_SK_KGB', p.No_SK_KGB)}</td>
+                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'TMT_KGB', p.TMT_KGB ? new Date(p.TMT_KGB).toLocaleDateString('id-ID') : '')}</td>
+                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Tanggal_KGB', p.Tanggal_KGB ? new Date(p.Tanggal_KGB).toLocaleDateString('id-ID') : '')}</td>
+                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Masa_Kerja_Tahun', p.Masa_Kerja_Tahun)} Thn, ${getRiwayatFieldHTML(p.ID_Data, 'Masa_Kerja_Bulan', p.Masa_Kerja_Bulan)} Bln</td>
+                        <td class="p-2 text-green-600 font-medium">${getRiwayatFieldHTML(p.ID_Data, 'Gaji_Pokok_Baru', p.Gaji_Pokok_Baru)}</td>
+                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Dasar_KGB', p.Dasar_KGB)}</td>
+                        <td class="p-2">${fileBtn}</td>
                         <td class="p-2 text-center"><button onclick="editRiwayatRow('${p.ID_Data}', 'RIWAYAT_KGB')" class="text-blue-600 hover:text-blue-800 bg-blue-50 px-2 py-1 rounded border border-blue-200 shadow-sm text-xs"><i class="fas fa-edit"></i> Edit</button></td>
                     </tr>`;
                 });
-            } else { tbodyKgb.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-gray-500">Belum ada data KGB.</td></tr>`; }
+            } else { tbodyKgb.innerHTML = `<tr><td colspan="9" class="text-center p-4 text-gray-500">Belum ada data KGB.</td></tr>`; }
 
-            // 5. KELUARGA
+            // KELUARGA
             const tbodyKeluarga = document.getElementById('tbody-keluarga');
             tbodyKeluarga.innerHTML = '';
             if (STATE.riwayat.keluarga.length > 0) {
@@ -910,7 +912,7 @@
 
         async function fetchAllPegawai() {
             if(STATE.allPegawai.length > 0) {
-                renderTablePegawai(); // Jika data sudah di-cache, langsung render halaman aktif
+                renderTablePegawai(); 
                 return;
             } 
             showLoader();
@@ -918,7 +920,6 @@
                 const res = await apiCall({ action: 'getAllData', role: STATE.user.role });
                 STATE.allPegawai = res.data;
                 
-                // Urutkan sekali saja setelah fetch data dari database
                 STATE.allPegawai.sort((a, b) => {
                     const statusA = (a.Status_Pegawai || 'AKTIF').toUpperCase();
                     const statusB = (b.Status_Pegawai || 'AKTIF').toUpperCase();
@@ -930,9 +931,8 @@
                     return namaA.localeCompare(namaB);
                 });
 
-                // Salin ke filteredPegawai agar tidak merusak data asli
                 STATE.filteredPegawai = [...STATE.allPegawai];
-                STATE.currentPage = 1; // Set ke halaman pertama
+                STATE.currentPage = 1; 
                 
                 renderTablePegawai();
             } catch(e) {
@@ -949,11 +949,9 @@
             const totalData = data.length;
             const totalPages = Math.ceil(totalData / STATE.rowsPerPage);
             
-            // Validasi Nomor Halaman
             if (STATE.currentPage < 1) STATE.currentPage = 1;
             if (STATE.currentPage > totalPages && totalPages > 0) STATE.currentPage = totalPages;
             
-            // Logika Pemotongan Data (Slice)
             const startIndex = (STATE.currentPage - 1) * STATE.rowsPerPage;
             const endIndex = Math.min(startIndex + STATE.rowsPerPage, totalData);
             const paginatedData = data.slice(startIndex, endIndex);
@@ -977,19 +975,15 @@
                 });
             }
 
-            // Update Teks Informasi Data
             document.getElementById('pagination-info').innerText = `Menampilkan ${totalData === 0 ? 0 : startIndex + 1} - ${endIndex} dari ${totalData} Pegawai`;
-            
-            // Render Kontrol Paginasi
             renderPaginationControls(totalPages);
         }
 
         function renderPaginationControls(totalPages) {
             const container = document.getElementById('pagination-controls');
             container.innerHTML = '';
-            if (totalPages <= 1) return; // Sembunyikan jika hanya 1 halaman
+            if (totalPages <= 1) return; 
 
-            // Tombol Previous
             let btnPrev = document.createElement('button');
             btnPrev.className = `px-3 py-1 border border-gray-300 rounded mr-2 transition ${STATE.currentPage === 1 ? 'opacity-50 cursor-not-allowed bg-gray-100 text-gray-400' : 'bg-white hover:bg-gray-200 text-black'}`;
             btnPrev.innerHTML = '<i class="fas fa-chevron-left"></i>';
@@ -997,13 +991,11 @@
             btnPrev.onclick = () => { STATE.currentPage--; renderTablePegawai(); };
             container.appendChild(btnPrev);
 
-            // Indikator Halaman (1 / X)
             let pageIndicator = document.createElement('span');
             pageIndicator.className = 'px-3 py-1 font-bold text-gray-700 mr-2';
             pageIndicator.innerText = `${STATE.currentPage} / ${totalPages}`;
             container.appendChild(pageIndicator);
 
-            // Tombol Next
             let btnNext = document.createElement('button');
             btnNext.className = `px-3 py-1 border border-gray-300 rounded transition ${STATE.currentPage === totalPages ? 'opacity-50 cursor-not-allowed bg-gray-100 text-gray-400' : 'bg-white hover:bg-gray-200 text-black'}`;
             btnNext.innerHTML = '<i class="fas fa-chevron-right"></i>';
@@ -1015,13 +1007,12 @@
         function filterTablePegawai() {
             const term = document.getElementById('search-pegawai').value.toLowerCase();
             
-            // Filter dari allPegawai ke filteredPegawai
             STATE.filteredPegawai = STATE.allPegawai.filter(p => 
                 (p.Nama_Lengkap && p.Nama_Lengkap.toLowerCase().includes(term)) || 
                 (p.NIP && String(p.NIP).includes(term))
             );
             
-            STATE.currentPage = 1; // Reset halaman ke 1 setiap kali melakukan pencarian baru
+            STATE.currentPage = 1; 
             renderTablePegawai();
         }
 
@@ -1033,14 +1024,12 @@
 
             const isSuperadmin = STATE.user.role === 'superadmin';
 
-            // Opsi standar
             let options = {
                 'PROFIL:Status_Pegawai': 'Ubah Status (Aktif/Pensiun)',
                 'PROFIL:Jabatan_Terakhir': 'Ubah Jabatan',
                 'PROFIL:Unit_Kerja': 'Ubah Unit Kerja'
             };
 
-            // Opsi khusus Superadmin (Role & Blokir)
             if (isSuperadmin) {
                 options['USERS:Role'] = 'Ubah Role Akun (user/admin/superadmin)';
                 options['USERS:Status_Akun'] = 'Status Akun (Aktif/Blokir)';
@@ -1058,7 +1047,6 @@
             if (selectedOption) {
                 const [targetSheet, targetKolom] = selectedOption.split(':');
                 
-                // Cek jika Superadmin mau ubah role tapi user belum tautkan akun ke Google
                 if (targetSheet === 'USERS' && targetPegawai.Role === 'Belum Taut Akun') {
                     return Swal.fire('Gagal', 'Pegawai belum pernah Login / menautkan NIP dengan akun Google. Tidak dapat merubah Role/Status Akun.', 'error');
                 }
@@ -1076,16 +1064,15 @@
                         await apiCall({
                             action: 'submitUpdate',
                             executorRole: STATE.user.role,
-                            nip_target: nip, // Cukup lempar NIP, backend otomatis melacaknya!
+                            nip_target: nip, 
                             sheet_target: targetSheet,
                             kolom_target: targetKolom,
                             nilai_baru: newVal
                         });
-                        // Menggunakan Toast Notif
                         Toast.fire({ icon: 'success', title: 'Data berhasil diperbarui.' });
                         
-                        STATE.allPegawai = []; // Reset cache
-                        fetchAllPegawai(); // Muat ulang tabel
+                        STATE.allPegawai = []; 
+                        fetchAllPegawai(); 
                     } catch(e) {
                         Swal.fire('Gagal', e.message, 'error');
                     }
@@ -1111,7 +1098,6 @@
             const tbody = document.getElementById('tbody-antrian');
             tbody.innerHTML = '';
             
-            // Filter hanya data yang statusnya 'Pending'
             const pendingData = data.filter(a => a.Status === 'Pending');
 
             if(pendingData.length === 0) {
@@ -1121,11 +1107,8 @@
 
             pendingData.forEach(a => {
                 const tgl = new Date(a.Tgl_Pengajuan).toLocaleDateString('id-ID', {day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
-                
-                // PERBAIKAN: Pastikan displayNilai selalu berupa String agar tidak error .startsWith is not a function
                 let displayNilai = a.Nilai_Baru !== undefined && a.Nilai_Baru !== null ? String(a.Nilai_Baru) : '';
                 
-                // Cek jika Nilai_Baru mengandung URL file untuk memunculkan tombol Lihat atau Base64 Image
                 if(displayNilai.startsWith('data:image/')) {
                      displayNilai = `<img src="${displayNilai}" class="w-16 h-16 object-cover rounded cursor-pointer shadow border border-gray-300" onclick="Swal.fire({imageUrl: '${displayNilai}', imageWidth: 400, showConfirmButton: false})" title="Klik untuk memperbesar">`;
                 } else if(displayNilai.includes('http') && displayNilai.includes('drive')) {
@@ -1148,7 +1131,6 @@
                 tbody.appendChild(tr);
             });
 
-            // Pastikan select all tidak tercentang saat memuat ulang data
             document.getElementById('cb-select-all').checked = false;
             checkBulkActionVisibility();
         }
@@ -1173,7 +1155,6 @@
                 container.classList.add('hidden');
             }
             
-            // Sync status select all checkbox
             if (checkedCount === allCheckboxes && allCheckboxes > 0) {
                 selectAllCb.checked = true;
             } else {
@@ -1204,7 +1185,7 @@
                     Toast.fire({ icon: 'success', title: res.message });
                     document.getElementById('cb-select-all').checked = false;
                     checkBulkActionVisibility();
-                    fetchAllAntrian(); // Refresh tabel
+                    fetchAllAntrian(); 
                 } catch(e) {
                     Swal.fire('Gagal', e.message, 'error');
                 }
@@ -1227,11 +1208,8 @@
                 showLoader();
                 try {
                     const res = await apiCall({ action: 'processAntrian', id_antrian: id_antrian, action_type: action_type });
-                    
-                    // Menggunakan Toast Notif
                     Toast.fire({ icon: 'success', title: res.message });
-                    
-                    fetchAllAntrian(); // Refresh tabel setelah diproses
+                    fetchAllAntrian(); 
                 } catch(e) {
                     Swal.fire('Gagal', e.message, 'error');
                 }
@@ -1262,21 +1240,16 @@
             if (newVal !== undefined && newVal !== currentValue && newVal !== "") {
                 let finalVal = newVal;
 
-                // --- Formatter Khusus Nomor HP ---
                 if (kolom === 'No_HP') {
-                    // Hapus semua karakter selain angka (seperti -, +, spasi)
                     finalVal = finalVal.replace(/\D/g, ''); 
-                    
-                    // Standardisasi ke awalan 62
                     if (finalVal.startsWith('0')) {
-                        finalVal = '62' + finalVal.slice(1); // Ubah 0 di depan jadi 62
+                        finalVal = '62' + finalVal.slice(1); 
                     } else if (finalVal.startsWith('8')) {
-                        finalVal = '62' + finalVal; // Tambahkan 62 jika langsung diawali 8
+                        finalVal = '62' + finalVal; 
                     } else if (!finalVal.startsWith('62')) {
-                        finalVal = '62' + finalVal; // Paksa awalan 62 untuk kasus lainnya
+                        finalVal = '62' + finalVal; 
                     }
                 }
-                // ---------------------------------
 
                 showLoader();
                 try {
@@ -1290,14 +1263,14 @@
             }
         }
 
-        // --- Fungsi Baru: Edit Spesifik Baris Riwayat ---
         async function editRiwayatRow(idData, sheet) {
             const menuOptions = {
                 'RIWAYAT_PENDIDIKAN': { 'Jenjang': 'Jenjang Pendidikan', 'Instansi': 'Instansi / Kampus', 'Jurusan': 'Jurusan', 'Thn_Lulus': 'Tahun Lulus', 'No_Ijazah': 'Nomor Ijazah', 'Tgl_Ijazah': 'Tanggal Ijazah', 'Pendidikan_Terakhir': 'Pendidikan Terakhir? (Ya/Tidak)', 'File_Ijazah': 'File PDF Ijazah' },
                 'RIWAYAT_PANGKAT': { 'Pangkat_Gol': 'Pangkat/Golongan', 'No_SK': 'Nomor SK', 'TMT': 'TMT Pangkat', 'Tgl_SK': 'Tanggal SK', 'Masa_Kerja_Thn': 'Masa Kerja (Tahun)', 'Masa_Kerja_Bln': 'Masa Kerja (Bulan)', 'Pangkat_Sekarang': 'Pangkat/Gol Sekarang? (Ya/Tidak)', 'File_SK': 'File PDF SK' },
                 'RIWAYAT_JABATAN': { 'Jenis_Jabatan': 'Jenis Jabatan', 'Jabatan': 'Nama Jabatan', 'Eselon': 'Eselon', 'Unit_Kerja': 'Unit Kerja', 'TMT_Pelantikan': 'TMT Pelantikan', 'Jabatan_Sekarang': 'Jabatan Sekarang? (Ya/Tidak)', 'File_SK': 'File PDF SK' },
                 'RIWAYAT_KOMPETENSI': { 'Jenis_Diklat': 'Jenis Diklat', 'Nama_Diklat': 'Nama Diklat', 'Tgl_Mulai': 'Tgl Mulai Diklat', 'Tgl_Selesai': 'Tgl Selesai Diklat', 'Jumlah_JP': 'Jumlah JP', 'Penyelenggara': 'Penyelenggara', 'Sumber_Anggaran': 'Sumber Anggaran', 'No_Sertifikat': 'No Sertifikat', 'File_Sertifikat': 'File PDF Sertifikat' },
-                'RIWAYAT_KGB': { 'Golongan': 'Golongan KGB', 'Gaji_Baru': 'Gaji Baru', 'KGB_TMT': 'TMT KGB', 'Dasar_Nomor': 'Nomor SK Dasar' },
+                // UPDATE: Pemetaan KGB untuk Edit Spesifik
+                'RIWAYAT_KGB': { 'Golongan': 'Golongan KGB', 'No_SK_KGB': 'Nomor SK KGB', 'TMT_KGB': 'TMT KGB', 'Tanggal_KGB': 'Tanggal SK KGB', 'Masa_Kerja_Tahun': 'Masa Kerja (Tahun)', 'Masa_Kerja_Bulan': 'Masa Kerja (Bulan)', 'Gaji_Pokok_Baru': 'Gaji Pokok Baru', 'Dasar_KGB': 'KGB Berdasarkan', 'File_SK_KGB': 'File PDF SK KGB' },
                 'DATA_KELUARGA': { 'Nama': 'Nama Anggota', 'Status_Keluarga': 'Status (Anak/Istri)', 'L/P': 'L/P', 'Tunjangan': 'Dapat Tunjangan?' }
             };
 
@@ -1321,7 +1294,6 @@
                 let inputType = 'text';
                 let inputOptions = {};
                 
-                // Dropdown spesifik untuk riwayat edit
                 if (selectedKolom === 'Jenjang') { inputType = 'select'; inputOptions = { 'SD /sederajat': 'SD /sederajat', 'SMP /sederajat': 'SMP /sederajat', 'SMA /sederajat': 'SMA /sederajat', 'D1': 'D1', 'D2': 'D2', 'D3': 'D3', 'D4': 'D4', 'Strata 1': 'Strata 1', 'Strata 2': 'Strata 2', 'Strata 3': 'Strata 3' }; }
                 if (selectedKolom === 'Pangkat_Gol') { 
                     inputType = 'select'; 
@@ -1334,14 +1306,16 @@
                     }; 
                 }
                 
-                // Tambahan Dropdown Khusus Jabatan
                 if (selectedKolom === 'Jenis_Jabatan') { inputType = 'select'; inputOptions = { 'Staf': 'Staf', 'Jabatan Struktural': 'Jabatan Struktural', 'JFT (Jabatan Fungsional Tertentu)': 'JFT (Jabatan Fungsional Tertentu)', 'JFU (Jabatan Fungsional Umum)': 'JFU (Jabatan Fungsional Umum)', 'Jenis jabatan tidak di ketahui': 'Jenis jabatan tidak di ketahui' }; }
                 if (selectedKolom === 'Eselon') { inputType = 'select'; inputOptions = { 'ESELON II': 'ESELON II', 'ESELON III': 'ESELON III', 'ESELON IV': 'ESELON IV' }; }
                 if (selectedKolom === 'Sumber_Anggaran') { inputType = 'select'; inputOptions = { 'Gratis': 'Gratis', 'Mandiri': 'Mandiri', 'APBD': 'APBD' }; }
                 if (selectedKolom === 'Pendidikan_Terakhir' || selectedKolom === 'Tunjangan' || selectedKolom === 'Pangkat_Sekarang' || selectedKolom === 'Jabatan_Sekarang') { inputType = 'select'; inputOptions = { 'Ya': 'Ya', 'Tidak': 'Tidak' }; }
                 if (selectedKolom === 'L/P') { inputType = 'select'; inputOptions = { 'L': 'L', 'P': 'P' }; }
-                if (selectedKolom.includes('Tgl_') || selectedKolom === 'TMT' || selectedKolom === 'TMT_Pelantikan') { inputType = 'date'; }
+                if (selectedKolom === 'Dasar_KGB') { inputType = 'select'; inputOptions = { 'Kenaikan Gaji': 'Kenaikan Gaji', 'Kenaikan Pangkat': 'Kenaikan Pangkat' }; }
+                
+                if (selectedKolom.includes('Tgl_') || selectedKolom.includes('Tanggal_') || selectedKolom.includes('TMT')) { inputType = 'date'; }
                 if (selectedKolom.includes('File_')) { inputType = 'file'; } 
+                if (selectedKolom.includes('Masa_Kerja') || selectedKolom === 'Gaji_Pokok_Baru') { inputType = 'number'; } 
 
                 const swalConfig = { title: `Ubah ${kolomOptions[selectedKolom]}`, input: inputType, showCancelButton: true };
                 
@@ -1355,21 +1329,11 @@
                     swalConfig.inputValue = rowData[selectedKolom] || '';
                 }
 
-                // Logika khusus jika yang diubah adalah Lampiran File PDF
                 if (inputType === 'file') {
                     swalConfig.preConfirm = async (file) => {
-                        if (!file) {
-                            Swal.showValidationMessage('File wajib dipilih!');
-                            return false;
-                        }
-                        if (file.type !== 'application/pdf') {
-                            Swal.showValidationMessage('Format file harus PDF!');
-                            return false;
-                        }
-                        if (file.size > 7 * 1024 * 1024) {
-                            Swal.showValidationMessage('Ukuran file maksimal 7MB!');
-                            return false;
-                        }
+                        if (!file) { Swal.showValidationMessage('File wajib dipilih!'); return false; }
+                        if (file.type !== 'application/pdf') { Swal.showValidationMessage('Format file harus PDF!'); return false; }
+                        if (file.size > 7 * 1024 * 1024) { Swal.showValidationMessage('Ukuran file maksimal 7MB!'); return false; }
                         
                         const base64PDF = await new Promise((resolve) => {
                             const reader = new FileReader();
@@ -1387,7 +1351,7 @@
                                 mimeType: file.type,
                                 filename: `UPDATE_${selectedKolom}_${STATE.user.nip}_${new Date().getTime()}.pdf`
                             });
-                            return resFile.fileUrl; // Kembalikan Link Drive baru untuk disimpan
+                            return resFile.fileUrl; 
                         } catch (err) {
                             Swal.showValidationMessage('Gagal mengupload file: ' + err.message);
                             return false;
@@ -1416,7 +1380,6 @@
             let formTitle = 'Ajukan Data';
             let htmlForm = '';
 
-            // Buat HTML input dinamis berdasarkan tabel riwayatnya
             if (sheet === 'RIWAYAT_PENDIDIKAN') {
                 formTitle = 'Ajukan Riwayat Pendidikan';
                 htmlForm = `
@@ -1437,16 +1400,13 @@
                     <input id="swal-in3" class="swal2-input text-sm" placeholder="Jurusan / Program Studi">
                     <input id="swal-in4" class="swal2-input text-sm" type="number" placeholder="Tahun Lulus (Contoh: 2018)">
                     <input id="swal-in5" class="swal2-input text-sm" placeholder="Nomor Ijazah">
-                    
                     <div class="text-left mt-3 px-1"><label class="text-sm font-bold text-gray-700">Tanggal Ijazah:</label></div>
                     <input id="swal-in6" class="swal2-input text-sm m-0 w-full mb-2" type="date">
-                    
                     <select id="swal-in7" class="swal2-select w-full m-0 mt-2 text-sm">
                         <option value="" disabled selected>-- Pendidikan Terakhir? --</option>
                         <option value="Ya">Ya</option>
                         <option value="Tidak">Tidak</option>
                     </select>
-
                     <div class="text-left mt-4 px-1"><label class="text-sm font-bold text-gray-700">File PDF Ijazah (Maks 7MB):</label></div>
                     <input type="file" id="swal-file" class="swal2-file text-sm" accept="application/pdf">
                 `;
@@ -1455,59 +1415,26 @@
                 htmlForm = `
                     <select id="swal-in1" class="swal2-select w-full m-0 mt-2 text-sm">
                         <option value="" disabled selected>-- Pilih Pangkat/Golongan --</option>
-                        <optgroup label="Golongan I (Juru)">
-                            <option value="Juru Muda (I/a)">Juru Muda (I/a)</option>
-                            <option value="Juru Muda Tk.I (I/b)">Juru Muda Tk.I (I/b)</option>
-                            <option value="Juru (I/c)">Juru (I/c)</option>
-                            <option value="Juru Tk.I (I/d)">Juru Tk.I (I/d)</option>
-                        </optgroup>
-                        <optgroup label="Golongan II (Pengatur)">
-                            <option value="Pengatur Muda (II/a)">Pengatur Muda (II/a)</option>
-                            <option value="Pengatur Muda Tk.I (II/b)">Pengatur Muda Tk.I (II/b)</option>
-                            <option value="Pengatur (II/c)">Pengatur (II/c)</option>
-                            <option value="Pengatur Tk.I (II/d)">Pengatur Tk.I (II/d)</option>
-                        </optgroup>
-                        <optgroup label="Golongan III (Penata)">
-                            <option value="Penata Muda (III/a)">Penata Muda (III/a)</option>
-                            <option value="Penata Muda Tk.I (III/b)">Penata Muda Tk.I (III/b)</option>
-                            <option value="Penata (III/c)">Penata (III/c)</option>
-                            <option value="Penata Tk.I (III/d)">Penata Tk.I (III/d)</option>
-                        </optgroup>
-                        <optgroup label="Golongan IV (Pembina)">
-                            <option value="Pembina (IV/a)">Pembina (IV/a)</option>
-                            <option value="Pembina Tk.I (IV/b)">Pembina Tk.I (IV/b)</option>
-                            <option value="Pembina Utama Muda (IV/c)">Pembina Utama Muda (IV/c)</option>
-                            <option value="Pembina Utama Madya (IV/d)">Pembina Utama Madya (IV/d)</option>
-                            <option value="Pembina Utama (IV/e)">Pembina Utama (IV/e)</option>
-                        </optgroup>
-                        <optgroup label="PPPK">
-                            <option value="PPPK Gol. 5">PPPK Gol. 5</option>
-                            <option value="PPPK Gol. 7">PPPK Gol. 7</option>
-                            <option value="PPPK Gol. 9">PPPK Gol. 9</option>
-                            <option value="PPPK Gol. 10">PPPK Gol. 10</option>
-                            <option value="PPPK Gol. 11">PPPK Gol. 11</option>
-                        </optgroup>
+                        <optgroup label="Golongan I (Juru)"><option value="Juru Muda (I/a)">Juru Muda (I/a)</option><option value="Juru Muda Tk.I (I/b)">Juru Muda Tk.I (I/b)</option><option value="Juru (I/c)">Juru (I/c)</option><option value="Juru Tk.I (I/d)">Juru Tk.I (I/d)</option></optgroup>
+                        <optgroup label="Golongan II (Pengatur)"><option value="Pengatur Muda (II/a)">Pengatur Muda (II/a)</option><option value="Pengatur Muda Tk.I (II/b)">Pengatur Muda Tk.I (II/b)</option><option value="Pengatur (II/c)">Pengatur (II/c)</option><option value="Pengatur Tk.I (II/d)">Pengatur Tk.I (II/d)</option></optgroup>
+                        <optgroup label="Golongan III (Penata)"><option value="Penata Muda (III/a)">Penata Muda (III/a)</option><option value="Penata Muda Tk.I (III/b)">Penata Muda Tk.I (III/b)</option><option value="Penata (III/c)">Penata (III/c)</option><option value="Penata Tk.I (III/d)">Penata Tk.I (III/d)</option></optgroup>
+                        <optgroup label="Golongan IV (Pembina)"><option value="Pembina (IV/a)">Pembina (IV/a)</option><option value="Pembina Tk.I (IV/b)">Pembina Tk.I (IV/b)</option><option value="Pembina Utama Muda (IV/c)">Pembina Utama Muda (IV/c)</option><option value="Pembina Utama Madya (IV/d)">Pembina Utama Madya (IV/d)</option><option value="Pembina Utama (IV/e)">Pembina Utama (IV/e)</option></optgroup>
+                        <optgroup label="PPPK"><option value="PPPK Gol. 5">PPPK Gol. 5</option><option value="PPPK Gol. 7">PPPK Gol. 7</option><option value="PPPK Gol. 9">PPPK Gol. 9</option><option value="PPPK Gol. 10">PPPK Gol. 10</option><option value="PPPK Gol. 11">PPPK Gol. 11</option></optgroup>
                     </select>
-
                     <input id="swal-in2" class="swal2-input text-sm" placeholder="Nomor SK Pengangkatan">
-                    
                     <div class="text-left mt-3 px-1"><label class="text-sm font-bold text-gray-700">TMT Pangkat/Golongan:</label></div>
                     <input id="swal-in3" class="swal2-input text-sm m-0 w-full mb-2" type="date">
-                    
                     <div class="text-left mt-3 px-1"><label class="text-sm font-bold text-gray-700">Tanggal SK:</label></div>
                     <input id="swal-in4" class="swal2-input text-sm m-0 w-full mb-2" type="date">
-                    
                     <div class="flex gap-2 px-1">
                         <input id="swal-in5" class="swal2-input text-sm w-1/2 m-0 mt-2" type="number" placeholder="Masa Kerja (Tahun)">
                         <input id="swal-in6" class="swal2-input text-sm w-1/2 m-0 mt-2" type="number" placeholder="Masa Kerja (Bulan)">
                     </div>
-
                     <select id="swal-in7" class="swal2-select w-full m-0 mt-3 text-sm">
                         <option value="" disabled selected>-- Pangkat/Golongan Sekarang? --</option>
                         <option value="Ya">Ya</option>
                         <option value="Tidak">Tidak</option>
                     </select>
-
                     <div class="text-left mt-4 px-1"><label class="text-sm font-bold text-gray-700">File PDF SK (Maks 7MB):</label></div>
                     <input type="file" id="swal-file" class="swal2-file text-sm" accept="application/pdf">
                 `;
@@ -1516,116 +1443,28 @@
                 htmlForm = `
                     <select id="swal-jenis" class="swal2-select w-full m-0 mt-2 text-sm" onchange="document.getElementById('div-eselon').style.display = this.value === 'Jabatan Struktural' ? 'block' : 'none'">
                         <option value="" disabled selected>-- Pilih Jenis Jabatan --</option>
-                        <option value="Staf">Staf</option>
-                        <option value="Jabatan Struktural">Jabatan Struktural</option>
-                        <option value="JFT (Jabatan Fungsional Tertentu)">JFT (Jabatan Fungsional Tertentu)</option>
-                        <option value="JFU (Jabatan Fungsional Umum)">JFU (Jabatan Fungsional Umum)</option>
-                        <option value="Jenis jabatan tidak di ketahui">Jenis jabatan tidak di ketahui</option>
+                        <option value="Staf">Staf</option><option value="Jabatan Struktural">Jabatan Struktural</option><option value="JFT (Jabatan Fungsional Tertentu)">JFT (Jabatan Fungsional Tertentu)</option><option value="JFU (Jabatan Fungsional Umum)">JFU (Jabatan Fungsional Umum)</option><option value="Jenis jabatan tidak di ketahui">Jenis jabatan tidak di ketahui</option>
                     </select>
-
                     <div id="div-eselon" style="display:none;" class="mt-2 w-full">
                         <select id="swal-eselon" class="swal2-select w-full m-0 text-sm">
                             <option value="" disabled selected>-- Pilih Eselon (Jika Struktural) --</option>
-                            <option value="ESELON II">ESELON II</option>
-                            <option value="ESELON III">ESELON III</option>
-                            <option value="ESELON IV">ESELON IV</option>
+                            <option value="ESELON II">ESELON II</option><option value="ESELON III">ESELON III</option><option value="ESELON IV">ESELON IV</option>
                         </select>
                     </div>
-
                     <select id="swal-unit" class="swal2-select w-full m-0 mt-3 text-sm" onchange="document.getElementById('div-unit-lainnya').style.display = this.value === 'LAINNYA' ? 'block' : 'none'">
                         <option value="" disabled selected>-- Pilih Unit Kerja (Bidang/Bagian/Ruangan) --</option>
-                        <optgroup label="BIDANG & BAGIAN UTAMA">
-                            <option value="BAGIAN PROGPEL">BAGIAN PROGPEL</option>
-                            <option value="BAGIAN KEUANGAN">BAGIAN KEUANGAN</option>
-                            <option value="BAGIAN ADMINISTRASI DAN UMUM">BAGIAN ADMINISTRASI DAN UMUM</option>
-                            <option value="BIDANG PELAYANAN MEDIK">BIDANG PELAYANAN MEDIK</option>
-                            <option value="BIDANG KEPERAWATAN">BIDANG KEPERAWATAN</option>
-                            <option value="BIDANG PELAYANAN PENUNJANG">BIDANG PELAYANAN PENUNJANG</option>
-                        </optgroup>
-                        <optgroup label="INSTALASI & RUANGAN">
-                            <option value="INSTALASI FARMASI">INSTALASI FARMASI</option>
-                            <option value="INSTALASI RADIOLOGI">INSTALASI RADIOLOGI</option>
-                            <option value="INSTALASI BEDAH SENTRAL">INSTALASI BEDAH SENTRAL</option>
-                            <option value="INSTALASI GAWAT DARURAT">INSTALASI GAWAT DARURAT</option>
-                            <option value="ICU">ICU</option>
-                            <option value="ICCU">ICCU</option>
-                            <option value="HCU">HCU</option>
-                            <option value="INSTALASI LABORATORIUM">INSTALASI LABORATORIUM</option>
-                            <option value="INSTALASI HEMODIALISA">INSTALASI HEMODIALISA</option>
-                            <option value="INSTALASI GIZI">INSTALASI GIZI</option>
-                            <option value="INSTALASI REKAM MEDIK">INSTALASI REKAM MEDIK</option>
-                            <option value="INSTALASI PEMELIHARAAN SARANA">INSTALASI PEMELIHARAAN SARANA</option>
-                            <option value="INSTALASI PENYEHATAN LINGKUNGAN">INSTALASI PENYEHATAN LINGKUNGAN</option>
-                            <option value="INSTALASI FORENSIK DAN MEDIKOLEGAL">INSTALASI FORENSIK DAN MEDIKOLEGAL</option>
-                            <option value="INSTALASI DIAGNOSTIK DAN INTERVENSI KORDIOVASKULER">INSTALASI DIAGNOSTIK DAN INTERVENSI KORDIOVASKULER</option>
-                            <option value="INSTALASI MATERNAL DAN PERINATAL">INSTALASI MATERNAL DAN PERINATAL</option>
-                            <option value="INSTALASI REHABILITASI MEDIK">INSTALASI REHABILITASI MEDIK</option>
-                            <option value="INSTALASI SIM RS">INSTALASI SIM RS</option>
-                            <option value="INSTALASI PKRS">INSTALASI PKRS</option>
-                            <option value="POLI KIR">POLI KIR</option>
-                            <option value="POLI EKSKUTIF">POLI EKSKUTIF</option>
-                            <option value="POLI TMS">POLI TMS</option>
-                            <option value="POLI EEG">POLI EEG</option>
-                            <option value="POLI ENDOSKOPI">POLI ENDOSKOPI</option>
-                            <option value="POLI ESWL">POLI ESWL</option>
-                            <option value="RUANG MAWAR/ASTER">RUANG MAWAR/ASTER</option>
-                            <option value="RUANG ANYELIR/MELATI">RUANG ANYELIR/MELATI</option>
-                            <option value="RUANG ANGGREK/DAHLIA">RUANG ANGGREK/DAHLIA</option>
-                            <option value="RUANG BOUGENVILLE">RUANG BOUGENVILLE</option>
-                            <option value="RUANG TERATAI/ASOKA">RUANG TERATAI/ASOKA</option>
-                            <option value="RUANG LILY">RUANG LILY</option>
-                            <option value="RUANG FLAMBOYAN">RUANG FLAMBOYAN</option>
-                            <option value="POLI ANAK">POLI ANAK</option>
-                            <option value="POLI PENYAKIT DALAM">POLI PENYAKIT DALAM</option>
-                            <option value="POLI BEDAH">POLI BEDAH</option>
-                            <option value="POLI MATA">POLI MATA</option>
-                            <option value="POLI THT">POLI THT</option>
-                            <option value="POLI SYARAF">POLI SYARAF</option>
-                            <option value="POLI JANTUNG">POLI JANTUNG</option>
-                            <option value="POLI PARU">POLI PARU</option>
-                            <option value="POLI GIGI">POLI GIGI</option>
-                            <option value="POLI KULIT DAN KELAMIN">POLI KULIT DAN KELAMIN</option>
-                            <option value="POLI JIWA">POLI JIWA</option>
-                            <option value="POLI TB">POLI TB</option>
-                            <option value="POLI VCT">POLI VCT</option>
-                            <option value="POLI UMUM">POLI UMUM</option>
-                            <option value="POLI GERIATRI">POLI GERIATRI</option>
-                            <option value="POLI UROLOGI">POLI UROLOGI</option>
-                            <option value="POLI ORTHOPEDI">POLI ORTHOPEDI</option>
-                            <option value="POLI OBSGYN">POLI OBSGYN</option>
-                            <option value="POLI BEDAH SYARAF">POLI BEDAH SYARAF</option>
-                        </optgroup>
-                        <optgroup label="KOMITE & UNIT LAIN">
-                            <option value="KOMITE MEDIK">KOMITE MEDIK</option>
-                            <option value="KOMITE KEPERAWATAN">KOMITE KEPERAWATAN</option>
-                            <option value="KOMITE PPI">KOMITE PPI</option>
-                            <option value="KOMITE KESEHATAN DAN KESELAMATAN KERJA">KOMITE KESEHATAN DAN KESELAMATAN KERJA</option>
-                            <option value="SATUAN PEMERIKSAAN INTERNAL">SATUAN PEMERIKSAAN INTERNAL</option>
-                            <option value="UNIT AMBULAN">UNIT AMBULAN</option>
-                            <option value="UNIT LOUNDRY">UNIT LOUNDRY</option>
-                            <option value="UNIT CSSD">UNIT CSSD</option>
-                            <option value="UNIT PENGADUAN">UNIT PENGADUAN</option>
-                            <option value="UNIT DIKLAT">UNIT DIKLAT</option>
-                            <option value="UNIT KLAIM DAN PENJAMINAN">UNIT KLAIM DAN PENJAMINAN</option>
-                            <option value="LAINNYA">Lainnya (Ketik Manual)...</option>
-                        </optgroup>
+                        <option value="LAINNYA">Lainnya (Ketik Manual)...</option>
+                        <option value="BAGIAN KEUANGAN">BAGIAN KEUANGAN</option><option value="BAGIAN ADMINISTRASI DAN UMUM">BAGIAN ADMINISTRASI DAN UMUM</option>
                     </select>
-
                     <div id="div-unit-lainnya" style="display:none;" class="mt-2 w-full">
                         <input id="swal-unit-lainnya" class="swal2-input text-sm m-0 w-full" placeholder="Ketik Unit Kerja Lainnya">
                     </div>
-
                     <input id="swal-nama" class="swal2-input text-sm m-0 mt-3 w-full" placeholder="Nama Jabatan">
-
                     <div class="text-left mt-3 px-1"><label class="text-sm font-bold text-gray-700">TMT Pelantikan:</label></div>
                     <input id="swal-tmt" class="swal2-input text-sm m-0 w-full mb-2" type="date">
-
                     <select id="swal-sekarang" class="swal2-select w-full m-0 mt-2 text-sm">
-                        <option value="" disabled selected>-- Jabatan Sekarang? --</option>
-                        <option value="Ya">Ya</option>
-                        <option value="Tidak">Tidak</option>
+                        <option value="" disabled selected>-- Jabatan Sekarang? --</option><option value="Ya">Ya</option><option value="Tidak">Tidak</option>
                     </select>
-
                     <div class="text-left mt-4 px-1"><label class="text-sm font-bold text-gray-700">File PDF SK (Maks 7MB):</label></div>
                     <input type="file" id="swal-file" class="swal2-file text-sm" accept="application/pdf">
                 `;
@@ -1634,46 +1473,52 @@
                 htmlForm = `
                     <input id="swal-in1" class="swal2-input text-sm" placeholder="Jenis Diklat (Contoh: Teknis, Kepemimpinan)">
                     <input id="swal-in2" class="swal2-input text-sm" placeholder="Nama Diklat">
-                    
-                    <div class="flex gap-2 px-1 mt-3">
-                        <div class="w-1/2 text-left"><label class="text-sm font-bold text-gray-700">Tgl Mulai:</label></div>
-                        <div class="w-1/2 text-left"><label class="text-sm font-bold text-gray-700">Tgl Selesai:</label></div>
-                    </div>
-                    <div class="flex gap-2 px-1">
-                        <input id="swal-in3" class="swal2-input text-sm w-1/2 m-0" type="date">
-                        <input id="swal-in4" class="swal2-input text-sm w-1/2 m-0" type="date">
-                    </div>
-
+                    <div class="flex gap-2 px-1 mt-3"><div class="w-1/2 text-left"><label class="text-sm font-bold text-gray-700">Tgl Mulai:</label></div><div class="w-1/2 text-left"><label class="text-sm font-bold text-gray-700">Tgl Selesai:</label></div></div>
+                    <div class="flex gap-2 px-1"><input id="swal-in3" class="swal2-input text-sm w-1/2 m-0" type="date"><input id="swal-in4" class="swal2-input text-sm w-1/2 m-0" type="date"></div>
                     <input id="swal-in5" class="swal2-input text-sm" type="number" placeholder="Jumlah JP (Jam Pelajaran)">
                     <input id="swal-in6" class="swal2-input text-sm" placeholder="Penyelenggara Instansi">
-                    
                     <select id="swal-in7" class="swal2-select w-full m-0 mt-3 text-sm">
-                        <option value="" disabled selected>-- Pilih Sumber Anggaran --</option>
-                        <option value="Gratis">Gratis</option>
-                        <option value="Mandiri">Mandiri</option>
-                        <option value="APBD">APBD</option>
+                        <option value="" disabled selected>-- Pilih Sumber Anggaran --</option><option value="Gratis">Gratis</option><option value="Mandiri">Mandiri</option><option value="APBD">APBD</option>
                     </select>
-
                     <input id="swal-in8" class="swal2-input text-sm" placeholder="Nomor Sertifikat">
-
                     <div class="text-left mt-4 px-1"><label class="text-sm font-bold text-gray-700">File PDF Sertifikat (Maks 7MB):</label></div>
                     <input type="file" id="swal-file" class="swal2-file text-sm" accept="application/pdf">
                 `;
             } else if (sheet === 'RIWAYAT_KGB') {
                 formTitle = 'Ajukan Riwayat KGB';
                 htmlForm = `
-                    <input id="swal-in1" class="swal2-input" placeholder="Golongan">
-                    <input id="swal-in2" class="swal2-input" placeholder="Gaji Pokok Baru">
-                    <input id="swal-in3" class="swal2-input" placeholder="TMT KGB">
-                    <input id="swal-in4" class="swal2-input" placeholder="Nomor SK Dasar">
+                    <input id="swal-in1" class="swal2-input text-sm" placeholder="Golongan">
+                    <input id="swal-in2" class="swal2-input text-sm" placeholder="No SK KGB">
+                    
+                    <div class="text-left mt-3 px-1"><label class="text-sm font-bold text-gray-700">TMT KGB:</label></div>
+                    <input id="swal-in3" class="swal2-input text-sm m-0 w-full mb-2" type="date">
+                    
+                    <div class="text-left mt-3 px-1"><label class="text-sm font-bold text-gray-700">Tanggal SK KGB:</label></div>
+                    <input id="swal-in4" class="swal2-input text-sm m-0 w-full mb-2" type="date">
+                    
+                    <div class="flex gap-2 px-1">
+                        <input id="swal-in5" class="swal2-input text-sm w-1/2 m-0 mt-2" type="number" placeholder="Masa Kerja (Tahun)">
+                        <input id="swal-in6" class="swal2-input text-sm w-1/2 m-0 mt-2" type="number" placeholder="Masa Kerja (Bulan)">
+                    </div>
+                    
+                    <input id="swal-in7" class="swal2-input text-sm" type="number" placeholder="Gaji Pokok Baru (Hanya Angka)">
+                    
+                    <select id="swal-in8" class="swal2-select w-full m-0 mt-3 text-sm">
+                        <option value="" disabled selected>-- KGB Berdasarkan --</option>
+                        <option value="Kenaikan Gaji">Kenaikan Gaji</option>
+                        <option value="Kenaikan Pangkat">Kenaikan Pangkat</option>
+                    </select>
+                    
+                    <div class="text-left mt-4 px-1"><label class="text-sm font-bold text-gray-700">File PDF SK KGB (Maks 7MB):</label></div>
+                    <input type="file" id="swal-file" class="swal2-file text-sm" accept="application/pdf">
                 `;
             } else if (sheet === 'DATA_KELUARGA') {
                 formTitle = 'Ajukan Data Keluarga';
                 htmlForm = `
-                    <input id="swal-in1" class="swal2-input" placeholder="Nama Anggota Keluarga">
-                    <input id="swal-in2" class="swal2-input" placeholder="Status (Contoh: Anak / Istri)">
-                    <input id="swal-in3" class="swal2-input" placeholder="Jenis Kelamin (L/P)">
-                    <input id="swal-in4" class="swal2-input" placeholder="Tunjangan (Ya/Tidak)">
+                    <input id="swal-in1" class="swal2-input text-sm" placeholder="Nama Anggota Keluarga">
+                    <input id="swal-in2" class="swal2-input text-sm" placeholder="Status (Contoh: Anak / Istri)">
+                    <input id="swal-in3" class="swal2-input text-sm" placeholder="Jenis Kelamin (L/P)">
+                    <input id="swal-in4" class="swal2-input text-sm" placeholder="Tunjangan (Ya/Tidak)">
                 `;
             }
 
@@ -1686,27 +1531,21 @@
                 preConfirm: async () => {
                     let vals = [];
                     
-                    // Logika Ekstraksi Form Khusus Jabatan (Banyak Dropdown Bersyarat)
                     if (sheet === 'RIWAYAT_JABATAN') {
                         const jenis = document.getElementById('swal-jenis')?.value;
                         if (!jenis) { Swal.showValidationMessage('Jenis Jabatan wajib diisi!'); return false; }
-                        
                         const eselon = jenis === 'Jabatan Struktural' ? (document.getElementById('swal-eselon')?.value || '-') : '-';
-                        
                         let unit = document.getElementById('swal-unit')?.value;
                         if (!unit) { Swal.showValidationMessage('Unit Kerja wajib dipilih!'); return false; }
                         if (unit === 'LAINNYA') {
                             unit = document.getElementById('swal-unit-lainnya')?.value;
                             if (!unit) { Swal.showValidationMessage('Unit Kerja Lainnya wajib diketik!'); return false; }
                         }
-                        
                         const nama = document.getElementById('swal-nama')?.value || '-';
                         const tmt = document.getElementById('swal-tmt')?.value || '-';
                         const sekarang = document.getElementById('swal-sekarang')?.value || '-';
-                        
                         vals = [jenis, eselon, unit, nama, tmt, sekarang];
                     } else {
-                        // Mengambil nilai dinamis sesuai jumlah input swal-in (Standar Umum)
                         let idx = 1;
                         while(true) {
                             const el = document.getElementById('swal-in'+idx);
@@ -1716,22 +1555,12 @@
                         }
                     }
 
-                    // Logika Wajib Upload PDF untuk Pendidikan, Pangkat, Jabatan & Kompetensi
-                    if (sheet === 'RIWAYAT_PENDIDIKAN' || sheet === 'RIWAYAT_PANGKAT' || sheet === 'RIWAYAT_JABATAN' || sheet === 'RIWAYAT_KOMPETENSI') {
+                    if (sheet === 'RIWAYAT_PENDIDIKAN' || sheet === 'RIWAYAT_PANGKAT' || sheet === 'RIWAYAT_JABATAN' || sheet === 'RIWAYAT_KOMPETENSI' || sheet === 'RIWAYAT_KGB') {
                         const fileInput = document.getElementById('swal-file');
-                        if (!fileInput.files.length) {
-                            Swal.showValidationMessage('File PDF wajib dilampirkan!');
-                            return false;
-                        }
+                        if (!fileInput.files.length) { Swal.showValidationMessage('File PDF wajib dilampirkan!'); return false; }
                         const file = fileInput.files[0];
-                        if (file.type !== 'application/pdf') {
-                            Swal.showValidationMessage('Format file harus berupa PDF!');
-                            return false;
-                        }
-                        if (file.size > 7 * 1024 * 1024) {
-                            Swal.showValidationMessage('Ukuran file PDF tidak boleh lebih dari 7 MB!');
-                            return false;
-                        }
+                        if (file.type !== 'application/pdf') { Swal.showValidationMessage('Format file harus berupa PDF!'); return false; }
+                        if (file.size > 7 * 1024 * 1024) { Swal.showValidationMessage('Ukuran file PDF tidak boleh lebih dari 7 MB!'); return false; }
 
                         const base64PDF = await new Promise((resolve) => {
                             const reader = new FileReader();
@@ -1746,14 +1575,11 @@
                             if(sheet === 'RIWAYAT_PANGKAT') fNamePrefix = 'SK_PANGKAT';
                             if(sheet === 'RIWAYAT_JABATAN') fNamePrefix = 'SK_JABATAN';
                             if(sheet === 'RIWAYAT_KOMPETENSI') fNamePrefix = 'SERTIFIKAT_DIKLAT';
+                            if(sheet === 'RIWAYAT_KGB') fNamePrefix = 'SK_KGB';
                             
                             const resFile = await apiCall({
-                                action: 'uploadFile',
-                                nip: STATE.user.nip,
-                                nama: STATE.profile.Nama_Lengkap,
-                                fileBase64: base64PDF,
-                                mimeType: file.type,
-                                filename: `${fNamePrefix}_${STATE.user.nip}_${new Date().getTime()}.pdf`
+                                action: 'uploadFile', nip: STATE.user.nip, nama: STATE.profile.Nama_Lengkap,
+                                fileBase64: base64PDF, mimeType: file.type, filename: `${fNamePrefix}_${STATE.user.nip}_${new Date().getTime()}.pdf`
                             });
                             vals.push(resFile.fileUrl); 
                         } catch (err) {
@@ -1771,20 +1597,12 @@
                 showLoader();
                 try {
                     const res = await apiCall({
-                        action: 'submitUpdate',
-                        executorRole: STATE.user.role,
-                        nip_target: STATE.user.nip,
-                        sheet_target: sheet,
-                        kolom_target: 'Pengajuan Data Baru',
-                        nilai_baru: nilaiGabungan
+                        action: 'submitUpdate', executorRole: STATE.user.role, nip_target: STATE.user.nip,
+                        sheet_target: sheet, kolom_target: 'Pengajuan Data Baru', nilai_baru: nilaiGabungan
                     });
-                    
                     Toast.fire({ icon: 'success', title: 'Pengajuan data masuk antrian.' });
-                    
                     if(['admin','superadmin'].includes(STATE.user.role)) { fetchProfile(); } else { fetchMyAntrian(); }
-                } catch(e) {
-                    Swal.fire('Gagal', e.message, 'error');
-                }
+                } catch(e) { Swal.fire('Gagal', e.message, 'error'); }
                 showLoader(false);
             }
         }
@@ -1850,7 +1668,6 @@
             const p = STATE.profile || {};
             const namaLengkap = (p.Gelar_Depan ? p.Gelar_Depan + ' ' : '') + (p.Nama_Lengkap || '-') + (p.Gelar_Belakang ? ', ' + p.Gelar_Belakang : '');
             
-            // Note: colCount yang dilempar sama dengan colCount dari tabel aslinya MINUS kolom "Aksi" 
             const extractTable = (tbodyId, colCount) => {
                 const tbody = document.getElementById(tbodyId);
                 if (!tbody || tbody.innerText.includes('Belum ada data') || tbody.innerText.includes('Sedang memuat')) {
@@ -1910,62 +1727,32 @@
 
                 <h4 style="background-color:#f0f0f0; padding:8px; margin:10px 0; border:1px solid #ddd; font-size:14px;">II. RIWAYAT PENDIDIKAN</h4>
                 <table style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:15px; text-align:left;">
-                    <thead><tr style="background-color:#eee;">
-                        <th style="padding:8px; border:1px solid #ddd;">Jenjang</th>
-                        <th style="padding:8px; border:1px solid #ddd;">Instansi</th>
-                        <th style="padding:8px; border:1px solid #ddd;">Jurusan</th>
-                        <th style="padding:8px; border:1px solid #ddd;">Thn Lulus</th>
-                        <th style="padding:8px; border:1px solid #ddd;">No. Ijazah</th>
-                        <th style="padding:8px; border:1px solid #ddd;">Tgl Ijazah</th>
-                        <th style="padding:8px; border:1px solid #ddd;">Pdd. Terakhir</th>
-                    </tr></thead>
+                    <thead><tr style="background-color:#eee;"><th style="padding:8px; border:1px solid #ddd;">Jenjang</th><th style="padding:8px; border:1px solid #ddd;">Instansi</th><th style="padding:8px; border:1px solid #ddd;">Jurusan</th><th style="padding:8px; border:1px solid #ddd;">Thn Lulus</th><th style="padding:8px; border:1px solid #ddd;">No. Ijazah</th><th style="padding:8px; border:1px solid #ddd;">Tgl Ijazah</th><th style="padding:8px; border:1px solid #ddd;">Pdd. Terakhir</th></tr></thead>
                     <tbody>${extractTable('tbody-pendidikan', 7)}</tbody>
                 </table>
 
                 <h4 style="background-color:#f0f0f0; padding:8px; margin:10px 0; border:1px solid #ddd; font-size:14px;">III. RIWAYAT PANGKAT / GOLONGAN</h4>
                 <table style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:15px; text-align:left;">
-                    <thead><tr style="background-color:#eee;">
-                        <th style="padding:8px; border:1px solid #ddd;">Pangkat/Gol</th>
-                        <th style="padding:8px; border:1px solid #ddd;">No SK</th>
-                        <th style="padding:8px; border:1px solid #ddd;">TMT</th>
-                        <th style="padding:8px; border:1px solid #ddd;">Tgl SK</th>
-                        <th style="padding:8px; border:1px solid #ddd;">Masa Kerja</th>
-                        <th style="padding:8px; border:1px solid #ddd;">Pangkat Sekarang</th>
-                    </tr></thead>
+                    <thead><tr style="background-color:#eee;"><th style="padding:8px; border:1px solid #ddd;">Pangkat/Gol</th><th style="padding:8px; border:1px solid #ddd;">No SK</th><th style="padding:8px; border:1px solid #ddd;">TMT</th><th style="padding:8px; border:1px solid #ddd;">Tgl SK</th><th style="padding:8px; border:1px solid #ddd;">Masa Kerja</th><th style="padding:8px; border:1px solid #ddd;">Pangkat Sekarang</th></tr></thead>
                     <tbody>${extractTable('tbody-pangkat', 6)}</tbody>
                 </table>
 
                 <h4 style="background-color:#f0f0f0; padding:8px; margin:10px 0; border:1px solid #ddd; font-size:14px;">IV. RIWAYAT JABATAN</h4>
                 <table style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:15px; text-align:left;">
-                    <thead><tr style="background-color:#eee;">
-                        <th style="padding:8px; border:1px solid #ddd;">Jenis Jabatan</th>
-                        <th style="padding:8px; border:1px solid #ddd;">Nama Jabatan</th>
-                        <th style="padding:8px; border:1px solid #ddd;">Eselon</th>
-                        <th style="padding:8px; border:1px solid #ddd;">Unit Kerja</th>
-                        <th style="padding:8px; border:1px solid #ddd;">TMT Pelantikan</th>
-                        <th style="padding:8px; border:1px solid #ddd;">Jabatan Sekarang</th>
-                    </tr></thead>
+                    <thead><tr style="background-color:#eee;"><th style="padding:8px; border:1px solid #ddd;">Jenis Jabatan</th><th style="padding:8px; border:1px solid #ddd;">Nama Jabatan</th><th style="padding:8px; border:1px solid #ddd;">Eselon</th><th style="padding:8px; border:1px solid #ddd;">Unit Kerja</th><th style="padding:8px; border:1px solid #ddd;">TMT Pelantikan</th><th style="padding:8px; border:1px solid #ddd;">Jabatan Sekarang</th></tr></thead>
                     <tbody>${extractTable('tbody-jabatan', 6)}</tbody>
                 </table>
 
                 <h4 style="background-color:#f0f0f0; padding:8px; margin:10px 0; border:1px solid #ddd; font-size:14px;">V. PENGEMBANGAN KOMPETENSI / DIKLAT</h4>
                 <table style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:15px; text-align:left;">
-                    <thead><tr style="background-color:#eee;">
-                        <th style="padding:8px; border:1px solid #ddd;">Jenis Diklat</th>
-                        <th style="padding:8px; border:1px solid #ddd;">Nama Diklat</th>
-                        <th style="padding:8px; border:1px solid #ddd;">Pelaksanaan</th>
-                        <th style="padding:8px; border:1px solid #ddd;">JP</th>
-                        <th style="padding:8px; border:1px solid #ddd;">Penyelenggara</th>
-                        <th style="padding:8px; border:1px solid #ddd;">Anggaran</th>
-                        <th style="padding:8px; border:1px solid #ddd;">No. Sertifikat</th>
-                    </tr></thead>
+                    <thead><tr style="background-color:#eee;"><th style="padding:8px; border:1px solid #ddd;">Jenis Diklat</th><th style="padding:8px; border:1px solid #ddd;">Nama Diklat</th><th style="padding:8px; border:1px solid #ddd;">Pelaksanaan</th><th style="padding:8px; border:1px solid #ddd;">JP</th><th style="padding:8px; border:1px solid #ddd;">Penyelenggara</th><th style="padding:8px; border:1px solid #ddd;">Anggaran</th><th style="padding:8px; border:1px solid #ddd;">No. Sertifikat</th></tr></thead>
                     <tbody>${extractTable('tbody-kompetensi', 7)}</tbody>
                 </table>
 
                 <h4 style="background-color:#f0f0f0; padding:8px; margin:10px 0; border:1px solid #ddd; font-size:14px;">VI. RIWAYAT KGB</h4>
                 <table style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:15px; text-align:left;">
-                    <thead><tr style="background-color:#eee;"><th style="padding:8px; border:1px solid #ddd;">Golongan</th><th style="padding:8px; border:1px solid #ddd;">Gaji Baru</th><th style="padding:8px; border:1px solid #ddd;">TMT</th><th style="padding:8px; border:1px solid #ddd;">No SK Dasar</th></tr></thead>
-                    <tbody>${extractTable('tbody-kgb', 4)}</tbody>
+                    <thead><tr style="background-color:#eee;"><th style="padding:8px; border:1px solid #ddd;">Golongan</th><th style="padding:8px; border:1px solid #ddd;">No SK</th><th style="padding:8px; border:1px solid #ddd;">TMT KGB</th><th style="padding:8px; border:1px solid #ddd;">Tanggal KGB</th><th style="padding:8px; border:1px solid #ddd;">Masa Kerja</th><th style="padding:8px; border:1px solid #ddd;">Gaji Baru</th><th style="padding:8px; border:1px solid #ddd;">Dasar KGB</th></tr></thead>
+                    <tbody>${extractTable('tbody-kgb', 7)}</tbody>
                 </table>
 
                 <h4 style="background-color:#f0f0f0; padding:8px; margin:10px 0; border:1px solid #ddd; font-size:14px;">VII. DATA KELUARGA</h4>
