@@ -259,15 +259,24 @@
                         <div class="card rounded-lg shadow-md p-6">
                             <div class="flex justify-between items-center mb-4 border-b pb-2">
                                 <h4 class="font-bold text-lg"><i class="fas fa-briefcase mr-2 text-blue-500"></i> Riwayat Jabatan</h4>
-                                <button onclick="ajukanRiwayat('RIWAYAT_JABATAN')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm shadow"><i class="fas fa-plus mr-1"></i> Ajukan Data Baru</button>
+                                <button onclick="ajukanRiwayat('RIWAYAT_JABATAN')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm shadow"><i class="fas fa-plus mr-1"></i> Ajukan Data & SK</button>
                             </div>
                             <div class="overflow-x-auto">
                                 <table class="w-full text-left text-sm whitespace-nowrap">
                                     <thead class="bg-gray-100 text-black">
-                                        <tr><th class="p-2">Jabatan</th><th class="p-2">Eselon</th><th class="p-2">TMT</th><th class="p-2">Unit Kerja</th><th class="p-2 text-center">Aksi</th></tr>
+                                        <tr>
+                                            <th class="p-2">Jenis Jabatan</th>
+                                            <th class="p-2">Nama Jabatan</th>
+                                            <th class="p-2">Eselon</th>
+                                            <th class="p-2">Unit Kerja</th>
+                                            <th class="p-2">TMT Pelantikan</th>
+                                            <th class="p-2">Jabatan Sekarang</th>
+                                            <th class="p-2">File SK</th>
+                                            <th class="p-2 text-center">Aksi</th>
+                                        </tr>
                                     </thead>
                                     <tbody id="tbody-jabatan">
-                                        <tr><td colspan="5" class="text-center p-4 text-gray-500">Sedang memuat...</td></tr>
+                                        <tr><td colspan="8" class="text-center p-4 text-gray-500">Sedang memuat...</td></tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -762,15 +771,19 @@
             tbodyJabatan.innerHTML = '';
             if (STATE.riwayat.jabatan.length > 0) {
                 STATE.riwayat.jabatan.forEach(p => {
+                    let fileBtn = p.File_SK ? `<a href="${p.File_SK}" target="_blank" class="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs hover:bg-blue-200 whitespace-nowrap"><i class="fas fa-file-pdf"></i> Lihat SK</a>` : '-';
                     tbodyJabatan.innerHTML += `<tr class="border-b">
+                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Jenis_Jabatan', p.Jenis_Jabatan)}</td>
                         <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Jabatan', p.Jabatan)}</td>
                         <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Eselon', p.Eselon)}</td>
-                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'TMT', p.TMT)}</td>
                         <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Unit_Kerja', p.Unit_Kerja)}</td>
+                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'TMT_Pelantikan', p.TMT_Pelantikan ? new Date(p.TMT_Pelantikan).toLocaleDateString('id-ID') : '')}</td>
+                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Jabatan_Sekarang', p.Jabatan_Sekarang)}</td>
+                        <td class="p-2">${fileBtn}</td>
                         <td class="p-2 text-center"><button onclick="editRiwayatRow('${p.ID_Data}', 'RIWAYAT_JABATAN')" class="text-blue-600 hover:text-blue-800 bg-blue-50 px-2 py-1 rounded border border-blue-200 shadow-sm text-xs"><i class="fas fa-edit"></i> Edit</button></td>
                     </tr>`;
                 });
-            } else { tbodyJabatan.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-gray-500">Belum ada data jabatan.</td></tr>`; }
+            } else { tbodyJabatan.innerHTML = `<tr><td colspan="8" class="text-center p-4 text-gray-500">Belum ada data jabatan.</td></tr>`; }
 
             // 4. KGB
             const tbodyKgb = document.getElementById('tbody-kgb');
@@ -1207,7 +1220,7 @@
             const menuOptions = {
                 'RIWAYAT_PENDIDIKAN': { 'Jenjang': 'Jenjang Pendidikan', 'Instansi': 'Instansi / Kampus', 'Jurusan': 'Jurusan', 'Thn_Lulus': 'Tahun Lulus', 'No_Ijazah': 'Nomor Ijazah', 'Tgl_Ijazah': 'Tanggal Ijazah', 'Pendidikan_Terakhir': 'Pendidikan Terakhir? (Ya/Tidak)', 'File_Ijazah': 'File PDF Ijazah' },
                 'RIWAYAT_PANGKAT': { 'Pangkat_Gol': 'Pangkat/Golongan', 'No_SK': 'Nomor SK', 'TMT': 'TMT Pangkat', 'Tgl_SK': 'Tanggal SK', 'Masa_Kerja_Thn': 'Masa Kerja (Tahun)', 'Masa_Kerja_Bln': 'Masa Kerja (Bulan)', 'Pangkat_Sekarang': 'Pangkat/Gol Sekarang? (Ya/Tidak)', 'File_SK': 'File PDF SK' },
-                'RIWAYAT_JABATAN': { 'Jabatan': 'Nama Jabatan', 'Eselon': 'Eselon', 'TMT': 'TMT Jabatan', 'Unit_Kerja': 'Unit Kerja', 'File_SK': 'File PDF SK' },
+                'RIWAYAT_JABATAN': { 'Jenis_Jabatan': 'Jenis Jabatan', 'Jabatan': 'Nama Jabatan', 'Eselon': 'Eselon', 'Unit_Kerja': 'Unit Kerja', 'TMT_Pelantikan': 'TMT Pelantikan', 'Jabatan_Sekarang': 'Jabatan Sekarang? (Ya/Tidak)', 'File_SK': 'File PDF SK' },
                 'RIWAYAT_KGB': { 'Golongan': 'Golongan KGB', 'Gaji_Baru': 'Gaji Baru', 'KGB_TMT': 'TMT KGB', 'Dasar_Nomor': 'Nomor SK Dasar' },
                 'DATA_KELUARGA': { 'Nama': 'Nama Anggota', 'Status_Keluarga': 'Status (Anak/Istri)', 'L/P': 'L/P', 'Tunjangan': 'Dapat Tunjangan?' }
             };
@@ -1244,10 +1257,14 @@
                         'PPPK': {'PPPK Gol. 5': 'PPPK Gol. 5', 'PPPK Gol. 7': 'PPPK Gol. 7', 'PPPK Gol. 9': 'PPPK Gol. 9', 'PPPK Gol. 10': 'PPPK Gol. 10', 'PPPK Gol. 11': 'PPPK Gol. 11'}
                     }; 
                 }
-                if (selectedKolom === 'Pendidikan_Terakhir' || selectedKolom === 'Tunjangan' || selectedKolom === 'Pangkat_Sekarang') { inputType = 'select'; inputOptions = { 'Ya': 'Ya', 'Tidak': 'Tidak' }; }
+                
+                // Tambahan Dropdown Khusus Jabatan
+                if (selectedKolom === 'Jenis_Jabatan') { inputType = 'select'; inputOptions = { 'Staf': 'Staf', 'Jabatan Struktural': 'Jabatan Struktural', 'JFT (Jabatan Fungsional Tertentu)': 'JFT (Jabatan Fungsional Tertentu)', 'JFU (Jabatan Fungsional Umum)': 'JFU (Jabatan Fungsional Umum)', 'Jenis jabatan tidak di ketahui': 'Jenis jabatan tidak di ketahui' }; }
+                if (selectedKolom === 'Eselon') { inputType = 'select'; inputOptions = { 'ESELON II': 'ESELON II', 'ESELON III': 'ESELON III', 'ESELON IV': 'ESELON IV' }; }
+                if (selectedKolom === 'Pendidikan_Terakhir' || selectedKolom === 'Tunjangan' || selectedKolom === 'Pangkat_Sekarang' || selectedKolom === 'Jabatan_Sekarang') { inputType = 'select'; inputOptions = { 'Ya': 'Ya', 'Tidak': 'Tidak' }; }
                 if (selectedKolom === 'L/P') { inputType = 'select'; inputOptions = { 'L': 'L', 'P': 'P' }; }
-                if (selectedKolom.includes('Tgl_') || selectedKolom === 'TMT') { inputType = 'date'; }
-                if (selectedKolom.includes('File_')) { inputType = 'file'; } // Otomatis trigger form upload file
+                if (selectedKolom.includes('Tgl_') || selectedKolom === 'TMT' || selectedKolom === 'TMT_Pelantikan') { inputType = 'date'; }
+                if (selectedKolom.includes('File_')) { inputType = 'file'; } 
 
                 const swalConfig = { title: `Ubah ${kolomOptions[selectedKolom]}`, input: inputType, showCancelButton: true };
                 
@@ -1420,10 +1437,120 @@
             } else if (sheet === 'RIWAYAT_JABATAN') {
                 formTitle = 'Ajukan Riwayat Jabatan';
                 htmlForm = `
-                    <input id="swal-in1" class="swal2-input" placeholder="Nama Jabatan">
-                    <input id="swal-in2" class="swal2-input" placeholder="Eselon">
-                    <input id="swal-in3" class="swal2-input" placeholder="TMT Jabatan">
-                    <input id="swal-in4" class="swal2-input" placeholder="Unit Kerja">
+                    <select id="swal-jenis" class="swal2-select w-full m-0 mt-2 text-sm" onchange="document.getElementById('div-eselon').style.display = this.value === 'Jabatan Struktural' ? 'block' : 'none'">
+                        <option value="" disabled selected>-- Pilih Jenis Jabatan --</option>
+                        <option value="Staf">Staf</option>
+                        <option value="Jabatan Struktural">Jabatan Struktural</option>
+                        <option value="JFT (Jabatan Fungsional Tertentu)">JFT (Jabatan Fungsional Tertentu)</option>
+                        <option value="JFU (Jabatan Fungsional Umum)">JFU (Jabatan Fungsional Umum)</option>
+                        <option value="Jenis jabatan tidak di ketahui">Jenis jabatan tidak di ketahui</option>
+                    </select>
+
+                    <div id="div-eselon" style="display:none;" class="mt-2 w-full">
+                        <select id="swal-eselon" class="swal2-select w-full m-0 text-sm">
+                            <option value="" disabled selected>-- Pilih Eselon (Jika Struktural) --</option>
+                            <option value="ESELON II">ESELON II</option>
+                            <option value="ESELON III">ESELON III</option>
+                            <option value="ESELON IV">ESELON IV</option>
+                        </select>
+                    </div>
+
+                    <select id="swal-unit" class="swal2-select w-full m-0 mt-3 text-sm" onchange="document.getElementById('div-unit-lainnya').style.display = this.value === 'LAINNYA' ? 'block' : 'none'">
+                        <option value="" disabled selected>-- Pilih Unit Kerja (Bidang/Bagian/Ruangan) --</option>
+                        <optgroup label="BIDANG & BAGIAN UTAMA">
+                            <option value="BAGIAN PROGPEL">BAGIAN PROGPEL</option>
+                            <option value="BAGIAN KEUANGAN">BAGIAN KEUANGAN</option>
+                            <option value="BAGIAN ADMINISTRASI DAN UMUM">BAGIAN ADMINISTRASI DAN UMUM</option>
+                            <option value="BIDANG PELAYANAN MEDIK">BIDANG PELAYANAN MEDIK</option>
+                            <option value="BIDANG KEPERAWATAN">BIDANG KEPERAWATAN</option>
+                            <option value="BIDANG PELAYANAN PENUNJANG">BIDANG PELAYANAN PENUNJANG</option>
+                        </optgroup>
+                        <optgroup label="INSTALASI & RUANGAN">
+                            <option value="INSTALASI FARMASI">INSTALASI FARMASI</option>
+                            <option value="INSTALASI RADIOLOGI">INSTALASI RADIOLOGI</option>
+                            <option value="INSTALASI BEDAH SENTRAL">INSTALASI BEDAH SENTRAL</option>
+                            <option value="INSTALASI GAWAT DARURAT">INSTALASI GAWAT DARURAT</option>
+                            <option value="ICU">ICU</option>
+                            <option value="ICCU">ICCU</option>
+                            <option value="HCU">HCU</option>
+                            <option value="INSTALASI LABORATORIUM">INSTALASI LABORATORIUM</option>
+                            <option value="INSTALASI HEMODIALISA">INSTALASI HEMODIALISA</option>
+                            <option value="INSTALASI GIZI">INSTALASI GIZI</option>
+                            <option value="INSTALASI REKAM MEDIK">INSTALASI REKAM MEDIK</option>
+                            <option value="INSTALASI PEMELIHARAAN SARANA">INSTALASI PEMELIHARAAN SARANA</option>
+                            <option value="INSTALASI PENYEHATAN LINGKUNGAN">INSTALASI PENYEHATAN LINGKUNGAN</option>
+                            <option value="INSTALASI FORENSIK DAN MEDIKOLEGAL">INSTALASI FORENSIK DAN MEDIKOLEGAL</option>
+                            <option value="INSTALASI DIAGNOSTIK DAN INTERVENSI KORDIOVASKULER">INSTALASI DIAGNOSTIK DAN INTERVENSI KORDIOVASKULER</option>
+                            <option value="INSTALASI MATERNAL DAN PERINATAL">INSTALASI MATERNAL DAN PERINATAL</option>
+                            <option value="INSTALASI REHABILITASI MEDIK">INSTALASI REHABILITASI MEDIK</option>
+                            <option value="INSTALASI SIM RS">INSTALASI SIM RS</option>
+                            <option value="INSTALASI PKRS">INSTALASI PKRS</option>
+                            <option value="POLI KIR">POLI KIR</option>
+                            <option value="POLI EKSKUTIF">POLI EKSKUTIF</option>
+                            <option value="POLI TMS">POLI TMS</option>
+                            <option value="POLI EEG">POLI EEG</option>
+                            <option value="POLI ENDOSKOPI">POLI ENDOSKOPI</option>
+                            <option value="POLI ESWL">POLI ESWL</option>
+                            <option value="RUANG MAWAR/ASTER">RUANG MAWAR/ASTER</option>
+                            <option value="RUANG ANYELIR/MELATI">RUANG ANYELIR/MELATI</option>
+                            <option value="RUANG ANGGREK/DAHLIA">RUANG ANGGREK/DAHLIA</option>
+                            <option value="RUANG BOUGENVILLE">RUANG BOUGENVILLE</option>
+                            <option value="RUANG TERATAI/ASOKA">RUANG TERATAI/ASOKA</option>
+                            <option value="RUANG LILY">RUANG LILY</option>
+                            <option value="RUANG FLAMBOYAN">RUANG FLAMBOYAN</option>
+                            <option value="POLI ANAK">POLI ANAK</option>
+                            <option value="POLI PENYAKIT DALAM">POLI PENYAKIT DALAM</option>
+                            <option value="POLI BEDAH">POLI BEDAH</option>
+                            <option value="POLI MATA">POLI MATA</option>
+                            <option value="POLI THT">POLI THT</option>
+                            <option value="POLI SYARAF">POLI SYARAF</option>
+                            <option value="POLI JANTUNG">POLI JANTUNG</option>
+                            <option value="POLI PARU">POLI PARU</option>
+                            <option value="POLI GIGI">POLI GIGI</option>
+                            <option value="POLI KULIT DAN KELAMIN">POLI KULIT DAN KELAMIN</option>
+                            <option value="POLI JIWA">POLI JIWA</option>
+                            <option value="POLI TB">POLI TB</option>
+                            <option value="POLI VCT">POLI VCT</option>
+                            <option value="POLI UMUM">POLI UMUM</option>
+                            <option value="POLI GERIATRI">POLI GERIATRI</option>
+                            <option value="POLI UROLOGI">POLI UROLOGI</option>
+                            <option value="POLI ORTHOPEDI">POLI ORTHOPEDI</option>
+                            <option value="POLI OBSGYN">POLI OBSGYN</option>
+                            <option value="POLI BEDAH SYARAF">POLI BEDAH SYARAF</option>
+                        </optgroup>
+                        <optgroup label="KOMITE & UNIT LAIN">
+                            <option value="KOMITE MEDIK">KOMITE MEDIK</option>
+                            <option value="KOMITE KEPERAWATAN">KOMITE KEPERAWATAN</option>
+                            <option value="KOMITE PPI">KOMITE PPI</option>
+                            <option value="KOMITE KESEHATAN DAN KESELAMATAN KERJA">KOMITE KESEHATAN DAN KESELAMATAN KERJA</option>
+                            <option value="SATUAN PEMERIKSAAN INTERNAL">SATUAN PEMERIKSAAN INTERNAL</option>
+                            <option value="UNIT AMBULAN">UNIT AMBULAN</option>
+                            <option value="UNIT LOUNDRY">UNIT LOUNDRY</option>
+                            <option value="UNIT CSSD">UNIT CSSD</option>
+                            <option value="UNIT PENGADUAN">UNIT PENGADUAN</option>
+                            <option value="UNIT DIKLAT">UNIT DIKLAT</option>
+                            <option value="UNIT KLAIM DAN PENJAMINAN">UNIT KLAIM DAN PENJAMINAN</option>
+                            <option value="LAINNYA">Lainnya (Ketik Manual)...</option>
+                        </optgroup>
+                    </select>
+
+                    <div id="div-unit-lainnya" style="display:none;" class="mt-2 w-full">
+                        <input id="swal-unit-lainnya" class="swal2-input text-sm m-0 w-full" placeholder="Ketik Unit Kerja Lainnya">
+                    </div>
+
+                    <input id="swal-nama" class="swal2-input text-sm m-0 mt-3 w-full" placeholder="Nama Jabatan">
+
+                    <div class="text-left mt-3 px-1"><label class="text-sm font-bold text-gray-700">TMT Pelantikan:</label></div>
+                    <input id="swal-tmt" class="swal2-input text-sm m-0 w-full mb-2" type="date">
+
+                    <select id="swal-sekarang" class="swal2-select w-full m-0 mt-2 text-sm">
+                        <option value="" disabled selected>-- Jabatan Sekarang? --</option>
+                        <option value="Ya">Ya</option>
+                        <option value="Tidak">Tidak</option>
+                    </select>
+
+                    <div class="text-left mt-4 px-1"><label class="text-sm font-bold text-gray-700">File PDF SK (Maks 7MB):</label></div>
+                    <input type="file" id="swal-file" class="swal2-file text-sm" accept="application/pdf">
                 `;
             } else if (sheet === 'RIWAYAT_KGB') {
                 formTitle = 'Ajukan Riwayat KGB';
@@ -1450,18 +1577,40 @@
                 showCancelButton: true,
                 confirmButtonText: 'Ajukan',
                 preConfirm: async () => {
-                    const vals = [];
-                    // Mengambil nilai dinamis sesuai jumlah input swal-in yang ada di layar
-                    let idx = 1;
-                    while(true) {
-                        const el = document.getElementById('swal-in'+idx);
-                        if(!el) break;
-                        vals.push(el.value || '-');
-                        idx++;
+                    let vals = [];
+                    
+                    // Logika Ekstraksi Form Khusus Jabatan (Banyak Dropdown Bersyarat)
+                    if (sheet === 'RIWAYAT_JABATAN') {
+                        const jenis = document.getElementById('swal-jenis')?.value;
+                        if (!jenis) { Swal.showValidationMessage('Jenis Jabatan wajib diisi!'); return false; }
+                        
+                        const eselon = jenis === 'Jabatan Struktural' ? (document.getElementById('swal-eselon')?.value || '-') : '-';
+                        
+                        let unit = document.getElementById('swal-unit')?.value;
+                        if (!unit) { Swal.showValidationMessage('Unit Kerja wajib dipilih!'); return false; }
+                        if (unit === 'LAINNYA') {
+                            unit = document.getElementById('swal-unit-lainnya')?.value;
+                            if (!unit) { Swal.showValidationMessage('Unit Kerja Lainnya wajib diketik!'); return false; }
+                        }
+                        
+                        const nama = document.getElementById('swal-nama')?.value || '-';
+                        const tmt = document.getElementById('swal-tmt')?.value || '-';
+                        const sekarang = document.getElementById('swal-sekarang')?.value || '-';
+                        
+                        vals = [jenis, eselon, unit, nama, tmt, sekarang];
+                    } else {
+                        // Mengambil nilai dinamis sesuai jumlah input swal-in (Standar Umum)
+                        let idx = 1;
+                        while(true) {
+                            const el = document.getElementById('swal-in'+idx);
+                            if(!el) break;
+                            vals.push(el.value || '-');
+                            idx++;
+                        }
                     }
 
-                    // Logika Wajib Upload PDF untuk Pendidikan & Pangkat
-                    if (sheet === 'RIWAYAT_PENDIDIKAN' || sheet === 'RIWAYAT_PANGKAT') {
+                    // Logika Wajib Upload PDF untuk Pendidikan, Pangkat & Jabatan
+                    if (sheet === 'RIWAYAT_PENDIDIKAN' || sheet === 'RIWAYAT_PANGKAT' || sheet === 'RIWAYAT_JABATAN') {
                         const fileInput = document.getElementById('swal-file');
                         if (!fileInput.files.length) {
                             Swal.showValidationMessage('File PDF wajib dilampirkan!');
@@ -1477,7 +1626,6 @@
                             return false;
                         }
 
-                        // Konversi PDF ke Base64 (Promise)
                         const base64PDF = await new Promise((resolve) => {
                             const reader = new FileReader();
                             reader.onload = (e) => resolve(e.target.result);
@@ -1486,9 +1634,11 @@
 
                         Swal.showLoading();
                         try {
-                            let fNamePrefix = sheet === 'RIWAYAT_PENDIDIKAN' ? 'IJAZAH' : 'SK_PANGKAT';
+                            let fNamePrefix = 'SK';
+                            if(sheet === 'RIWAYAT_PENDIDIKAN') fNamePrefix = 'IJAZAH';
+                            if(sheet === 'RIWAYAT_PANGKAT') fNamePrefix = 'SK_PANGKAT';
+                            if(sheet === 'RIWAYAT_JABATAN') fNamePrefix = 'SK_JABATAN';
                             
-                            // Mengirim base64 ke Drive untuk dijadikan file utuh
                             const resFile = await apiCall({
                                 action: 'uploadFile',
                                 nip: STATE.user.nip,
@@ -1497,7 +1647,6 @@
                                 mimeType: file.type,
                                 filename: `${fNamePrefix}_${STATE.user.nip}_${new Date().getTime()}.pdf`
                             });
-                            // Tambahkan Link Drive-nya ke array data
                             vals.push(resFile.fileUrl); 
                         } catch (err) {
                             Swal.showValidationMessage('Gagal mengupload file: ' + err.message);
@@ -1680,8 +1829,15 @@
 
                 <h4 style="background-color:#f0f0f0; padding:8px; margin:10px 0; border:1px solid #ddd; font-size:14px;">IV. RIWAYAT JABATAN</h4>
                 <table style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:15px; text-align:left;">
-                    <thead><tr style="background-color:#eee;"><th style="padding:8px; border:1px solid #ddd;">Jabatan</th><th style="padding:8px; border:1px solid #ddd;">Eselon</th><th style="padding:8px; border:1px solid #ddd;">TMT</th><th style="padding:8px; border:1px solid #ddd;">Unit Kerja</th></tr></thead>
-                    <tbody>${extractTable('tbody-jabatan', 4)}</tbody>
+                    <thead><tr style="background-color:#eee;">
+                        <th style="padding:8px; border:1px solid #ddd;">Jenis Jabatan</th>
+                        <th style="padding:8px; border:1px solid #ddd;">Nama Jabatan</th>
+                        <th style="padding:8px; border:1px solid #ddd;">Eselon</th>
+                        <th style="padding:8px; border:1px solid #ddd;">Unit Kerja</th>
+                        <th style="padding:8px; border:1px solid #ddd;">TMT Pelantikan</th>
+                        <th style="padding:8px; border:1px solid #ddd;">Jabatan Sekarang</th>
+                    </tr></thead>
+                    <tbody>${extractTable('tbody-jabatan', 6)}</tbody>
                 </table>
 
                 <h4 style="background-color:#f0f0f0; padding:8px; margin:10px 0; border:1px solid #ddd; font-size:14px;">V. RIWAYAT KGB</h4>
