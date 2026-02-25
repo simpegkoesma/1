@@ -205,11 +205,20 @@
                             </div>
                             <div class="overflow-x-auto">
                                 <table class="w-full text-left text-sm">
-                                    <thead class="bg-gray-100 text-black">
-                                        <tr><th class="p-2">Jenjang</th><th class="p-2">Instansi</th><th class="p-2">Jurusan</th><th class="p-2">Thn Lulus</th></tr>
+                                    <thead class="bg-gray-100 text-black whitespace-nowrap">
+                                        <tr>
+                                            <th class="p-2">Jenjang</th>
+                                            <th class="p-2">Instansi</th>
+                                            <th class="p-2">Jurusan</th>
+                                            <th class="p-2">Thn Lulus</th>
+                                            <th class="p-2">No. Ijazah</th>
+                                            <th class="p-2">Tgl Ijazah</th>
+                                            <th class="p-2">Pdd. Terakhir</th>
+                                            <th class="p-2">File</th>
+                                        </tr>
                                     </thead>
                                     <tbody id="tbody-pendidikan">
-                                        <tr><td colspan="4" class="text-center p-4 text-gray-500">Data belum tersedia. Silakan ajukan penambahan.</td></tr>
+                                        <tr><td colspan="8" class="text-center p-4 text-gray-500">Data belum tersedia. Silakan ajukan penambahan.</td></tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -401,7 +410,6 @@
         // CONFIGURATION
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw6dOG2OHt3ioevOsrUSLJOhLJw1EyWn_t1RBnDNiBXKcSfxdUy8i_hklvOAT2Y1RgTEA/exec';
         
-        // PERBAIKAN: Tambahkan variabel state untuk paginasi (rowsPerPage dan currentPage)
         let STATE = { user: null, profile: null, allPegawai: [], myAntrian: [], filteredPegawai: [], currentPage: 1, rowsPerPage: 15 };
 
         // Konfigurasi SweetAlert2 Toast (Notifikasi Pojok Kanan Atas)
@@ -640,11 +648,20 @@
                     tbodyPend.innerHTML = '';
                     if (res.riwayat_pendidikan && res.riwayat_pendidikan.length > 0) {
                         res.riwayat_pendidikan.forEach(p => {
-                            let fileBtn = p.File_Ijazah ? `<a href="${p.File_Ijazah}" target="_blank" class="text-blue-500 underline text-xs"><i class="fas fa-file-pdf"></i> Lihat</a>` : '-';
-                            tbodyPend.innerHTML += `<tr class="border-b"><td class="p-2">${p.Jenjang||'-'} <i class="fas fa-check-circle text-green-500 ml-1" title="Disetujui"></i></td><td class="p-2">${p.Instansi||'-'}</td><td class="p-2">${p.Jurusan||'-'} <br/> ${fileBtn}</td><td class="p-2">${p.Thn_Lulus||'-'}</td></tr>`;
+                            let fileBtn = p.File_Ijazah ? `<a href="${p.File_Ijazah}" target="_blank" class="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs hover:bg-blue-200 whitespace-nowrap"><i class="fas fa-file-pdf"></i> Lihat File</a>` : '-';
+                            tbodyPend.innerHTML += `<tr class="border-b">
+                                <td class="p-2">${p.Jenjang||'-'} <i class="fas fa-check-circle text-green-500 ml-1" title="Disetujui"></i></td>
+                                <td class="p-2">${p.Instansi||'-'}</td>
+                                <td class="p-2">${p.Jurusan||'-'}</td>
+                                <td class="p-2">${p.Thn_Lulus||'-'}</td>
+                                <td class="p-2">${p.No_Ijazah||'-'}</td>
+                                <td class="p-2">${p.Tgl_Ijazah ? new Date(p.Tgl_Ijazah).toLocaleDateString('id-ID') : '-'}</td>
+                                <td class="p-2">${p.Pendidikan_Terakhir||'-'}</td>
+                                <td class="p-2">${fileBtn}</td>
+                            </tr>`;
                         });
                     } else {
-                        tbodyPend.innerHTML = `<tr><td colspan="4" class="text-center p-4 text-gray-500">Belum ada data pendidikan.</td></tr>`;
+                        tbodyPend.innerHTML = `<tr><td colspan="8" class="text-center p-4 text-gray-500">Belum ada data pendidikan.</td></tr>`;
                     }
 
                     // Render Riwayat Pangkat
@@ -999,14 +1016,41 @@
         // 4. ACTION LOGIC (UPDATE & UPLOAD)
         // ==========================================
         async function editField(sheet, kolom) {
-            const { value: newVal } = await Swal.fire({
+            // Menerapkan Dropdown Khusus saat edit data di Profil
+            let inputType = 'text';
+            let inputOptions = {};
+            
+            if (kolom === 'Jenjang_Pendidikan') {
+                inputType = 'select';
+                inputOptions = {
+                    'SD /sederajat': 'SD /sederajat',
+                    'SMP /sederajat': 'SMP /sederajat',
+                    'SMA /sederajat': 'SMA /sederajat',
+                    'D1': 'D1', 'D2': 'D2', 'D3': 'D3', 'D4': 'D4',
+                    'Strata 1': 'Strata 1', 'Strata 2': 'Strata 2', 'Strata 3': 'Strata 3'
+                };
+            } else if (kolom === 'Jenis_Kelamin') {
+                inputType = 'select';
+                inputOptions = { 'Laki-laki': 'Laki-laki', 'Perempuan': 'Perempuan' };
+            } else if (kolom === 'Tgl_Lahir') {
+                inputType = 'date';
+            }
+
+            const swalConfig = {
                 title: `Ubah ${kolom.replace(/_/g,' ')}`,
-                input: 'text',
+                input: inputType,
                 inputValue: STATE.profile[kolom] || '',
                 showCancelButton: true
-            });
+            };
 
-            if (newVal !== undefined && newVal !== STATE.profile[kolom]) {
+            if (inputType === 'select') {
+                swalConfig.inputOptions = inputOptions;
+                swalConfig.inputPlaceholder = `-- Pilih ${kolom.replace(/_/g,' ')} --`;
+            }
+
+            const { value: newVal } = await Swal.fire(swalConfig);
+
+            if (newVal !== undefined && newVal !== STATE.profile[kolom] && newVal !== "") {
                 showLoader();
                 try {
                     const res = await apiCall({
@@ -1042,11 +1086,34 @@
             if (sheet === 'RIWAYAT_PENDIDIKAN') {
                 formTitle = 'Ajukan Riwayat Pendidikan';
                 htmlForm = `
-                    <input id="swal-in1" class="swal2-input" placeholder="Jenjang (Contoh: S1 / D3)">
-                    <input id="swal-in2" class="swal2-input" placeholder="Nama Instansi/Kampus">
-                    <input id="swal-in3" class="swal2-input" placeholder="Jurusan / Program Studi">
-                    <input id="swal-in4" class="swal2-input" placeholder="Tahun Lulus (Contoh: 2018)">
-                    <label class="block mt-4 mb-1 text-sm text-left px-2 font-bold">File PDF Ijazah (Wajib, Maks 7MB):</label>
+                    <select id="swal-in1" class="swal2-select w-full m-0 mt-2 text-sm">
+                        <option value="" disabled selected>-- Pilih Jenjang Pendidikan --</option>
+                        <option value="SD /sederajat">SD /sederajat</option>
+                        <option value="SMP /sederajat">SMP /sederajat</option>
+                        <option value="SMA /sederajat">SMA /sederajat</option>
+                        <option value="D1">D1</option>
+                        <option value="D2">D2</option>
+                        <option value="D3">D3</option>
+                        <option value="D4">D4</option>
+                        <option value="Strata 1">Strata 1</option>
+                        <option value="Strata 2">Strata 2</option>
+                        <option value="Strata 3">Strata 3</option>
+                    </select>
+                    <input id="swal-in2" class="swal2-input text-sm" placeholder="Nama Instansi/Kampus">
+                    <input id="swal-in3" class="swal2-input text-sm" placeholder="Jurusan / Program Studi">
+                    <input id="swal-in4" class="swal2-input text-sm" type="number" placeholder="Tahun Lulus (Contoh: 2018)">
+                    <input id="swal-in5" class="swal2-input text-sm" placeholder="Nomor Ijazah">
+                    
+                    <div class="text-left mt-3 px-1"><label class="text-sm font-bold text-gray-700">Tanggal Ijazah:</label></div>
+                    <input id="swal-in6" class="swal2-input text-sm m-0 w-full mb-2" type="date">
+                    
+                    <select id="swal-in7" class="swal2-select w-full m-0 mt-2 text-sm">
+                        <option value="" disabled selected>-- Pendidikan Terakhir? --</option>
+                        <option value="Ya">Ya</option>
+                        <option value="Tidak">Tidak</option>
+                    </select>
+
+                    <div class="text-left mt-4 px-1"><label class="text-sm font-bold text-gray-700">File PDF Ijazah (Maks 7MB):</label></div>
                     <input type="file" id="swal-file" class="swal2-file text-sm" accept="application/pdf">
                 `;
             } else if (sheet === 'RIWAYAT_PANGKAT') {
@@ -1098,9 +1165,13 @@
                 confirmButtonText: 'Ajukan',
                 preConfirm: async () => {
                     const vals = [];
-                    for(let i=1; i<=4; i++) {
-                        const el = document.getElementById('swal-in'+i);
-                        if(el) vals.push(el.value || '-');
+                    // Mengambil nilai dinamis sesuai jumlah input swal-in yang ada di layar
+                    let idx = 1;
+                    while(true) {
+                        const el = document.getElementById('swal-in'+idx);
+                        if(!el) break;
+                        vals.push(el.value || '-');
+                        idx++;
                     }
 
                     // Logika Wajib Upload PDF untuk Pendidikan
@@ -1329,8 +1400,16 @@
 
                 <h4 style="background-color:#f0f0f0; padding:8px; margin:10px 0; border:1px solid #ddd; font-size:14px;">II. RIWAYAT PENDIDIKAN</h4>
                 <table style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:15px; text-align:left;">
-                    <thead><tr style="background-color:#eee;"><th style="padding:8px; border:1px solid #ddd;">Jenjang</th><th style="padding:8px; border:1px solid #ddd;">Instansi</th><th style="padding:8px; border:1px solid #ddd;">Jurusan</th><th style="padding:8px; border:1px solid #ddd;">Tahun Lulus</th></tr></thead>
-                    <tbody>${extractTable('tbody-pendidikan', 4)}</tbody>
+                    <thead><tr style="background-color:#eee;">
+                        <th style="padding:8px; border:1px solid #ddd;">Jenjang</th>
+                        <th style="padding:8px; border:1px solid #ddd;">Instansi</th>
+                        <th style="padding:8px; border:1px solid #ddd;">Jurusan</th>
+                        <th style="padding:8px; border:1px solid #ddd;">Thn Lulus</th>
+                        <th style="padding:8px; border:1px solid #ddd;">No. Ijazah</th>
+                        <th style="padding:8px; border:1px solid #ddd;">Tgl Ijazah</th>
+                        <th style="padding:8px; border:1px solid #ddd;">Pdd. Terakhir</th>
+                    </tr></thead>
+                    <tbody>${extractTable('tbody-pendidikan', 7)}</tbody>
                 </table>
 
                 <h4 style="background-color:#f0f0f0; padding:8px; margin:10px 0; border:1px solid #ddd; font-size:14px;">III. RIWAYAT PANGKAT / GOLONGAN</h4>
