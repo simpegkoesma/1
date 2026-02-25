@@ -353,12 +353,14 @@
                 </div>
 
                 <!-- Page: Data Pegawai (Admin) -->
-                <!-- ... (Kode Admin Sama Seperti Sebelumnya) ... -->
                 <div id="page-data-pegawai" class="page-content hidden">
                     <div class="card rounded-lg shadow-md p-6">
                         <div class="flex justify-between mb-4 flex-col md:flex-row gap-2">
                             <input type="text" id="search-pegawai" placeholder="Cari Nama/NIP..." class="border p-2 rounded w-full md:w-64 text-black" onkeyup="filterTablePegawai()">
-                            <button onclick="exportToExcel()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"><i class="fas fa-file-excel mr-2"></i> Export Excel</button>
+                            <div class="flex flex-wrap gap-2">
+                                <button onclick="openExportModal()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 shadow whitespace-nowrap"><i class="fas fa-file-export mr-2"></i> Custom Download</button>
+                                <button onclick="exportToExcel()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 shadow whitespace-nowrap"><i class="fas fa-file-excel mr-2"></i> Export Semua</button>
+                            </div>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left text-sm whitespace-nowrap" id="table-pegawai">
@@ -421,6 +423,58 @@
 
             </div>
         </main>
+    </div>
+
+    <!-- MODAL CUSTOM EXPORT (DUAL LISTBOX) -->
+    <div id="modal-export-custom" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-4xl flex flex-col h-[85vh] text-gray-800">
+            <div class="p-4 border-b flex justify-between items-center bg-gray-50 rounded-t-lg">
+                <h3 class="font-bold text-lg text-gray-800"><i class="fas fa-file-export text-blue-500 mr-2"></i> Custom Download Data Pegawai</h3>
+                <button onclick="closeExportModal()" class="text-gray-400 hover:text-red-500 text-xl"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <div class="p-4 bg-blue-50 text-sm text-blue-800 border-b border-blue-100">
+                <i class="fas fa-info-circle mr-1"></i> Pilih dan susun data yang ingin didownload. Data di sebelah <b>kanan</b> akan menjadi urutan kolom pada file Excel (dari kiri ke kanan).
+            </div>
+
+            <div class="p-4 flex-1 overflow-hidden flex flex-col md:flex-row gap-4">
+                <!-- Kotak Kiri (Sumber) -->
+                <div class="flex-1 flex flex-col min-w-0">
+                    <label class="font-bold mb-2 text-sm text-gray-700">Sumber Data (Tersedia):</label>
+                    <div id="list-kiri" class="border border-gray-300 rounded flex-1 overflow-y-auto bg-white shadow-inner">
+                        <!-- Diisi oleh JS -->
+                    </div>
+                </div>
+                
+                <!-- Tombol Transfer -->
+                <div class="flex flex-row md:flex-col justify-center gap-2 items-center py-2 md:py-0">
+                    <button onclick="moveAllExport('right')" class="bg-gray-100 text-gray-700 w-10 h-10 rounded-full hover:bg-gray-200 border border-gray-300 shadow-sm flex items-center justify-center" title="Pindah Semua ke Kanan"><i class="fas fa-angle-double-right"></i></button>
+                    <button onclick="moveSelectedExport('right')" class="bg-blue-100 text-blue-700 w-10 h-10 rounded-full hover:bg-blue-200 border border-blue-300 shadow-sm flex items-center justify-center" title="Pindah ke Kanan"><i class="fas fa-angle-right"></i></button>
+                    <button onclick="moveSelectedExport('left')" class="bg-red-100 text-red-700 w-10 h-10 rounded-full hover:bg-red-200 border border-red-300 shadow-sm flex items-center justify-center" title="Kembalikan ke Kiri"><i class="fas fa-angle-left"></i></button>
+                    <button onclick="moveAllExport('left')" class="bg-gray-100 text-gray-700 w-10 h-10 rounded-full hover:bg-gray-200 border border-gray-300 shadow-sm flex items-center justify-center" title="Kembalikan Semua ke Kiri"><i class="fas fa-angle-double-left"></i></button>
+                </div>
+                
+                <!-- Kotak Kanan (Target & Urutan) -->
+                <div class="flex-1 flex flex-col min-w-0">
+                    <label class="font-bold mb-2 text-sm text-gray-700">Urutan Kolom Excel (Export):</label>
+                    <div class="flex flex-1 gap-2 min-h-0">
+                        <div id="list-kanan" class="border border-blue-300 rounded flex-1 overflow-y-auto bg-white shadow-inner">
+                            <!-- Diisi oleh JS -->
+                        </div>
+                        <!-- Tombol Urutan (Up/Down) -->
+                        <div class="flex flex-col gap-2 justify-center">
+                            <button onclick="reorderExport('up')" class="bg-gray-100 text-gray-700 w-10 h-10 rounded hover:bg-gray-200 border border-gray-300 shadow-sm flex items-center justify-center" title="Naikkan Urutan"><i class="fas fa-arrow-up"></i></button>
+                            <button onclick="reorderExport('down')" class="bg-gray-100 text-gray-700 w-10 h-10 rounded hover:bg-gray-200 border border-gray-300 shadow-sm flex items-center justify-center" title="Turunkan Urutan"><i class="fas fa-arrow-down"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="p-4 border-t border-gray-200 flex justify-end gap-3 bg-gray-50 rounded-b-lg">
+                <button onclick="closeExportModal()" class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-100 shadow-sm font-medium">Batal</button>
+                <button onclick="processCustomExport()" class="bg-green-600 text-white px-5 py-2 rounded hover:bg-green-700 shadow font-medium flex items-center"><i class="fas fa-download mr-2"></i> Download .xlsx</button>
+            </div>
+        </div>
     </div>
 
     <!-- MAIN SCRIPT -->
@@ -1223,6 +1277,136 @@
             const ws = XLSX.utils.json_to_sheet(STATE.allPegawai); const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "Data Pegawai"); XLSX.writeFile(wb, "Data_Pegawai_RSUD_Koesma.xlsx");
         }
+
+        // --- AWAL FITUR CUSTOM EXPORT ---
+        let exportDataKiri = [];
+        let exportDataKanan = [];
+        let activeKiri = null;
+        let activeKanan = null;
+
+        function openExportModal() {
+            if(!STATE.allPegawai || STATE.allPegawai.length === 0) return Swal.fire('Info', 'Tunggu data pegawai dimuat.', 'info');
+            
+            // Ambil semua nama kolom dari baris pertama data pegawai (mengabaikan nilai kosong)
+            const allKeys = Object.keys(STATE.allPegawai[0]);
+            
+            exportDataKiri = [...allKeys];
+            exportDataKanan = [];
+            activeKiri = null;
+            activeKanan = null;
+            
+            document.getElementById('modal-export-custom').classList.remove('hidden');
+            renderExportLists();
+        }
+
+        function closeExportModal() {
+            document.getElementById('modal-export-custom').classList.add('hidden');
+        }
+
+        function renderExportLists() {
+            const elKiri = document.getElementById('list-kiri');
+            const elKanan = document.getElementById('list-kanan');
+            
+            elKiri.innerHTML = exportDataKiri.map(item => 
+                `<div onclick="selectExportItem('kiri', '${item}')" class="p-2 cursor-pointer border-b border-gray-100 text-sm transition-colors select-none ${activeKiri === item ? 'bg-blue-500 text-white font-medium shadow-inner' : 'hover:bg-blue-50 text-gray-700'}">${item.replace(/_/g, ' ')}</div>`
+            ).join('');
+            
+            if(exportDataKanan.length === 0) {
+                elKanan.innerHTML = '<div class="p-4 text-center text-gray-400 text-sm italic">Belum ada kolom yang dipilih</div>';
+            } else {
+                elKanan.innerHTML = exportDataKanan.map((item, idx) => 
+                    `<div onclick="selectExportItem('kanan', '${item}')" class="p-2 cursor-pointer border-b border-gray-100 text-sm flex gap-2 items-center transition-colors select-none ${activeKanan === item ? 'bg-blue-500 text-white font-medium shadow-inner' : 'hover:bg-blue-50 text-gray-700'}">
+                        <span class="opacity-50 text-xs w-5 font-bold">${idx+1}.</span> ${item.replace(/_/g, ' ')}
+                    </div>`
+                ).join('');
+            }
+        }
+
+        function selectExportItem(side, item) {
+            if (side === 'kiri') {
+                activeKiri = item;
+                activeKanan = null; 
+            } else {
+                activeKanan = item;
+                activeKiri = null;
+            }
+            renderExportLists();
+        }
+
+        function moveSelectedExport(direction) {
+            if (direction === 'right' && activeKiri) {
+                exportDataKiri = exportDataKiri.filter(i => i !== activeKiri);
+                exportDataKanan.push(activeKiri);
+                activeKanan = activeKiri;
+                activeKiri = null;
+            } else if (direction === 'left' && activeKanan) {
+                exportDataKanan = exportDataKanan.filter(i => i !== activeKanan);
+                exportDataKiri.push(activeKanan);
+                activeKiri = activeKanan;
+                activeKanan = null;
+            }
+            renderExportLists();
+        }
+
+        function moveAllExport(direction) {
+            if (direction === 'right') {
+                exportDataKanan = [...exportDataKanan, ...exportDataKiri];
+                exportDataKiri = [];
+            } else if (direction === 'left') {
+                exportDataKiri = [...exportDataKiri, ...exportDataKanan];
+                exportDataKanan = [];
+            }
+            activeKiri = null; activeKanan = null;
+            renderExportLists();
+        }
+
+        function reorderExport(direction) {
+            if (!activeKanan) return;
+            const idx = exportDataKanan.indexOf(activeKanan);
+            
+            if (direction === 'up' && idx > 0) {
+                // Tukar dengan item di atasnya
+                [exportDataKanan[idx - 1], exportDataKanan[idx]] = [exportDataKanan[idx], exportDataKanan[idx - 1]];
+            } else if (direction === 'down' && idx < exportDataKanan.length - 1) {
+                // Tukar dengan item di bawahnya
+                [exportDataKanan[idx + 1], exportDataKanan[idx]] = [exportDataKanan[idx], exportDataKanan[idx + 1]];
+            }
+            renderExportLists();
+            
+            // Auto scroll mengikuti item
+            setTimeout(() => {
+                const activeEl = document.querySelector('#list-kanan .bg-blue-500');
+                if(activeEl) activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 50);
+        }
+
+        function processCustomExport() {
+            if (exportDataKanan.length === 0) return Swal.fire('Peringatan', 'Anda belum memindahkan data satupun ke kotak kanan!', 'warning');
+            
+            showLoader();
+            try {
+                // Mengkonversi array data sesuai urutan kolom yang dipilih
+                const customData = STATE.allPegawai.map(pegawai => {
+                    let obj = {};
+                    exportDataKanan.forEach(col => {
+                        obj[col.replace(/_/g, ' ')] = pegawai[col] || '-'; 
+                    });
+                    return obj;
+                });
+                
+                const ws = XLSX.utils.json_to_sheet(customData); 
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Data Custom"); 
+                XLSX.writeFile(wb, "Custom_Data_Pegawai_RSUD.xlsx");
+                
+                closeExportModal();
+                Toast.fire({ icon: 'success', title: 'File Excel custom berhasil diunduh.' });
+            } catch (error) {
+                Swal.fire('Error', 'Gagal memproses export data: ' + error.message, 'error');
+            }
+            showLoader(false);
+        }
+        // --- AKHIR FITUR CUSTOM EXPORT ---
 
         function exportMyData() {
             if (!STATE.profile) return Swal.fire('Info', 'Data profil belum dimuat', 'info');
