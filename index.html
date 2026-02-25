@@ -92,6 +92,8 @@
                 <div id="nav-tab-pendidikan" class="sidebar-item p-3 rounded mb-1 flex items-center" onclick="window.location.hash='pendidikan'"><i class="fas fa-graduation-cap mr-3 w-5"></i> Pendidikan</div>
                 <div id="nav-tab-pangkat" class="sidebar-item p-3 rounded mb-1 flex items-center" onclick="window.location.hash='pangkat'"><i class="fas fa-medal mr-3 w-5"></i> Pangkat / Gol</div>
                 <div id="nav-tab-jabatan" class="sidebar-item p-3 rounded mb-1 flex items-center" onclick="window.location.hash='jabatan'"><i class="fas fa-briefcase mr-3 w-5"></i> Jabatan</div>
+                <!-- Menu Pengembangan Kompetensi -->
+                <div id="nav-tab-kompetensi" class="sidebar-item p-3 rounded mb-1 flex items-center" onclick="window.location.hash='kompetensi'"><i class="fas fa-certificate mr-3 w-5"></i> Pengembangan Kompetensi</div>
                 <div id="nav-tab-kgb" class="sidebar-item p-3 rounded mb-1 flex items-center" onclick="window.location.hash='kgb'"><i class="fas fa-money-bill-wave mr-3 w-5"></i> KGB</div>
                 <div id="nav-tab-keluarga" class="sidebar-item p-3 rounded mb-1 flex items-center" onclick="window.location.hash='keluarga'"><i class="fas fa-users mr-3 w-5"></i> Data Keluarga</div>
                 <div id="nav-tab-identitas" class="sidebar-item p-3 rounded mb-1 flex items-center" onclick="window.location.hash='identitas'"><i class="fas fa-fingerprint mr-3 w-5"></i> Identitas Lain</div>
@@ -277,6 +279,36 @@
                                     </thead>
                                     <tbody id="tbody-jabatan">
                                         <tr><td colspan="8" class="text-center p-4 text-gray-500">Sedang memuat...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab Content: Kompetensi -->
+                    <div id="tab-kompetensi" class="user-tab-content hidden">
+                        <div class="card rounded-lg shadow-md p-6">
+                            <div class="flex justify-between items-center mb-4 border-b pb-2">
+                                <h4 class="font-bold text-lg"><i class="fas fa-certificate mr-2 text-blue-500"></i> Pengembangan Kompetensi</h4>
+                                <button onclick="ajukanRiwayat('RIWAYAT_KOMPETENSI')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm shadow"><i class="fas fa-plus mr-1"></i> Ajukan Kompetensi / Diklat</button>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-sm whitespace-nowrap">
+                                    <thead class="bg-gray-100 text-black">
+                                        <tr>
+                                            <th class="p-2">Jenis Diklat</th>
+                                            <th class="p-2">Nama Diklat</th>
+                                            <th class="p-2">Pelaksanaan</th>
+                                            <th class="p-2">JP</th>
+                                            <th class="p-2">Penyelenggara</th>
+                                            <th class="p-2">Anggaran</th>
+                                            <th class="p-2">No. Sertifikat</th>
+                                            <th class="p-2">File</th>
+                                            <th class="p-2 text-center">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbody-kompetensi">
+                                        <tr><td colspan="9" class="text-center p-4 text-gray-500">Sedang memuat...</td></tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -487,7 +519,7 @@
             // Set Judul Halaman
             const titles = { 
                 'profil':'Profil Utama', 'pendidikan':'Pendidikan', 'pangkat':'Pangkat / Gol',
-                'jabatan':'Jabatan', 'kgb':'KGB', 'keluarga':'Data Keluarga', 'identitas':'Identitas Lain',
+                'jabatan':'Jabatan', 'kompetensi': 'Pengembangan Kompetensi', 'kgb':'KGB', 'keluarga':'Data Keluarga', 'identitas':'Identitas Lain',
                 'data-pegawai':'Data Pegawai', 'antrian':'Antrian Update', 'pengaturan':'Pengaturan' 
             };
             document.getElementById('page-title').innerText = titles[hash] || 'Profil Saya';
@@ -655,6 +687,7 @@
                 STATE.riwayat.pendidikan = res.riwayat_pendidikan || [];
                 STATE.riwayat.pangkat = res.riwayat_pangkat || [];
                 STATE.riwayat.jabatan = res.riwayat_jabatan || [];
+                STATE.riwayat.kompetensi = res.riwayat_kompetensi || []; // Simpan Kompetensi
                 STATE.riwayat.kgb = res.riwayat_kgb || [];
                 STATE.riwayat.keluarga = res.data_keluarga || [];
                 STATE.identitasLain = (res.identitas_lain && res.identitas_lain.length > 0) ? res.identitas_lain[0] : {};
@@ -784,6 +817,30 @@
                     </tr>`;
                 });
             } else { tbodyJabatan.innerHTML = `<tr><td colspan="8" class="text-center p-4 text-gray-500">Belum ada data jabatan.</td></tr>`; }
+
+            // 3B. KOMPETENSI / DIKLAT
+            const tbodyKompetensi = document.getElementById('tbody-kompetensi');
+            tbodyKompetensi.innerHTML = '';
+            if (STATE.riwayat.kompetensi.length > 0) {
+                STATE.riwayat.kompetensi.forEach(p => {
+                    let fileBtn = p.File_Sertifikat ? `<a href="${p.File_Sertifikat}" target="_blank" class="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs hover:bg-blue-200 whitespace-nowrap"><i class="fas fa-file-pdf"></i> Lihat Sertifikat</a>` : '-';
+                    let tglMulai = p.Tgl_Mulai ? new Date(p.Tgl_Mulai).toLocaleDateString('id-ID') : '-';
+                    let tglSelesai = p.Tgl_Selesai ? new Date(p.Tgl_Selesai).toLocaleDateString('id-ID') : '-';
+                    let pelaksanaanHTML = getRiwayatFieldHTML(p.ID_Data, 'Tgl_Mulai', tglMulai) + ' s/d ' + getRiwayatFieldHTML(p.ID_Data, 'Tgl_Selesai', tglSelesai);
+                    
+                    tbodyKompetensi.innerHTML += `<tr class="border-b">
+                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Jenis_Diklat', p.Jenis_Diklat)}</td>
+                        <td class="p-2 max-w-xs break-words whitespace-normal">${getRiwayatFieldHTML(p.ID_Data, 'Nama_Diklat', p.Nama_Diklat)}</td>
+                        <td class="p-2 whitespace-nowrap">${pelaksanaanHTML}</td>
+                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Jumlah_JP', p.Jumlah_JP)}</td>
+                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Penyelenggara', p.Penyelenggara)}</td>
+                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'Sumber_Anggaran', p.Sumber_Anggaran)}</td>
+                        <td class="p-2">${getRiwayatFieldHTML(p.ID_Data, 'No_Sertifikat', p.No_Sertifikat)}</td>
+                        <td class="p-2">${fileBtn}</td>
+                        <td class="p-2 text-center"><button onclick="editRiwayatRow('${p.ID_Data}', 'RIWAYAT_KOMPETENSI')" class="text-blue-600 hover:text-blue-800 bg-blue-50 px-2 py-1 rounded border border-blue-200 shadow-sm text-xs"><i class="fas fa-edit"></i> Edit</button></td>
+                    </tr>`;
+                });
+            } else { tbodyKompetensi.innerHTML = `<tr><td colspan="9" class="text-center p-4 text-gray-500">Belum ada data pengembangan kompetensi.</td></tr>`; }
 
             // 4. KGB
             const tbodyKgb = document.getElementById('tbody-kgb');
@@ -1239,13 +1296,14 @@
                 'RIWAYAT_PENDIDIKAN': { 'Jenjang': 'Jenjang Pendidikan', 'Instansi': 'Instansi / Kampus', 'Jurusan': 'Jurusan', 'Thn_Lulus': 'Tahun Lulus', 'No_Ijazah': 'Nomor Ijazah', 'Tgl_Ijazah': 'Tanggal Ijazah', 'Pendidikan_Terakhir': 'Pendidikan Terakhir? (Ya/Tidak)', 'File_Ijazah': 'File PDF Ijazah' },
                 'RIWAYAT_PANGKAT': { 'Pangkat_Gol': 'Pangkat/Golongan', 'No_SK': 'Nomor SK', 'TMT': 'TMT Pangkat', 'Tgl_SK': 'Tanggal SK', 'Masa_Kerja_Thn': 'Masa Kerja (Tahun)', 'Masa_Kerja_Bln': 'Masa Kerja (Bulan)', 'Pangkat_Sekarang': 'Pangkat/Gol Sekarang? (Ya/Tidak)', 'File_SK': 'File PDF SK' },
                 'RIWAYAT_JABATAN': { 'Jenis_Jabatan': 'Jenis Jabatan', 'Jabatan': 'Nama Jabatan', 'Eselon': 'Eselon', 'Unit_Kerja': 'Unit Kerja', 'TMT_Pelantikan': 'TMT Pelantikan', 'Jabatan_Sekarang': 'Jabatan Sekarang? (Ya/Tidak)', 'File_SK': 'File PDF SK' },
+                'RIWAYAT_KOMPETENSI': { 'Jenis_Diklat': 'Jenis Diklat', 'Nama_Diklat': 'Nama Diklat', 'Tgl_Mulai': 'Tgl Mulai Diklat', 'Tgl_Selesai': 'Tgl Selesai Diklat', 'Jumlah_JP': 'Jumlah JP', 'Penyelenggara': 'Penyelenggara', 'Sumber_Anggaran': 'Sumber Anggaran', 'No_Sertifikat': 'No Sertifikat', 'File_Sertifikat': 'File PDF Sertifikat' },
                 'RIWAYAT_KGB': { 'Golongan': 'Golongan KGB', 'Gaji_Baru': 'Gaji Baru', 'KGB_TMT': 'TMT KGB', 'Dasar_Nomor': 'Nomor SK Dasar' },
                 'DATA_KELUARGA': { 'Nama': 'Nama Anggota', 'Status_Keluarga': 'Status (Anak/Istri)', 'L/P': 'L/P', 'Tunjangan': 'Dapat Tunjangan?' }
             };
 
             const dataTabelMapping = {
                 'RIWAYAT_PENDIDIKAN': STATE.riwayat.pendidikan, 'RIWAYAT_PANGKAT': STATE.riwayat.pangkat,
-                'RIWAYAT_JABATAN': STATE.riwayat.jabatan, 'RIWAYAT_KGB': STATE.riwayat.kgb, 'DATA_KELUARGA': STATE.riwayat.keluarga
+                'RIWAYAT_JABATAN': STATE.riwayat.jabatan, 'RIWAYAT_KOMPETENSI': STATE.riwayat.kompetensi, 'RIWAYAT_KGB': STATE.riwayat.kgb, 'DATA_KELUARGA': STATE.riwayat.keluarga
             };
 
             const rowData = dataTabelMapping[sheet].find(r => r.ID_Data === idData);
@@ -1279,6 +1337,7 @@
                 // Tambahan Dropdown Khusus Jabatan
                 if (selectedKolom === 'Jenis_Jabatan') { inputType = 'select'; inputOptions = { 'Staf': 'Staf', 'Jabatan Struktural': 'Jabatan Struktural', 'JFT (Jabatan Fungsional Tertentu)': 'JFT (Jabatan Fungsional Tertentu)', 'JFU (Jabatan Fungsional Umum)': 'JFU (Jabatan Fungsional Umum)', 'Jenis jabatan tidak di ketahui': 'Jenis jabatan tidak di ketahui' }; }
                 if (selectedKolom === 'Eselon') { inputType = 'select'; inputOptions = { 'ESELON II': 'ESELON II', 'ESELON III': 'ESELON III', 'ESELON IV': 'ESELON IV' }; }
+                if (selectedKolom === 'Sumber_Anggaran') { inputType = 'select'; inputOptions = { 'Gratis': 'Gratis', 'Mandiri': 'Mandiri', 'APBD': 'APBD' }; }
                 if (selectedKolom === 'Pendidikan_Terakhir' || selectedKolom === 'Tunjangan' || selectedKolom === 'Pangkat_Sekarang' || selectedKolom === 'Jabatan_Sekarang') { inputType = 'select'; inputOptions = { 'Ya': 'Ya', 'Tidak': 'Tidak' }; }
                 if (selectedKolom === 'L/P') { inputType = 'select'; inputOptions = { 'L': 'L', 'P': 'P' }; }
                 if (selectedKolom.includes('Tgl_') || selectedKolom === 'TMT' || selectedKolom === 'TMT_Pelantikan') { inputType = 'date'; }
@@ -1570,6 +1629,36 @@
                     <div class="text-left mt-4 px-1"><label class="text-sm font-bold text-gray-700">File PDF SK (Maks 7MB):</label></div>
                     <input type="file" id="swal-file" class="swal2-file text-sm" accept="application/pdf">
                 `;
+            } else if (sheet === 'RIWAYAT_KOMPETENSI') {
+                formTitle = 'Pengembangan Kompetensi / Diklat';
+                htmlForm = `
+                    <input id="swal-in1" class="swal2-input text-sm" placeholder="Jenis Diklat (Contoh: Teknis, Kepemimpinan)">
+                    <input id="swal-in2" class="swal2-input text-sm" placeholder="Nama Diklat">
+                    
+                    <div class="flex gap-2 px-1 mt-3">
+                        <div class="w-1/2 text-left"><label class="text-sm font-bold text-gray-700">Tgl Mulai:</label></div>
+                        <div class="w-1/2 text-left"><label class="text-sm font-bold text-gray-700">Tgl Selesai:</label></div>
+                    </div>
+                    <div class="flex gap-2 px-1">
+                        <input id="swal-in3" class="swal2-input text-sm w-1/2 m-0" type="date">
+                        <input id="swal-in4" class="swal2-input text-sm w-1/2 m-0" type="date">
+                    </div>
+
+                    <input id="swal-in5" class="swal2-input text-sm" type="number" placeholder="Jumlah JP (Jam Pelajaran)">
+                    <input id="swal-in6" class="swal2-input text-sm" placeholder="Penyelenggara Instansi">
+                    
+                    <select id="swal-in7" class="swal2-select w-full m-0 mt-3 text-sm">
+                        <option value="" disabled selected>-- Pilih Sumber Anggaran --</option>
+                        <option value="Gratis">Gratis</option>
+                        <option value="Mandiri">Mandiri</option>
+                        <option value="APBD">APBD</option>
+                    </select>
+
+                    <input id="swal-in8" class="swal2-input text-sm" placeholder="Nomor Sertifikat">
+
+                    <div class="text-left mt-4 px-1"><label class="text-sm font-bold text-gray-700">File PDF Sertifikat (Maks 7MB):</label></div>
+                    <input type="file" id="swal-file" class="swal2-file text-sm" accept="application/pdf">
+                `;
             } else if (sheet === 'RIWAYAT_KGB') {
                 formTitle = 'Ajukan Riwayat KGB';
                 htmlForm = `
@@ -1627,8 +1716,8 @@
                         }
                     }
 
-                    // Logika Wajib Upload PDF untuk Pendidikan, Pangkat & Jabatan
-                    if (sheet === 'RIWAYAT_PENDIDIKAN' || sheet === 'RIWAYAT_PANGKAT' || sheet === 'RIWAYAT_JABATAN') {
+                    // Logika Wajib Upload PDF untuk Pendidikan, Pangkat, Jabatan & Kompetensi
+                    if (sheet === 'RIWAYAT_PENDIDIKAN' || sheet === 'RIWAYAT_PANGKAT' || sheet === 'RIWAYAT_JABATAN' || sheet === 'RIWAYAT_KOMPETENSI') {
                         const fileInput = document.getElementById('swal-file');
                         if (!fileInput.files.length) {
                             Swal.showValidationMessage('File PDF wajib dilampirkan!');
@@ -1656,6 +1745,7 @@
                             if(sheet === 'RIWAYAT_PENDIDIKAN') fNamePrefix = 'IJAZAH';
                             if(sheet === 'RIWAYAT_PANGKAT') fNamePrefix = 'SK_PANGKAT';
                             if(sheet === 'RIWAYAT_JABATAN') fNamePrefix = 'SK_JABATAN';
+                            if(sheet === 'RIWAYAT_KOMPETENSI') fNamePrefix = 'SERTIFIKAT_DIKLAT';
                             
                             const resFile = await apiCall({
                                 action: 'uploadFile',
@@ -1858,13 +1948,27 @@
                     <tbody>${extractTable('tbody-jabatan', 6)}</tbody>
                 </table>
 
-                <h4 style="background-color:#f0f0f0; padding:8px; margin:10px 0; border:1px solid #ddd; font-size:14px;">V. RIWAYAT KGB</h4>
+                <h4 style="background-color:#f0f0f0; padding:8px; margin:10px 0; border:1px solid #ddd; font-size:14px;">V. PENGEMBANGAN KOMPETENSI / DIKLAT</h4>
+                <table style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:15px; text-align:left;">
+                    <thead><tr style="background-color:#eee;">
+                        <th style="padding:8px; border:1px solid #ddd;">Jenis Diklat</th>
+                        <th style="padding:8px; border:1px solid #ddd;">Nama Diklat</th>
+                        <th style="padding:8px; border:1px solid #ddd;">Pelaksanaan</th>
+                        <th style="padding:8px; border:1px solid #ddd;">JP</th>
+                        <th style="padding:8px; border:1px solid #ddd;">Penyelenggara</th>
+                        <th style="padding:8px; border:1px solid #ddd;">Anggaran</th>
+                        <th style="padding:8px; border:1px solid #ddd;">No. Sertifikat</th>
+                    </tr></thead>
+                    <tbody>${extractTable('tbody-kompetensi', 7)}</tbody>
+                </table>
+
+                <h4 style="background-color:#f0f0f0; padding:8px; margin:10px 0; border:1px solid #ddd; font-size:14px;">VI. RIWAYAT KGB</h4>
                 <table style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:15px; text-align:left;">
                     <thead><tr style="background-color:#eee;"><th style="padding:8px; border:1px solid #ddd;">Golongan</th><th style="padding:8px; border:1px solid #ddd;">Gaji Baru</th><th style="padding:8px; border:1px solid #ddd;">TMT</th><th style="padding:8px; border:1px solid #ddd;">No SK Dasar</th></tr></thead>
                     <tbody>${extractTable('tbody-kgb', 4)}</tbody>
                 </table>
 
-                <h4 style="background-color:#f0f0f0; padding:8px; margin:10px 0; border:1px solid #ddd; font-size:14px;">VI. DATA KELUARGA</h4>
+                <h4 style="background-color:#f0f0f0; padding:8px; margin:10px 0; border:1px solid #ddd; font-size:14px;">VII. DATA KELUARGA</h4>
                 <table style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:15px; text-align:left;">
                     <thead><tr style="background-color:#eee;"><th style="padding:8px; border:1px solid #ddd;">Nama</th><th style="padding:8px; border:1px solid #ddd;">Status</th><th style="padding:8px; border:1px solid #ddd;">L/P</th><th style="padding:8px; border:1px solid #ddd;">Tunjangan</th></tr></thead>
                     <tbody>${extractTable('tbody-keluarga', 4)}</tbody>
