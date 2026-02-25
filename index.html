@@ -771,8 +771,16 @@
                 paginatedData.forEach(p => {
                     if(!p.NIP) return;
                     let statusBadge = p.Status_Pegawai === 'PENSIUN' ? 'bg-gray-200 text-gray-800' : 'bg-green-100 text-green-800';
+                    
+                    // Superadmin bisa melihat Badge Role Pegawai
+                    let roleBadge = '';
+                    if (STATE.user.role === 'superadmin' && p.Role) {
+                        let rColor = p.Role === 'superadmin' ? 'bg-purple-100 text-purple-800' : (p.Role === 'admin' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-600');
+                        roleBadge = `<br><span class="px-2 py-0.5 ${rColor} rounded text-[10px] font-bold mt-1 inline-block uppercase"><i class="fas fa-user-shield mr-1"></i> ${p.Role}</span>`;
+                    }
+
                     let tr = document.createElement('tr'); tr.className = 'border-b border-gray-300 hover:bg-gray-100 hover:text-black transition';
-                    tr.innerHTML = `<td class="p-3">${p.NIP}</td><td class="p-3 font-medium">${p.Nama_Lengkap}</td><td class="p-3">${p.Jabatan_Terakhir || '-'}</td><td class="p-3"><span class="px-2 py-1 ${statusBadge} rounded text-xs font-bold">${p.Status_Pegawai || 'AKTIF'}</span></td><td class="p-3 flex gap-2"><button onclick="editPegawaiAdmin('${p.NIP}')" class="text-blue-600 hover:underline bg-blue-50 px-2 py-1 rounded border border-blue-200 shadow-sm" title="Edit Data"><i class="fas fa-edit"></i> Edit</button><button onclick="cetakCVPegawai('${p.NIP}')" class="text-red-600 hover:underline bg-red-50 px-2 py-1 rounded border border-red-200 shadow-sm" title="Cetak CV (PDF)"><i class="fas fa-file-pdf"></i> CV</button></td>`;
+                    tr.innerHTML = `<td class="p-3">${p.NIP}</td><td class="p-3 font-medium">${p.Nama_Lengkap} ${roleBadge}</td><td class="p-3">${p.Jabatan_Terakhir || '-'}</td><td class="p-3"><span class="px-2 py-1 ${statusBadge} rounded text-xs font-bold">${p.Status_Pegawai || 'AKTIF'}</span></td><td class="p-3 flex gap-2"><button onclick="editPegawaiAdmin('${p.NIP}')" class="text-blue-600 hover:underline bg-blue-50 px-2 py-1 rounded border border-blue-200 shadow-sm" title="Edit Data"><i class="fas fa-edit"></i> Edit</button><button onclick="cetakCVPegawai('${p.NIP}')" class="text-red-600 hover:underline bg-red-50 px-2 py-1 rounded border border-red-200 shadow-sm" title="Cetak CV (PDF)"><i class="fas fa-file-pdf"></i> CV</button></td>`;
                     tbody.appendChild(tr);
                 });
             }
@@ -798,22 +806,98 @@
             const targetPegawai = STATE.allPegawai.find(p => String(p.NIP) === String(nip));
             if (!targetPegawai) return;
 
-            let options = { 'PROFIL:Status_Pegawai': 'Ubah Status (Aktif/Pensiun)', 'PROFIL:Jabatan_Terakhir': 'Ubah Jabatan', 'PROFIL:Unit_Kerja': 'Ubah Unit Kerja' };
-            if (STATE.user.role === 'superadmin') { options['USERS:Role'] = 'Ubah Role Akun (user/admin/superadmin)'; options['USERS:Status_Akun'] = 'Status Akun (Aktif/Blokir)'; }
+            // 1. Kategorikan Menu Edit Menggunakan Optgroup
+            let optgroups = {
+                'Otorisasi & Akun': {},
+                'Data Karir': {},
+                'Data Personal Utama': {},
+                'Data Lainnya': {}
+            };
 
-            const { value: selectedOption } = await Swal.fire({ title: `Edit Pegawai`, text: `${targetPegawai.Nama_Lengkap}`, input: 'select', inputOptions: options, inputPlaceholder: 'Pilih data yang ingin diubah', showCancelButton: true });
+            // Khusus Superadmin bisa ganti Role & Status Akun
+            if (STATE.user.role === 'superadmin') { 
+                optgroups['Otorisasi & Akun']['USERS:Role'] = 'Role Sistem (User/Admin/Superadmin)'; 
+                optgroups['Otorisasi & Akun']['USERS:Status_Akun'] = 'Status Akun (Aktif/Blokir)'; 
+            }
+
+            optgroups['Data Karir']['PROFIL:Status_Pegawai'] = 'Status Pegawai (Aktif/Pensiun)';
+            optgroups['Data Karir']['PROFIL:Jabatan_Terakhir'] = 'Jabatan Terakhir';
+            optgroups['Data Karir']['PROFIL:Unit_Kerja'] = 'Unit Kerja';
+            optgroups['Data Karir']['PROFIL:Jenis_ASN'] = 'Jenis ASN';
+            optgroups['Data Karir']['PROFIL:Pangkat_Golongan'] = 'Pangkat / Golongan';
+            
+            optgroups['Data Personal Utama']['PROFIL:Nama_Lengkap'] = 'Nama Lengkap';
+            optgroups['Data Personal Utama']['PROFIL:Gelar_Depan'] = 'Gelar Depan';
+            optgroups['Data Personal Utama']['PROFIL:Gelar_Belakang'] = 'Gelar Belakang';
+            optgroups['Data Personal Utama']['PROFIL:No_HP'] = 'Nomor HP';
+            
+            // Masukkan sisa data profil ke Kategori Lainnya (Agar admin bisa edit *semua* data)
+            const excludeKeys = ['NIP', 'Role', 'Status_Akun', 'Status_Pegawai', 'Jabatan_Terakhir', 'Unit_Kerja', 'Jenis_ASN', 'Pangkat_Golongan', 'Nama_Lengkap', 'Gelar_Depan', 'Gelar_Belakang', 'No_HP', 'URL_Foto_Profil'];
+            Object.keys(targetPegawai).forEach(key => {
+                if (!excludeKeys.includes(key)) {
+                    optgroups['Data Lainnya'][`PROFIL:${key}`] = key.replace(/_/g, ' ');
+                }
+            });
+
+            // 2. Tampilkan Menu Pemilihan Atribut
+            const { value: selectedOption } = await Swal.fire({ 
+                title: `Edit Data Pegawai`, 
+                html: `<div class="text-sm">Pilih atribut data milik <b>${targetPegawai.Nama_Lengkap}</b> yang ingin Anda ubah:</div>`,
+                input: 'select', 
+                inputOptions: optgroups, 
+                inputPlaceholder: '-- Pilih Data --', 
+                showCancelButton: true 
+            });
 
             if (selectedOption) {
                 const [targetSheet, targetKolom] = selectedOption.split(':');
-                if (targetSheet === 'USERS' && targetPegawai.Role === 'Belum Taut Akun') { return Swal.fire('Gagal', 'Pegawai belum pernah Login / menautkan NIP dengan akun Google. Tidak dapat merubah Role/Status Akun.', 'error'); }
+                if (targetSheet === 'USERS' && targetPegawai.Role === 'Belum Taut Akun') { 
+                    return Swal.fire('Gagal', 'Pegawai belum pernah Login / menautkan NIP dengan akun Google. Tidak dapat merubah Role/Status Akun.', 'error'); 
+                }
 
-                const { value: newVal } = await Swal.fire({ title: `Ubah ${targetKolom.replace('_', ' ')}`, input: 'text', inputValue: targetPegawai[targetKolom] || '', showCancelButton: true });
+                // 3. Setup Tipe Input secara Profesional (Dropdown jika perlu)
+                let inputType = 'text';
+                let inputOpts = {};
+                let currentVal = targetPegawai[targetKolom] || '';
 
-                if (newVal) {
+                if (targetKolom === 'Role') {
+                    inputType = 'select'; inputOpts = { 'user': 'User', 'admin': 'Admin', 'superadmin': 'Superadmin' };
+                } else if (targetKolom === 'Status_Akun') {
+                    inputType = 'select'; inputOpts = { 'Aktif': 'Aktif', 'Blokir': 'Blokir' };
+                } else if (targetKolom === 'Status_Pegawai') {
+                    inputType = 'select'; inputOpts = { 'AKTIF': 'AKTIF', 'PENSIUN': 'PENSIUN', 'PINDAH': 'PINDAH', 'MENGUNDURKAN DIRI': 'MENGUNDURKAN DIRI' };
+                } else if (targetKolom === 'Jenis_ASN') {
+                    inputType = 'select'; inputOpts = { 'PNS': 'PNS', 'PPPK': 'PPPK', 'NON ASN': 'NON ASN' };
+                } else if (targetKolom === 'Jenis_Kelamin') {
+                    inputType = 'select'; inputOpts = { 'Laki-laki': 'Laki-laki', 'Perempuan': 'Perempuan' };
+                } else if (targetKolom === 'Tgl_Lahir' || targetKolom === 'TMT_Batas_Usia_Pensiun') {
+                    inputType = 'date'; 
+                    if(currentVal) currentVal = new Date(currentVal).toISOString().split('T')[0]; // Format for HTML date input
+                }
+
+                const swalConfig = {
+                    title: `Ubah ${targetKolom.replace(/_/g, ' ')}`,
+                    input: inputType,
+                    showCancelButton: true
+                };
+
+                if (inputType === 'select') {
+                    swalConfig.inputOptions = inputOpts;
+                    swalConfig.inputValue = currentVal;
+                    swalConfig.inputPlaceholder = '-- Pilih --';
+                } else {
+                    swalConfig.inputValue = currentVal;
+                }
+
+                // 4. Proses Update Data
+                const { value: newVal } = await Swal.fire(swalConfig);
+
+                if (newVal !== undefined && newVal !== currentVal && newVal !== '') {
                     showLoader();
                     try {
                         await apiCall({ action: 'submitUpdate', executorRole: STATE.user.role, nip_target: nip, sheet_target: targetSheet, kolom_target: targetKolom, nilai_baru: newVal });
-                        Toast.fire({ icon: 'success', title: 'Data berhasil diperbarui.' }); STATE.allPegawai = []; fetchAllPegawai(); 
+                        Toast.fire({ icon: 'success', title: 'Data berhasil diperbarui.' }); 
+                        STATE.allPegawai = []; fetchAllPegawai(); // Refresh Table
                     } catch(e) { Swal.fire('Gagal', e.message, 'error'); }
                     showLoader(false);
                 }
