@@ -772,7 +772,7 @@
                     if(!p.NIP) return;
                     let statusBadge = p.Status_Pegawai === 'PENSIUN' ? 'bg-gray-200 text-gray-800' : 'bg-green-100 text-green-800';
                     let tr = document.createElement('tr'); tr.className = 'border-b border-gray-300 hover:bg-gray-100 hover:text-black transition';
-                    tr.innerHTML = `<td class="p-3">${p.NIP}</td><td class="p-3 font-medium">${p.Nama_Lengkap}</td><td class="p-3">${p.Jabatan_Terakhir || '-'}</td><td class="p-3"><span class="px-2 py-1 ${statusBadge} rounded text-xs font-bold">${p.Status_Pegawai || 'AKTIF'}</span></td><td class="p-3"><button onclick="editPegawaiAdmin('${p.NIP}')" class="text-blue-600 hover:underline bg-blue-50 px-2 py-1 rounded border border-blue-200 shadow-sm"><i class="fas fa-edit"></i> Edit / Aksi</button></td>`;
+                    tr.innerHTML = `<td class="p-3">${p.NIP}</td><td class="p-3 font-medium">${p.Nama_Lengkap}</td><td class="p-3">${p.Jabatan_Terakhir || '-'}</td><td class="p-3"><span class="px-2 py-1 ${statusBadge} rounded text-xs font-bold">${p.Status_Pegawai || 'AKTIF'}</span></td><td class="p-3 flex gap-2"><button onclick="editPegawaiAdmin('${p.NIP}')" class="text-blue-600 hover:underline bg-blue-50 px-2 py-1 rounded border border-blue-200 shadow-sm" title="Edit Data"><i class="fas fa-edit"></i> Edit</button><button onclick="cetakCVPegawai('${p.NIP}')" class="text-red-600 hover:underline bg-red-50 px-2 py-1 rounded border border-red-200 shadow-sm" title="Cetak CV (PDF)"><i class="fas fa-file-pdf"></i> CV</button></td>`;
                     tbody.appendChild(tr);
                 });
             }
@@ -1411,30 +1411,46 @@
         function exportMyData() {
             if (!STATE.profile) return Swal.fire('Info', 'Data profil belum dimuat', 'info');
             showLoader(true);
-            
+            generateAndDownloadCV(STATE.profile, STATE.riwayat);
+        }
+
+        async function cetakCVPegawai(nip) {
+            showLoader(true);
+            try {
+                const res = await apiCall({ action: 'getProfile', nip: nip });
+                if (!res.data) throw new Error('Data profil pegawai tidak ditemukan.');
+                
+                const riwayatData = {
+                    pendidikan: res.riwayat_pendidikan || [],
+                    pangkat: res.riwayat_pangkat || [],
+                    jabatan: res.riwayat_jabatan || [],
+                    kompetensi: res.riwayat_kompetensi || [],
+                    kgb: res.riwayat_kgb || [],
+                    keluarga: res.data_keluarga || []
+                };
+                
+                generateAndDownloadCV(res.data, riwayatData);
+            } catch (e) {
+                showLoader(false);
+                Swal.fire('Error', e.message, 'error');
+            }
+        }
+
+        function generateAndDownloadCV(p, r) {
             const cvContainer = document.createElement('div');
             cvContainer.style.padding = '20px'; cvContainer.style.fontFamily = 'Arial, sans-serif'; cvContainer.style.color = '#000'; cvContainer.style.backgroundColor = '#fff';
 
-            const p = STATE.profile || {};
             const namaLengkap = (p.Gelar_Depan ? p.Gelar_Depan + ' ' : '') + (p.Nama_Lengkap || '-') + (p.Gelar_Belakang ? ', ' + p.Gelar_Belakang : '');
-            
-            const extractTable = (tbodyId, colCount) => {
-                const tbody = document.getElementById(tbodyId);
-                if (!tbody || tbody.innerText.includes('Belum ada data') || tbody.innerText.includes('Sedang memuat')) { return `<tr><td colspan="${colCount}" style="padding:8px; border:1px solid #ddd; text-align:center;">Tidak ada data</td></tr>`; }
-                let rowsHtml = '';
-                for(let tr of tbody.querySelectorAll('tr')) {
-                    let rowHtml = '<tr>'; let tdCount = 0;
-                    for(let td of tr.querySelectorAll('td')) {
-                        if(tdCount >= colCount) break; 
-                        let clone = td.cloneNode(true); let elementsToRemove = clone.querySelectorAll('i, button, a, span.text-xs');
-                        elementsToRemove.forEach(el => el.remove());
-                        rowHtml += `<td style="padding:8px; border:1px solid #ddd;">${clone.innerText.trim()}</td>`;
-                        tdCount++;
-                    }
-                    rowHtml += '</tr>'; rowsHtml += rowHtml;
-                }
-                return rowsHtml;
-            };
+            const urlFoto = p.URL_Foto_Profil || 'https://via.placeholder.com/150';
+            const formatDate = (d) => d ? new Date(d).toLocaleDateString('id-ID') : '-';
+
+            // Pembangun Tabel Riwayat Langsung dari JSON
+            const tbodyPend = r.pendidikan?.length ? r.pendidikan.map(x => `<tr><td style="padding:8px; border:1px solid #ddd;">${x.Jenjang||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${x.Instansi||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${x.Jurusan||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${x.Thn_Lulus||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${x.No_Ijazah||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${formatDate(x.Tgl_Ijazah)}</td><td style="padding:8px; border:1px solid #ddd;">${x.Pendidikan_Terakhir||'-'}</td></tr>`).join('') : `<tr><td colspan="7" style="padding:8px; border:1px solid #ddd; text-align:center;">Tidak ada data</td></tr>`;
+            const tbodyPangkat = r.pangkat?.length ? r.pangkat.map(x => `<tr><td style="padding:8px; border:1px solid #ddd;">${x.Pangkat_Gol||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${x.No_SK||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${formatDate(x.TMT)}</td><td style="padding:8px; border:1px solid #ddd;">${formatDate(x.Tgl_SK)}</td><td style="padding:8px; border:1px solid #ddd;">${x.Masa_Kerja_Thn||'0'} Thn, ${x.Masa_Kerja_Bln||'0'} Bln</td><td style="padding:8px; border:1px solid #ddd;">${x.Pangkat_Sekarang||'-'}</td></tr>`).join('') : `<tr><td colspan="6" style="padding:8px; border:1px solid #ddd; text-align:center;">Tidak ada data</td></tr>`;
+            const tbodyJabatan = r.jabatan?.length ? r.jabatan.map(x => `<tr><td style="padding:8px; border:1px solid #ddd;">${x.Jenis_Jabatan||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${x.Jabatan||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${x.Eselon||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${x.Unit_Kerja||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${formatDate(x.TMT_Pelantikan)}</td><td style="padding:8px; border:1px solid #ddd;">${x.Jabatan_Sekarang||'-'}</td></tr>`).join('') : `<tr><td colspan="6" style="padding:8px; border:1px solid #ddd; text-align:center;">Tidak ada data</td></tr>`;
+            const tbodyKomp = r.kompetensi?.length ? r.kompetensi.map(x => `<tr><td style="padding:8px; border:1px solid #ddd;">${x.Jenis_Diklat||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${x.Nama_Diklat||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${formatDate(x.Tgl_Mulai)} s/d ${formatDate(x.Tgl_Selesai)}</td><td style="padding:8px; border:1px solid #ddd;">${x.Jumlah_JP||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${x.Penyelenggara||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${x.Sumber_Anggaran||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${x.No_Sertifikat||'-'}</td></tr>`).join('') : `<tr><td colspan="7" style="padding:8px; border:1px solid #ddd; text-align:center;">Tidak ada data</td></tr>`;
+            const tbodyKgb = r.kgb?.length ? r.kgb.map(x => `<tr><td style="padding:8px; border:1px solid #ddd;">${x.Golongan||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${x.No_SK_KGB||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${formatDate(x.TMT_KGB)}</td><td style="padding:8px; border:1px solid #ddd;">${formatDate(x.Tanggal_KGB)}</td><td style="padding:8px; border:1px solid #ddd;">${x.Masa_Kerja_Tahun||'0'} Thn, ${x.Masa_Kerja_Bulan||'0'} Bln</td><td style="padding:8px; border:1px solid #ddd;">${x.Gaji_Pokok_Baru||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${x.Dasar_KGB||'-'}</td></tr>`).join('') : `<tr><td colspan="7" style="padding:8px; border:1px solid #ddd; text-align:center;">Tidak ada data</td></tr>`;
+            const tbodyKel = r.keluarga?.length ? r.keluarga.map(x => `<tr><td style="padding:8px; border:1px solid #ddd;">${x.Nama||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${x.Status_Keluarga||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${x['L/P']||'-'}</td><td style="padding:8px; border:1px solid #ddd;">${x.Tunjangan||'-'}</td></tr>`).join('') : `<tr><td colspan="4" style="padding:8px; border:1px solid #ddd; text-align:center;">Tidak ada data</td></tr>`;
 
             cvContainer.innerHTML = `
                 <div style="text-align:center; margin-bottom: 20px;">
@@ -1446,7 +1462,7 @@
                 <table style="width:100%; margin-bottom:20px;">
                     <tr>
                         <td style="width:130px; vertical-align:top;">
-                            <div style="width:110px; height:140px; border:2px solid #333; background-image: url('${p.URL_Foto_Profil || 'https://via.placeholder.com/150'}'); background-size: cover; background-position: center top; background-repeat: no-repeat;"></div>
+                            <div style="width:110px; height:140px; border:2px solid #333; background-image: url('${urlFoto}'); background-size: cover; background-position: center top; background-repeat: no-repeat;"></div>
                         </td>
                         <td style="vertical-align:top; padding-left:15px;">
                             <h3 style="margin:0 0 10px 0; font-size:18px; text-transform:uppercase;">${namaLengkap}</h3>
@@ -1462,7 +1478,7 @@
 
                 <h4 style="background-color:#f0f0f0; padding:8px; margin:10px 0; border:1px solid #ddd; font-size:14px;">I. KETERANGAN PERORANGAN</h4>
                 <table style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:15px;">
-                    <tr><td style="width:30%; padding:5px; border:1px solid #ddd;">Tempat, Tanggal Lahir</td><td style="padding:5px; border:1px solid #ddd;">${p.Tempat_Lahir || '-'}, ${p.Tgl_Lahir ? new Date(p.Tgl_Lahir).toLocaleDateString('id-ID') : '-'}</td></tr>
+                    <tr><td style="width:30%; padding:5px; border:1px solid #ddd;">Tempat, Tanggal Lahir</td><td style="padding:5px; border:1px solid #ddd;">${p.Tempat_Lahir || '-'}, ${formatDate(p.Tgl_Lahir)}</td></tr>
                     <tr><td style="padding:5px; border:1px solid #ddd;">Jenis Kelamin</td><td style="padding:5px; border:1px solid #ddd;">${p.Jenis_Kelamin || '-'}</td></tr>
                     <tr><td style="padding:5px; border:1px solid #ddd;">Agama</td><td style="padding:5px; border:1px solid #ddd;">${p.Agama || '-'}</td></tr>
                     <tr><td style="padding:5px; border:1px solid #ddd;">Alamat</td><td style="padding:5px; border:1px solid #ddd;">${p.Alamat_Domisili || '-'}</td></tr>
@@ -1473,41 +1489,42 @@
                 <h4 style="background-color:#f0f0f0; padding:8px; margin:10px 0; border:1px solid #ddd; font-size:14px;">II. RIWAYAT PENDIDIKAN</h4>
                 <table style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:15px; text-align:left;">
                     <thead><tr style="background-color:#eee;"><th style="padding:8px; border:1px solid #ddd;">Jenjang</th><th style="padding:8px; border:1px solid #ddd;">Instansi</th><th style="padding:8px; border:1px solid #ddd;">Jurusan</th><th style="padding:8px; border:1px solid #ddd;">Thn Lulus</th><th style="padding:8px; border:1px solid #ddd;">No. Ijazah</th><th style="padding:8px; border:1px solid #ddd;">Tgl Ijazah</th><th style="padding:8px; border:1px solid #ddd;">Pdd. Terakhir</th></tr></thead>
-                    <tbody>${extractTable('tbody-pendidikan', 7)}</tbody>
+                    <tbody>${tbodyPend}</tbody>
                 </table>
 
                 <h4 style="background-color:#f0f0f0; padding:8px; margin:10px 0; border:1px solid #ddd; font-size:14px;">III. RIWAYAT PANGKAT / GOLONGAN</h4>
                 <table style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:15px; text-align:left;">
                     <thead><tr style="background-color:#eee;"><th style="padding:8px; border:1px solid #ddd;">Pangkat/Gol</th><th style="padding:8px; border:1px solid #ddd;">No SK</th><th style="padding:8px; border:1px solid #ddd;">TMT</th><th style="padding:8px; border:1px solid #ddd;">Tgl SK</th><th style="padding:8px; border:1px solid #ddd;">Masa Kerja</th><th style="padding:8px; border:1px solid #ddd;">Pangkat Sekarang</th></tr></thead>
-                    <tbody>${extractTable('tbody-pangkat', 6)}</tbody>
+                    <tbody>${tbodyPangkat}</tbody>
                 </table>
 
                 <h4 style="background-color:#f0f0f0; padding:8px; margin:10px 0; border:1px solid #ddd; font-size:14px;">IV. RIWAYAT JABATAN</h4>
                 <table style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:15px; text-align:left;">
                     <thead><tr style="background-color:#eee;"><th style="padding:8px; border:1px solid #ddd;">Jenis Jabatan</th><th style="padding:8px; border:1px solid #ddd;">Nama Jabatan</th><th style="padding:8px; border:1px solid #ddd;">Eselon</th><th style="padding:8px; border:1px solid #ddd;">Unit Kerja</th><th style="padding:8px; border:1px solid #ddd;">TMT Pelantikan</th><th style="padding:8px; border:1px solid #ddd;">Jabatan Sekarang</th></tr></thead>
-                    <tbody>${extractTable('tbody-jabatan', 6)}</tbody>
+                    <tbody>${tbodyJabatan}</tbody>
                 </table>
 
                 <h4 style="background-color:#f0f0f0; padding:8px; margin:10px 0; border:1px solid #ddd; font-size:14px;">V. PENGEMBANGAN KOMPETENSI / DIKLAT</h4>
                 <table style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:15px; text-align:left;">
                     <thead><tr style="background-color:#eee;"><th style="padding:8px; border:1px solid #ddd;">Jenis Diklat</th><th style="padding:8px; border:1px solid #ddd;">Nama Diklat</th><th style="padding:8px; border:1px solid #ddd;">Pelaksanaan</th><th style="padding:8px; border:1px solid #ddd;">JP</th><th style="padding:8px; border:1px solid #ddd;">Penyelenggara</th><th style="padding:8px; border:1px solid #ddd;">Anggaran</th><th style="padding:8px; border:1px solid #ddd;">No. Sertifikat</th></tr></thead>
-                    <tbody>${extractTable('tbody-kompetensi', 7)}</tbody>
+                    <tbody>${tbodyKomp}</tbody>
                 </table>
 
                 <h4 style="background-color:#f0f0f0; padding:8px; margin:10px 0; border:1px solid #ddd; font-size:14px;">VI. RIWAYAT KGB</h4>
                 <table style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:15px; text-align:left;">
                     <thead><tr style="background-color:#eee;"><th style="padding:8px; border:1px solid #ddd;">Golongan</th><th style="padding:8px; border:1px solid #ddd;">No SK</th><th style="padding:8px; border:1px solid #ddd;">TMT KGB</th><th style="padding:8px; border:1px solid #ddd;">Tanggal KGB</th><th style="padding:8px; border:1px solid #ddd;">Masa Kerja</th><th style="padding:8px; border:1px solid #ddd;">Gaji Baru</th><th style="padding:8px; border:1px solid #ddd;">Dasar KGB</th></tr></thead>
-                    <tbody>${extractTable('tbody-kgb', 7)}</tbody>
+                    <tbody>${tbodyKgb}</tbody>
                 </table>
 
                 <h4 style="background-color:#f0f0f0; padding:8px; margin:10px 0; border:1px solid #ddd; font-size:14px;">VII. DATA KELUARGA</h4>
                 <table style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:15px; text-align:left;">
                     <thead><tr style="background-color:#eee;"><th style="padding:8px; border:1px solid #ddd;">Nama</th><th style="padding:8px; border:1px solid #ddd;">Status</th><th style="padding:8px; border:1px solid #ddd;">L/P</th><th style="padding:8px; border:1px solid #ddd;">Tunjangan</th></tr></thead>
-                    <tbody>${extractTable('tbody-keluarga', 4)}</tbody>
+                    <tbody>${tbodyKel}</tbody>
                 </table>
             `;
 
-            const opt = { margin: 10, filename: `CV_${namaLengkap}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
+            const cleanFileName = `CV_${namaLengkap.replace(/[^a-zA-Z0-9 ]/g, "").trim()}.pdf`;
+            const opt = { margin: 10, filename: cleanFileName, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
             html2pdf().set(opt).from(cvContainer).save().then(() => { showLoader(false); }).catch(err => { showLoader(false); Swal.fire('Error', 'Gagal mencetak PDF: ' + err.message, 'error'); });
         }
 
