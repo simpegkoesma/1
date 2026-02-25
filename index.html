@@ -368,7 +368,7 @@
                                 <thead class="bg-gray-200 text-black">
                                     <tr>
                                         <th class="p-2">Tgl Ajuan</th>
-                                        <th class="p-2">NIP Pengaju</th>
+                                        <th class="p-2">Nama Pengaju</th>
                                         <th class="p-2">Target Data</th>
                                         <th class="p-2 max-w-xs">Nilai Baru</th>
                                         <th class="p-2">Aksi</th>
@@ -1049,7 +1049,7 @@
                 tr.className = 'border-b border-gray-300 hover:bg-gray-50';
                 tr.innerHTML = `
                     <td class="p-2 whitespace-nowrap">${tgl}</td>
-                    <td class="p-2 font-bold">${a.NIP}</td>
+                    <td class="p-2 font-bold">${a.Nama_Pengaju} <br><span class="text-xs text-gray-500 font-normal">NIP: ${a.NIP}</span></td>
                     <td class="p-2 text-blue-600 font-medium">${a.Kolom_Tujuan.replace(/_/g, ' ')}</td>
                     <td class="p-2 max-w-xs break-words">${displayNilai}</td>
                     <td class="p-2 whitespace-nowrap">
